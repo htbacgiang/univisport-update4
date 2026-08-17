@@ -202,26 +202,20 @@ const SinglePost: NextPage<Props> = ({ post, meta }) => {
                 <nav aria-label="Breadcrumb">
                   <ol className="flex flex-wrap items-center space-x-1 text-sm text-gray-500">
                     <li>
-                      <Link href="/" className="hover:text-[#105d97] transition-colors">
-                        Trang chủ
-                      </Link>
-                    </li>
-                    <li><span className="text-gray-400">/</span></li>
-                    <li>
                       <Link href="/bai-viet" className="hover:text-[#105d97] transition-colors">
                         Bài viết
                       </Link>
                     </li>
                     <li><span className="text-gray-400">/</span></li>
                     <li className="text-gray-700 font-medium" aria-current="page">
-                      {trimText(title, 30)}
+                      {trimText(title, 35)}
                     </li>
                   </ol>
                 </nav>
 
                 {/* Article Header */}
                 <div className="mb-4">
-                  <h1 className="text-2xl md:text-3xl font-medium tracking-tight text-gray-900 leading-6 mb-4">{title}</h1>
+                  <h1 className="text-xl md:text-3xl font-medium tracking-tight text-gray-900 leading-6 mb-4">{title}</h1>
                   <div className="flex items-center justify-between">
                     <Share url={`${host}/${slug}`} />
                   </div>

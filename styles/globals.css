@@ -79,6 +79,7 @@
     opacity: 0;
     transform: translate3d(-90px, 0, 0) scale(0.8) rotate(-3deg);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
@@ -90,6 +91,7 @@
     opacity: 0;
     transform: translate3d(90px, 0, 0) scale(0.8) rotate(3deg);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
@@ -101,6 +103,7 @@
     opacity: 0;
     transform: translate3d(0, -80px, 0) scale(0.8);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
@@ -112,6 +115,7 @@
     opacity: 0;
     transform: translate3d(0, 80px, 0) scale(0.8);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
@@ -123,6 +127,7 @@
     opacity: 0;
     transform: translate3d(-70px, -60px, 0) scale(0.8) rotate(-2deg);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
@@ -134,6 +139,7 @@
     opacity: 0;
     transform: translate3d(70px, -60px, 0) scale(0.8) rotate(2deg);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
@@ -145,6 +151,7 @@
     opacity: 0;
     transform: translate3d(-70px, 60px, 0) scale(0.8) rotate(-2deg);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
@@ -156,6 +163,7 @@
     opacity: 0;
     transform: translate3d(70px, 60px, 0) scale(0.8) rotate(2deg);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
@@ -165,24 +173,31 @@
 .anim-fly-left {
   animation: flyInLeft 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 .anim-fly-right {
   animation: flyInRight 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 .anim-fly-top {
   animation: flyInTop 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 .anim-fly-bottom {
   animation: flyInBottom 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 .anim-fly-top-left {
   animation: flyInTopLeft 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 .anim-fly-top-right {
   animation: flyInTopRight 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 .anim-fly-bottom-left {
   animation: flyInBottomLeft 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 .anim-fly-bottom-right {
   animation: flyInBottomRight 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -1658,7 +1673,7 @@ blog h2 strong {
 
 /* Editor paragraph spacing - tăng khoảng cách giữa các đoạn trong editor */
 .prose p {
-  line-height: 1.75 !important;
+  line-height: 1.5 !important;
 }
 
 .prose h1 {

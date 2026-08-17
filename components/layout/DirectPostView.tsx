@@ -166,13 +166,13 @@ const DirectPostView: React.FC<Props> = ({ post, randomFeedbacks = [] }) => {
                 <Link href="/" className="hover:text-blue-800 whitespace-nowrap">Trang chủ</Link>
                 <span>›</span>
                 <span className="flex font-bold gap-2 text-base text-gray-600">
-                  {trimText(title, 30)}
+                  {trimText(title, 35)}
                 </span>
               </div>
 
               {/* Article Header */}
               <div className="mb-4">
-                <h1 className="md:text-2xl text-xl font-bold text-gray-900 mb-4">{title}</h1>
+                <h1 className="md:text-3xl text-xl font-bold text-gray-900 mb-4">{title}</h1>
                 <div className="flex items-center justify-between">
                   <Share url={`${host}/${slug}`} />
                 </div>

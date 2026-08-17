@@ -216,7 +216,7 @@ export default function
           <>
             {/* H1 + đoạn mô tả */}
             <section className="bg-white rounded-xl border border-gray-100 p-3 mb-4">
-              <h1 className="text-2xl md:text-3xl font-medium tracking-tight leading-6 text-gray-900 mb-1">
+              <h1 className="text-xl md:text-3xl font-medium tracking-tight leading-6 text-gray-900 mb-1">
                 {categorySlug === 'dong-phuc-gym'
                   ? 'May Đồng Phục Gym Theo Yêu Cầu Cho Phòng Tập, PT Studio Và Fitness Center'
                   : CATEGORY_H1[categorySlug] || displayCategory}
