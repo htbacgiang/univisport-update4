@@ -363,6 +363,8 @@ function CustomerCard({ customer }) {
 
 function Section2ImageSlider() {
   const [activeIdx, setActiveIdx] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   const slides = [
     {
@@ -390,28 +392,56 @@ function Section2ImageSlider() {
   const nextSlide = () => setActiveIdx((prev) => (prev + 1) % total);
   const prevSlide = () => setActiveIdx((prev) => (prev - 1 + total) % total);
 
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
   return (
-    <div className="my-12">
-      <div className="relative flex items-center justify-center min-h-[420px] sm:min-h-[520px] md:min-h-[600px] py-6 px-2 overflow-hidden">
+    <div className="my-6 sm:my-10 md:my-12">
+      <div
+        className="relative flex items-center justify-center min-h-[260px] xs:min-h-[320px] sm:min-h-[440px] md:min-h-[580px] py-3 sm:py-6 px-1 sm:px-2 overflow-hidden select-none"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
 
         {/* Navigation Arrow Left */}
         <button
           type="button"
           onClick={prevSlide}
-          className="absolute left-2 sm:left-6 z-40 p-3 rounded-full bg-white/90 backdrop-blur-sm shadow-xl border border-gray-200 text-gray-800 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-300 cursor-pointer transform hover:scale-110"
+          className="absolute left-1 sm:left-4 lg:left-6 z-40 p-1.5 sm:p-3 rounded-full bg-white/80 backdrop-blur-md shadow-md border border-gray-200/70 text-gray-700 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-300 cursor-pointer transform hover:scale-110 active:scale-95"
           aria-label="Ảnh trước"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-3.5 h-3.5 sm:w-6 sm:h-6" />
         </button>
 
         {/* Navigation Arrow Right */}
         <button
           type="button"
           onClick={nextSlide}
-          className="absolute right-2 sm:right-6 z-40 p-3 rounded-full bg-white/90 backdrop-blur-sm shadow-xl border border-gray-200 text-gray-800 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-300 cursor-pointer transform hover:scale-110"
+          className="absolute right-1 sm:left-auto sm:right-4 lg:right-6 z-40 p-1.5 sm:p-3 rounded-full bg-white/80 backdrop-blur-md shadow-md border border-gray-200/70 text-gray-700 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-300 cursor-pointer transform hover:scale-110 active:scale-95"
           aria-label="Ảnh tiếp theo"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-3.5 h-3.5 sm:w-6 sm:h-6" />
         </button>
 
         {/* Slides Stack Container */}
@@ -425,7 +455,7 @@ function Section2ImageSlider() {
 
             let positionClasses = "";
             if (isCenter) {
-              positionClasses = "z-20 relative w-full max-w-[880px] lg:max-w-[960px] scale-100 opacity-100 shadow-2xl translate-x-0 rotate-0";
+              positionClasses = "z-20 relative w-full max-w-[880px] lg:max-w-[960px] scale-100 opacity-100 shadow-xl md:shadow-2xl translate-x-0 rotate-0";
             } else if (isLeft) {
               positionClasses = "hidden md:block absolute -left-12 lg:-left-6 z-10 w-[520px] lg:w-[600px] scale-[0.85] opacity-50 blur-[0.5px] hover:opacity-85 cursor-pointer -translate-x-6 -rotate-2";
             } else if (isRight) {
@@ -436,22 +466,22 @@ function Section2ImageSlider() {
               <div
                 key={slide.title}
                 onClick={() => setActiveIdx(idx)}
-                className={`group transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] rounded-2xl md:rounded-3xl border border-gray-200/90 bg-white overflow-hidden ${positionClasses}`}
+                className={`group transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] rounded-xl sm:rounded-2xl md:rounded-3xl border border-gray-200/90 bg-white overflow-hidden ${positionClasses}`}
               >
                 {/* Browser Mockup Header */}
-                <div className="bg-gray-900 text-gray-300 px-5 py-2.5 flex items-center gap-3 border-b border-gray-800">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-red-400 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-yellow-400 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-green-400 inline-block" />
+                <div className="bg-gray-900 text-gray-300 px-3 py-1.5 sm:px-5 sm:py-2.5 flex items-center gap-2 sm:gap-3 border-b border-gray-800">
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-400 inline-block" />
+                    <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-400 inline-block" />
+                    <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-400 inline-block" />
                   </div>
-                  <div className="bg-gray-800/80 text-gray-400 text-xs px-4 py-1 rounded-md mx-auto truncate max-w-[280px] font-mono">
+                  <div className="bg-gray-800/80 text-gray-400 text-[10px] sm:text-xs px-2.5 py-0.5 sm:px-4 sm:py-1 rounded-md mx-auto truncate max-w-[200px] sm:max-w-[280px] font-mono">
                     dongphucunivi.com
                   </div>
                 </div>
 
                 {/* Large Slide Image Container */}
-                <div className="relative w-full h-[320px] sm:h-[440px] md:h-[500px] lg:h-[560px] bg-gray-100 overflow-hidden">
+                <div className="relative w-full aspect-[4/3] xs:aspect-[16/10] sm:h-[400px] md:h-[500px] lg:h-[560px] bg-gray-100 overflow-hidden">
                   <Image
                     src={slide.src}
                     alt={slide.alt}
@@ -469,22 +499,22 @@ function Section2ImageSlider() {
       </div>
 
       {/* Caption & Indicators */}
-      <div className="text-center mt-5">
-        <h4 className="font-extrabold text-gray-900 text-lg md:text-xl mb-1">
+      <div className="text-center mt-3 sm:mt-5 px-2">
+        <h4 className="font-extrabold text-gray-900 text-base sm:text-lg md:text-xl mb-1">
           {slides[activeIdx].title}
         </h4>
-        <p className="text-sm text-gray-600 italic max-w-lg mx-auto leading-relaxed">
+        <p className="text-xs sm:text-sm text-gray-600 italic max-w-lg mx-auto leading-relaxed">
           {slides[activeIdx].caption}
         </p>
 
         {/* Slide Pagination Dots */}
-        <div className="flex justify-center items-center gap-2.5 mt-4">
+        <div className="flex justify-center items-center gap-2 sm:gap-2.5 mt-3 sm:mt-4">
           {slides.map((_, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => setActiveIdx(idx)}
-              className={`h-2.5 rounded-full transition-all duration-500 cursor-pointer ${activeIdx === idx ? "w-8 bg-[#105d97] shadow-sm" : "w-2.5 bg-gray-300 hover:bg-gray-400"
+              className={`h-2 sm:h-2.5 rounded-full transition-all duration-500 cursor-pointer ${activeIdx === idx ? "w-6 sm:w-8 bg-[#105d97] shadow-xs" : "w-2 sm:w-2.5 bg-gray-300 hover:bg-gray-400"
                 }`}
               aria-label={`Chuyển đến ảnh ${idx + 1}`}
             />
@@ -670,11 +700,11 @@ export default function DoanhNghiepPillarPage() {
 
         {/* Section 1 */}
         <ArticleSection id="dong-phuc-doanh-nghiep-la-gi">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start my-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-start my-6">
 
             {/* Left side: Image Showcase */}
             <div className="lg:col-span-6">
-              <div className="relative w-full h-[300px] sm:h-[380px] md:h-[420px] rounded-2xl md:rounded-3xl overflow-hidden border border-gray-200/80 shadow-sm bg-gray-50">
+              <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:h-[400px] lg:h-[420px] rounded-2xl md:rounded-3xl overflow-hidden border border-gray-200/80 shadow-sm bg-gray-50">
                 <Image
                   src="/khach-hang/dong-phuc-doanh-nghiep-psc-car.jpg"
                   alt="Đồng phục doanh nghiệp – hệ thống polo, sơ mi, vest, áo gió theo nhận diện công ty"
@@ -684,20 +714,20 @@ export default function DoanhNghiepPillarPage() {
                   quality={85}
                 />
               </div>
-              <p className="text-center text-xs text-gray-500 mt-2.5 italic">
+              <p className="text-center text-xs text-gray-500 mt-2.5 italic px-2">
                 Một hệ thống đồng phục doanh nghiệp đúng nghĩa dùng chung ngôn ngữ màu sắc, logo và chất liệu.
               </p>
             </div>
 
             {/* Right side: Section Content */}
-            <div className="lg:col-span-6">
+            <div className="lg:col-span-6 flex flex-col justify-center">
               <SectionHeading number="1">Đồng phục doanh nghiệp là gì?</SectionHeading>
 
               <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
                 Đồng phục doanh nghiệp là nhóm trang phục được xây dựng cho người lao động trong cùng một tổ chức, dựa trên nhận diện thương hiệu, vị trí công việc và bối cảnh sử dụng. Cụm &quot;đồng phục công ty&quot; thường được dùng theo nghĩa tương tự.
               </p>
 
-              <p className="font-bold text-gray-900 text-sm mb-3">Một hệ thống hợp lý có thể gồm:</p>
+              <p className="font-bold text-gray-900 text-sm md:text-base mb-3">Một hệ thống hợp lý có thể gồm:</p>
 
               {/* Checklist Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
@@ -708,14 +738,14 @@ export default function DoanhNghiepPillarPage() {
                   "Áo gió cho ngoài trời & di chuyển",
                   "Áo sự kiện, teambuilding theo ngành nghề",
                 ].map((item, index) => (
-                  <div key={index} className="flex items-start gap-2.5 text-xs sm:text-sm font-medium text-gray-800">
+                  <div key={index} className="flex items-start gap-2.5 text-xs sm:text-sm font-medium text-gray-800 bg-gray-50/80 p-2.5 sm:p-3 rounded-xl border border-gray-100 shadow-2xs">
                     <CheckCircle className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </div>
                 ))}
               </div>
 
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed">
                 Các dòng trên vẫn thuộc cùng một hệ thống nếu dùng chung ngôn ngữ thương hiệu: màu chủ đạo, cách đặt logo, kiểu chữ, quy tắc phối màu và tiêu chuẩn hoàn thiện.
               </p>
             </div>
@@ -815,7 +845,7 @@ export default function DoanhNghiepPillarPage() {
         {/* Section 3 */}
         <ArticleSection id="he-thong-dong-phuc">
           <SectionHeading number="3">Một hệ thống đồng phục doanh nghiệp gồm những gì?</SectionHeading>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 my-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 my-6">
             {[
               { src: "/polo-doanh-nghiep/ao-polo-van-phong.jpg", alt: "Đồng phục áo Polo doanh nghiệp", label: "Polo" },
               { src: "/so-mi-cong-so/dong-phuc-cong-so-ao-so-mi-xanh-dai-tay.jpg", alt: "Đồng phục áo sơ mi công sở", label: "Sơ mi" },

@@ -62,9 +62,9 @@ function Prose({ children }) {
 
 function BulletList({ items }) {
   return (
-    <ul className="mb-4 space-y-1.5">
+    <ul className="mb-4 space-y-2">
       {items.map((item, i) => (
-        <li key={i} className="flex items-start gap-2 text-base text-gray-700 leading-7">
+        <li key={i} className="flex items-start gap-2.5 text-sm md:text-base text-gray-700 leading-relaxed bg-gray-50/80 p-2.5 sm:p-3 rounded-xl border border-gray-100">
           <CheckCircle className="w-4 h-4 text-[#105d97] mt-1 shrink-0" />
           <span>{item}</span>
         </li>
@@ -303,6 +303,8 @@ function CustomerCard({ customer }) {
 
 function SportsImageSlider() {
   const [activeIdx, setActiveIdx] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   const slides = [
     {
@@ -326,7 +328,7 @@ function SportsImageSlider() {
     {
       src: "/images/chay-bo.jpg",
       alt: "Đồng phục chạy bộ Running Univi",
-      title: "Đồng Phục Running & CLB Chạy Bộc",
+      title: "Đồng Phục Running & CLB Chạy Bộ",
       caption: "Công nghệ UNI QUICK DRY siêu nhẹ, siêu thoáng, nhanh khô cho dải cự ly dài.",
     },
     {
@@ -334,7 +336,6 @@ function SportsImageSlider() {
       alt: "Đồng phục võ thuật MMA & Kickfit Univi",
       title: "Đồng Phục MMA & KickFit chuyên nghiệp",
     },
-
   ];
 
   const total = slides.length;
@@ -342,27 +343,55 @@ function SportsImageSlider() {
   const nextSlide = () => setActiveIdx((prev) => (prev + 1) % total);
   const prevSlide = () => setActiveIdx((prev) => (prev - 1 + total) % total);
 
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
   return (
-    <div className="my-12">
-      <div className="relative flex items-center justify-center min-h-[420px] sm:min-h-[520px] md:min-h-[600px] py-6 px-2 overflow-hidden">
+    <div className="my-6 sm:my-10 md:my-12">
+      <div
+        className="relative flex items-center justify-center min-h-[260px] xs:min-h-[320px] sm:min-h-[440px] md:min-h-[580px] py-3 sm:py-6 px-1 sm:px-2 overflow-hidden select-none"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         {/* Navigation Arrow Left */}
         <button
           type="button"
           onClick={prevSlide}
-          className="absolute left-2 sm:left-6 z-40 p-3 rounded-full bg-white/90 backdrop-blur-sm shadow-xl border border-gray-200 text-gray-800 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-300 cursor-pointer transform hover:scale-110"
+          className="absolute left-1 sm:left-4 lg:left-6 z-40 p-1.5 sm:p-3 rounded-full bg-white/80 backdrop-blur-md shadow-md border border-gray-200/70 text-gray-700 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-300 cursor-pointer transform hover:scale-110 active:scale-95"
           aria-label="Ảnh trước"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-3.5 h-3.5 sm:w-6 sm:h-6" />
         </button>
 
         {/* Navigation Arrow Right */}
         <button
           type="button"
           onClick={nextSlide}
-          className="absolute right-2 sm:right-6 z-40 p-3 rounded-full bg-white/90 backdrop-blur-sm shadow-xl border border-gray-200 text-gray-800 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-300 cursor-pointer transform hover:scale-110"
+          className="absolute right-1 sm:left-auto sm:right-4 lg:right-6 z-40 p-1.5 sm:p-3 rounded-full bg-white/80 backdrop-blur-md shadow-md border border-gray-200/70 text-gray-700 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-300 cursor-pointer transform hover:scale-110 active:scale-95"
           aria-label="Ảnh tiếp theo"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-3.5 h-3.5 sm:w-6 sm:h-6" />
         </button>
 
         {/* Slides Stack Container */}
@@ -376,7 +405,7 @@ function SportsImageSlider() {
 
             let positionClasses = "";
             if (isCenter) {
-              positionClasses = "z-20 relative w-full max-w-[880px] lg:max-w-[960px] scale-100 opacity-100 shadow-2xl translate-x-0 rotate-0";
+              positionClasses = "z-20 relative w-full max-w-[880px] lg:max-w-[960px] scale-100 opacity-100 shadow-xl md:shadow-2xl translate-x-0 rotate-0";
             } else if (isLeft) {
               positionClasses = "hidden md:block absolute -left-12 lg:-left-6 z-10 w-[520px] lg:w-[600px] scale-[0.85] opacity-50 blur-[0.5px] hover:opacity-85 cursor-pointer -translate-x-6 -rotate-2";
             } else if (isRight) {
@@ -387,22 +416,22 @@ function SportsImageSlider() {
               <div
                 key={slide.title}
                 onClick={() => setActiveIdx(idx)}
-                className={`group transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] rounded-2xl md:rounded-3xl border border-gray-200/90 bg-white overflow-hidden ${positionClasses}`}
+                className={`group transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] rounded-xl sm:rounded-2xl md:rounded-3xl border border-gray-200/90 bg-white overflow-hidden ${positionClasses}`}
               >
                 {/* Browser Mockup Header */}
-                <div className="bg-gray-900 text-gray-300 px-5 py-2.5 flex items-center gap-3 border-b border-gray-800">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-red-400 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-yellow-400 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-green-400 inline-block" />
+                <div className="bg-gray-900 text-gray-300 px-3 py-1.5 sm:px-5 sm:py-2.5 flex items-center gap-2 sm:gap-3 border-b border-gray-800">
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-400 inline-block" />
+                    <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-400 inline-block" />
+                    <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-400 inline-block" />
                   </div>
-                  <div className="bg-gray-800/80 text-gray-400 text-xs px-4 py-1 rounded-md mx-auto truncate max-w-[280px] font-mono">
+                  <div className="bg-gray-800/80 text-gray-400 text-[10px] sm:text-xs px-2.5 py-0.5 sm:px-4 sm:py-1 rounded-md mx-auto truncate max-w-[200px] sm:max-w-[280px] font-mono">
                     dongphucunivi.com/dong-phuc-the-thao
                   </div>
                 </div>
 
                 {/* Large Slide Image Container */}
-                <div className="relative w-full h-[320px] sm:h-[440px] md:h-[500px] lg:h-[560px] bg-gray-100 overflow-hidden">
+                <div className="relative w-full aspect-[4/3] xs:aspect-[16/10] sm:h-[400px] md:h-[500px] lg:h-[560px] bg-gray-100 overflow-hidden">
                   <Image
                     src={slide.src}
                     alt={slide.alt}
@@ -419,22 +448,24 @@ function SportsImageSlider() {
       </div>
 
       {/* Caption & Indicators */}
-      <div className="text-center mt-5">
-        <h4 className="font-extrabold text-gray-900 text-lg md:text-xl mb-1">
+      <div className="text-center mt-3 sm:mt-5 px-2">
+        <h4 className="font-extrabold text-gray-900 text-base sm:text-lg md:text-xl mb-1">
           {slides[activeIdx].title}
         </h4>
-        <p className="text-sm text-gray-600 italic max-w-lg mx-auto leading-relaxed">
-          {slides[activeIdx].caption}
-        </p>
+        {slides[activeIdx].caption && (
+          <p className="text-xs sm:text-sm text-gray-600 italic max-w-lg mx-auto leading-relaxed">
+            {slides[activeIdx].caption}
+          </p>
+        )}
 
         {/* Slide Pagination Dots */}
-        <div className="flex justify-center items-center gap-2.5 mt-4">
+        <div className="flex justify-center items-center gap-2 sm:gap-2.5 mt-3 sm:mt-4">
           {slides.map((_, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => setActiveIdx(idx)}
-              className={`h-2.5 rounded-full transition-all duration-500 cursor-pointer ${activeIdx === idx ? "w-8 bg-[#105d97] shadow-sm" : "w-2.5 bg-gray-300 hover:bg-gray-400"
+              className={`h-2 sm:h-2.5 rounded-full transition-all duration-500 cursor-pointer ${activeIdx === idx ? "w-6 sm:w-8 bg-[#105d97] shadow-xs" : "w-2 sm:w-2.5 bg-gray-300 hover:bg-gray-400"
                 }`}
               aria-label={`Chuyển đến ảnh ${idx + 1}`}
             />
@@ -631,9 +662,9 @@ export default function TheThaoPillarPage() {
 
         {/* Section 1 */}
         <ArticleSection id="dong-phuc-the-thao-chuyen-dung-la-gi">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start my-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-start my-6">
             <div className="lg:col-span-6">
-              <div className="relative w-full h-[300px] sm:h-[380px] md:h-[420px] rounded-2xl md:rounded-3xl overflow-hidden border border-gray-200/80 shadow-sm bg-gray-50">
+              <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:h-[400px] lg:h-[420px] rounded-2xl md:rounded-3xl overflow-hidden border border-gray-200/80 shadow-sm bg-gray-50">
                 <Image
                   src="https://live.staticflickr.com/65535/55265597349_7e56c0fc2b_b.jpg"
                   alt="Đồng phục thể thao chuyên dụng Univi cho PT HLV phòng gym"
@@ -643,12 +674,12 @@ export default function TheThaoPillarPage() {
                   quality={85}
                 />
               </div>
-              <p className="text-center text-xs text-gray-500 mt-2.5 italic">
+              <p className="text-center text-xs text-gray-500 mt-2.5 italic px-2">
                 Đồng phục thể thao chuyên dụng được hoàn thiện theo đặc thù từng bộ môn và bối cảnh sử dụng thực tế.
               </p>
             </div>
 
-            <div className="lg:col-span-6">
+            <div className="lg:col-span-6 flex flex-col justify-center">
               <SectionHeading number="1">Đồng Phục Thể Thao Chuyên Dụng Là Gì?</SectionHeading>
               <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
                 Đồng phục thể thao chuyên dụng là trang phục được thiết kế, lựa chọn chất liệu và hoàn thiện theo đặc thù của từng bộ môn, cường độ vận động, người mặc và môi trường sử dụng.
@@ -656,26 +687,28 @@ export default function TheThaoPillarPage() {
               <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
                 Người mặc có thể là HLV, PT, lễ tân phòng tập, quản lý Fitness Center, hội viên, thành viên CLB, đội chạy bộ, người chơi Pickleball, VĐV Golf, Tennis, võ sinh MMA/Kickfit hoặc nhân sự tham gia hoạt động thể thao và team building.
               </p>
-              <p className="font-bold text-gray-900 text-sm mb-3">
-                Điểm quan trọng nhất là không phải mọi hoạt động thể thao đều tạo ra cùng một yêu cầu đối với trang phục.
-              </p>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
+              <div className="p-3.5 sm:p-4 rounded-xl bg-blue-50/70 border-l-4 border-[#105d97] my-3 shadow-xs">
+                <p className="font-semibold text-gray-900 text-sm md:text-base leading-relaxed">
+                  Điểm quan trọng nhất là không phải mọi hoạt động thể thao đều tạo ra cùng một yêu cầu đối với trang phục.
+                </p>
+              </div>
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed">
                 Một mẫu phù hợp cho Yoga chưa chắc phù hợp với Running. Một mẫu polo phù hợp Golf chưa chắc phù hợp với MMA. Một chiếc áo đẹp cho team building chưa chắc phù hợp để HLV mặc và vận động liên tục trong nhiều giờ.
               </p>
             </div>
           </div>
 
-          <div className="mt-6 ">
+          <div className="mt-8 pt-6 border-t border-gray-100">
             <SectionSubheading>1.1 Đồng phục thể thao chuyên dụng khác áo thể thao thông thường như thế nào?</SectionSubheading>
-            <p className="text-gray-700 text-sm leading-relaxed mb-3">
+            <p className="text-gray-700 text-sm md:text-base leading-relaxed mb-3">
               Áo thể thao bán lẻ thường tập trung vào nhu cầu cá nhân. Đồng phục thể thao chuyên dụng phải giải quyết thêm nhiều yếu tố: nhiều người cùng sử dụng, nhiều vóc dáng và bảng size, form phù hợp với hoạt động, chất liệu phù hợp cường độ vận động, logo và màu sắc đồng nhất, khả năng tái sử dụng và khả năng bổ sung sản phẩm.
             </p>
-            <p className="text-xs sm:text-sm text-gray-600 italic">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-amber-50/60 border-l-4 border-amber-400 text-xs sm:text-sm text-gray-700 font-medium italic my-3">
               Vì vậy, không nên đánh giá đồng phục chỉ bằng hình ảnh mẫu hoặc độ bóng của bề mặt vải.
-            </p>
+            </div>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-8 pt-6 border-t border-gray-100">
             <SectionSubheading>1.2 Năm câu hỏi cần trả lời trước khi chọn đồng phục</SectionSubheading>
             <BulletList items={[
               "Người mặc vận động như thế nào?",
@@ -684,9 +717,9 @@ export default function TheThaoPillarPage() {
               "Nhận diện thương hiệu có rõ trong bối cảnh sử dụng không?",
               "Khi cần bổ sung, mẫu có thể được triển khai nhất quán không?",
             ]} />
-            <p className="text-xs sm:text-sm text-gray-700 italic">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-gray-50 border border-gray-200/70 text-xs sm:text-sm text-gray-700 italic mt-3">
               Đó là nền tảng để phân biệt đồng phục thể thao chuyên dụng với việc chỉ may một chiếc áo thể thao có logo.
-            </p>
+            </div>
           </div>
         </ArticleSection>
 
@@ -798,7 +831,7 @@ export default function TheThaoPillarPage() {
         <ArticleSection id="cac-loai-dong-phuc-pho-bien">
           <SectionHeading number="3">Các Loại Đồng Phục Thể Thao Chuyên Dụng Phổ Biến</SectionHeading>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 my-6">
             {[
               { src: "https://live.staticflickr.com/65535/55345070285_61882f8b50_b.jpg", alt: "Áo thun thể thao cổ tròn Univi", label: "3.1 Áo thun cổ tròn" },
               { src: "https://live.staticflickr.com/65535/55236119339_0f54998a12_b.jpg", alt: "Áo tank top thể thao Univi", label: "3.2 Tank top" },
