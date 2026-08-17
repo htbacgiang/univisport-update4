@@ -463,7 +463,7 @@ export default function TheThaoPillarPage() {
                   <div className="bg-gray-100 p-1 sm:p-1.5 rounded-[28px] rounded-tr-[84px] border border-gray-200/80 shadow-xs transition-transform duration-300 hover:scale-[1.01] h-full flex flex-col justify-center">
                     <div className="relative w-full h-[280px] sm:h-[360px] md:h-[420px] rounded-[24px] rounded-tr-[80px] overflow-hidden">
                       <Image
-                        src="/images/dong-phuc-the-taho.jpg"
+                        src="https://live.staticflickr.com/65535/55380998614_857a01eced_b.jpg"
                         alt="Đồng phục thể thao chuyên dụng Univi cho đội nhóm và phòng tập"
                         fill
                         priority
@@ -480,7 +480,7 @@ export default function TheThaoPillarPage() {
                   <div className="bg-gray-100 p-1 sm:p-1.5 rounded-[22px] rounded-tr-[46px] border border-gray-200/80 shadow-xs transition-transform duration-300 hover:scale-[1.02]">
                     <div className="relative w-full h-[130px] sm:h-[170px] md:h-[195px] rounded-[18px] rounded-tr-[42px] overflow-hidden">
                       <Image
-                        src="/images/dong-phuc-pickleball.jpg"
+                        src="https://live.staticflickr.com/65535/55271837427_17c3ae7f93_b.jpg"
                         alt="Đồng phục Pickleball chuyên dụng Univi"
                         fill
                         className="object-cover transition-transform duration-500 hover:scale-105"
@@ -493,7 +493,7 @@ export default function TheThaoPillarPage() {
                   <div className="bg-gray-100 p-1 sm:p-1.5 rounded-[22px] rounded-bl-[46px] border border-gray-200/80 shadow-xs transition-transform duration-300 hover:scale-[1.02]">
                     <div className="relative w-full h-[130px] sm:h-[170px] md:h-[195px] rounded-[18px] rounded-bl-[42px] overflow-hidden">
                       <Image
-                        src="/images/dong-phuc-yoga-pilates.jpg"
+                        src="https://live.staticflickr.com/65535/55233961430_65e7fb65f4_b.jpg"
                         alt="Đồng phục Yoga Pilates chuyên dụng Univi"
                         fill
                         className="object-cover transition-transform duration-500 hover:scale-105"
@@ -635,7 +635,7 @@ export default function TheThaoPillarPage() {
             <div className="lg:col-span-6">
               <div className="relative w-full h-[300px] sm:h-[380px] md:h-[420px] rounded-2xl md:rounded-3xl overflow-hidden border border-gray-200/80 shadow-sm bg-gray-50">
                 <Image
-                  src="/images/dong-phuc-pt-gym.jpg"
+                  src="https://live.staticflickr.com/65535/55265597349_7e56c0fc2b_b.jpg"
                   alt="Đồng phục thể thao chuyên dụng Univi cho PT HLV phòng gym"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
