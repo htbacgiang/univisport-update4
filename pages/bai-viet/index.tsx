@@ -87,7 +87,25 @@ const Blogs: NextPage<Props> = ({ initialPosts = [] }) => {
     const customCats = posts
       .map((p) => p.category?.trim())
       .filter((cat): cat is string => Boolean(cat));
-    return Array.from(new Set([...DEFAULT_CATEGORIES, ...customCats]));
+    const allCats = Array.from(new Set([...DEFAULT_CATEGORIES, ...customCats]));
+
+    const seen = new Set<string>();
+    const result: string[] = [];
+
+    for (const cat of allCats) {
+      const normalized = cat.toLowerCase().trim();
+      if (!seen.has(normalized)) {
+        const hasPosts = posts.some(
+          (p) => (p.category || "").toLowerCase().trim() === normalized
+        );
+        if (hasPosts) {
+          seen.add(normalized);
+          result.push(cat);
+        }
+      }
+    }
+
+    return result;
   }, [posts]);
 
   const formatDate = (date: string): string => {
@@ -328,6 +346,7 @@ const Blogs: NextPage<Props> = ({ initialPosts = [] }) => {
               <div className="space-y-12">
                 {displayCategories.map((catTitle) => {
                   const catPosts = getPostsByCategory(catTitle);
+                  if (catPosts.length === 0) return null;
                   const isFeedbackCategory = catTitle === "PHẢN HỒI KHÁCH HÀNG";
                   return (
                     <div key={catTitle} className="w-full">
