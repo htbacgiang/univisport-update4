@@ -561,7 +561,7 @@ const Blogs: NextPage<Props> = ({ initialPosts = [] }) => {
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
   try {
-    const raw = await readAllPostsFromDb(false);
+    const raw = await readAllPostsFromDb(false, true);
     const posts = formatPosts(raw) || [];
     return {
       props: {
