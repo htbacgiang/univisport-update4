@@ -18,12 +18,12 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
   const colors = Array.isArray(product.colors) ? product.colors : [];
   const selectedColor = colors[selectedColorIdx] || null;
 
-  // Card 2 (Center Card): Main Image depends on Color Selection
+  // Card 2 (Center Card): Main Image depends on Color Selection and Product Image
   const mainImage = selectedColor?.image || product.image || '/images/placeholder.jpg';
   const displayTitle = cfg.customTitle || product.name;
   const displaySubtitle = cfg.customSubtitle || product.categoryNameVN || 'Stylish Polo';
   const displayDescription = cfg.customDescription || product.description;
-  const displayMainImage = cfg.customImage || mainImage;
+  const displayMainImage = mainImage;
   const customBadgeText = cfg.badgeText || '';
 
   // Card 1 (Left Card): Independent Media List (Video / Fixed Images)
@@ -34,7 +34,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
   }
 
   if (cfg.customSecondaryImage) {
-    const customImgs = cfg.customSecondaryImage.split(',').map(s => s.trim()).filter(Boolean);
+    const customImgs = cfg.customSecondaryImage.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
     customImgs.forEach(img => card1MediaList.push({ type: 'image', url: img }));
   }
 

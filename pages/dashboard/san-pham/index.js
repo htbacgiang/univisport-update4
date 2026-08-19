@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Edit, Trash2, X, GripVertical, Eye, EyeOff, ExternalLink, Star, Settings, Video, Upload, Sparkles } from 'lucide-react';
+import { Edit, Trash2, X, GripVertical, Eye, EyeOff, ExternalLink, Star, Settings, Video, Upload, Sparkles, Plus, Image as ImageIcon } from 'lucide-react';
 import styles from '../../../styles/dashboard-products.module.css';
 import { ReactSortable } from "react-sortablejs";
 import { getProductLineOptions, getCollarTypeOptions, getProductLineLabel, getCollarTypeLabel } from '../../../lib/productTaxonomy';
@@ -244,18 +244,90 @@ export default function JSONProductsListPage() {
     }
   };
 
+  const handleImageInputArrayChange = (field, index, value) => {
+    setFeaturedConfigForm((prev) => {
+      const currentList = Array.isArray(prev[field]) ? [...prev[field]] : [prev[field] || ''];
+      const pasted = value.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+      if (pasted.length > 1) {
+        currentList.splice(index, 1, ...pasted);
+      } else {
+        currentList[index] = value;
+      }
+      return { ...prev, [field]: currentList };
+    });
+  };
+
+  const handleAddImageInputRow = (field) => {
+    setFeaturedConfigForm((prev) => {
+      const currentList = Array.isArray(prev[field]) ? [...prev[field]] : [prev[field] || ''];
+      return { ...prev, [field]: [...currentList, ''] };
+    });
+  };
+
+  const handleRemoveImageInputRow = (field, index) => {
+    setFeaturedConfigForm((prev) => {
+      const currentList = Array.isArray(prev[field]) ? [...prev[field]] : [prev[field] || ''];
+      const newList = currentList.filter((_, i) => i !== index);
+      return { ...prev, [field]: newList.length > 0 ? newList : [''] };
+    });
+  };
+
+  const handleLoadGalleryImages = (field) => {
+    if (!featuredConfigProduct) return;
+    const galleryList = Array.isArray(featuredConfigProduct.gallery) && featuredConfigProduct.gallery.length > 0
+      ? featuredConfigProduct.gallery.map(img => (typeof img === 'string' ? img : img?.src)).filter(Boolean)
+      : (featuredConfigProduct.image ? [featuredConfigProduct.image] : []);
+
+    if (galleryList.length > 0) {
+      setFeaturedConfigForm((prev) => ({ ...prev, [field]: galleryList }));
+      toast.info(`Đã nạp ${galleryList.length} ảnh từ thư viện sản phẩm`, { autoClose: 1200 });
+    } else {
+      toast.warn('Sản phẩm chưa có thư viện ảnh', { autoClose: 1500 });
+    }
+  };
+
+  const handleLoadColorImages = (field) => {
+    if (!featuredConfigProduct) return;
+    const colorList = Array.isArray(featuredConfigProduct.colors) && featuredConfigProduct.colors.length > 0
+      ? featuredConfigProduct.colors.map(c => c.image).filter(Boolean)
+      : [];
+
+    if (colorList.length > 0) {
+      setFeaturedConfigForm((prev) => ({ ...prev, [field]: colorList }));
+      toast.info(`Đã nạp ${colorList.length} ảnh từ biến thể màu`, { autoClose: 1200 });
+    } else {
+      toast.warn('Sản phẩm chưa có ảnh màu biến thể', { autoClose: 1500 });
+    }
+  };
+
   const openFeaturedConfigModal = (product) => {
     setFeaturedConfigProduct(product);
-    const secImgDefault = Array.isArray(product.gallery) && product.gallery.length > 0
-      ? (typeof product.gallery[0] === 'string' ? product.gallery[0] : product.gallery[0]?.src || product.image)
-      : (product.image || '');
+
+    let defaultSecondaryList = [];
+    if (Array.isArray(product.gallery) && product.gallery.length > 0) {
+      defaultSecondaryList = product.gallery.map(img => (typeof img === 'string' ? img : img?.src)).filter(Boolean);
+    } else if (Array.isArray(product.colors) && product.colors.length > 0) {
+      defaultSecondaryList = product.colors.map(c => c.image).filter(Boolean);
+    }
+    if (defaultSecondaryList.length === 0 && product.image) {
+      defaultSecondaryList = [product.image];
+    }
+
+    const parseImageList = (val, defaultList = []) => {
+      if (Array.isArray(val) && val.length > 0) return val;
+      if (typeof val === 'string' && val.trim()) {
+        const list = val.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+        if (list.length > 0) return list;
+      }
+      return defaultList.length > 0 ? defaultList : [''];
+    };
 
     setFeaturedConfigForm({
       customTitle: product.featuredConfig?.customTitle || product.name || '',
       customSubtitle: product.featuredConfig?.customSubtitle || product.categoryNameVN || 'Stylish Polo',
       customDescription: product.featuredConfig?.customDescription || product.description || '',
-      customImage: product.featuredConfig?.customImage || product.image || '',
-      customSecondaryImage: product.featuredConfig?.customSecondaryImage || secImgDefault,
+      customImage: parseImageList(product.featuredConfig?.customImage, product.image ? [product.image] : ['']),
+      customSecondaryImage: parseImageList(product.featuredConfig?.customSecondaryImage, defaultSecondaryList),
       videoUrl: product.featuredConfig?.videoUrl || '',
       badgeText: product.featuredConfig?.badgeText || 'NỔI BẬT',
       soldCount: product.featuredConfig?.soldCount || '1.500+ sản phẩm',
@@ -271,16 +343,31 @@ export default function JSONProductsListPage() {
     if (!featuredConfigProduct) return;
     setFeaturedConfigSaving(true);
     const productKey = featuredConfigProduct.id ?? featuredConfigProduct._id;
+
+    const formattedCustomImage = Array.isArray(featuredConfigForm.customImage)
+      ? featuredConfigForm.customImage.map(s => s.trim()).filter(Boolean).join(', ')
+      : (featuredConfigForm.customImage || '').trim();
+
+    const formattedCustomSecondaryImage = Array.isArray(featuredConfigForm.customSecondaryImage)
+      ? featuredConfigForm.customSecondaryImage.map(s => s.trim()).filter(Boolean).join(', ')
+      : (featuredConfigForm.customSecondaryImage || '').trim();
+
+    const configToSave = {
+      ...featuredConfigForm,
+      customImage: formattedCustomImage,
+      customSecondaryImage: formattedCustomSecondaryImage,
+    };
+
     try {
       await axios.post('/api/products/featured-config', {
         id: productKey,
-        featuredConfig: featuredConfigForm,
+        featuredConfig: configToSave,
       });
 
       setAllProducts((prev) =>
         prev.map((item) =>
           String(item.id ?? item._id) === String(productKey)
-            ? { ...item, featuredConfig: featuredConfigForm }
+            ? { ...item, featuredConfig: configToSave }
             : item
         )
       );
@@ -916,45 +1003,111 @@ export default function JSONProductsListPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
-                    <Video size={16} className="text-blue-600" />
-                    URL Video sản phẩm (Video MP4 / Cloudinary / YouTube)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="VD: /video-univi-2-baseline.mp4 hoặc https://res.cloudinary.com/.../video.mp4"
-                    value={featuredConfigForm.videoUrl}
-                    onChange={(e) => setFeaturedConfigForm(f => ({ ...f, videoUrl: e.target.value }))}
-                    className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Khi có Video, khối hiển thị trên trang chủ sẽ tự động chạy video phát liên tục mượt mà.</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-semibold text-gray-700 mb-1">
-                      Ảnh chính tùy chỉnh (Custom Main Image URL)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Để trống nếu dùng ảnh sản phẩm"
-                      value={featuredConfigForm.customImage}
-                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, customImage: e.target.value }))}
-                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs"
-                    />
+                {/* Media Customization Section for Card 1 (Left Card: Video & Secondary Images) */}
+                <div className="bg-blue-50/40 p-4 rounded-xl border border-blue-100 flex flex-col gap-3.5">
+                  <div className="flex justify-between items-center flex-wrap gap-2 pb-2 border-b border-blue-100">
+                    <div>
+                      <label className="block font-bold text-blue-900 text-xs uppercase tracking-wide flex items-center gap-1.5">
+                        <Sparkles size={14} className="text-blue-600" />
+                        Tùy biến Media Card 1 (Bên trái: Video & Ảnh phụ / Flatlay)
+                      </label>
+                      <p className="text-[11px] text-gray-500 mt-0.5">
+                        Card 2 (Ở giữa) mặc định dùng ảnh sản phẩm & tự thay đổi theo màu sắc đã chọn.
+                      </p>
+                    </div>
                   </div>
+
+                  {/* Video URL Input */}
                   <div>
-                    <label className="block font-semibold text-gray-700 mb-1">
-                      Ảnh phụ/Flatlay (Custom Secondary Image URL)
+                    <label className="block font-semibold text-gray-700 mb-1 text-xs flex items-center gap-1.5">
+                      <Video size={15} className="text-blue-600" />
+                      URL Video sản phẩm Card 1 (MP4 / Cloudinary / YouTube)
                     </label>
                     <input
                       type="text"
-                      placeholder="Để trống nếu dùng ảnh thứ 2"
-                      value={featuredConfigForm.customSecondaryImage}
-                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, customSecondaryImage: e.target.value }))}
-                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs"
+                      placeholder="VD: /video-univi-2-baseline.mp4 hoặc https://res.cloudinary.com/.../video.mp4"
+                      value={featuredConfigForm.videoUrl}
+                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, videoUrl: e.target.value }))}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs bg-white"
                     />
+                    <p className="text-[11px] text-gray-500 mt-1">
+                      Khi có Video, Card 1 sẽ tự động ưu tiên phát video mượt mà liên tục.
+                    </p>
+                  </div>
+
+                  {/* Custom Secondary Images / Flatlay List */}
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center flex-wrap gap-2">
+                      <label className="block font-semibold text-gray-700 text-xs">
+                        Danh sách Ảnh phụ / Flatlay (Slide Card 1)
+                      </label>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleLoadGalleryImages('customSecondaryImage')}
+                          className="text-[11px] text-blue-600 bg-white hover:bg-blue-100 px-2.5 py-1 rounded-md font-medium transition-colors border border-blue-200"
+                          title="Nạp từ Thư viện Gallery của sản phẩm"
+                        >
+                          + Thư viện
+                        </button>
+                        {Array.isArray(featuredConfigProduct?.colors) && featuredConfigProduct.colors.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => handleLoadColorImages('customSecondaryImage')}
+                            className="text-[11px] text-purple-600 bg-white hover:bg-purple-100 px-2.5 py-1 rounded-md font-medium transition-colors border border-purple-200"
+                            title="Nạp từ biến thể Màu sắc"
+                          >
+                            + Màu sắc
+                          </button>
+                        )}
+                        <span className="text-[11px] text-gray-500 font-semibold ml-1 bg-white px-2 py-0.5 rounded-full border">
+                          {(Array.isArray(featuredConfigForm.customSecondaryImage) ? featuredConfigForm.customSecondaryImage : []).filter(Boolean).length} ảnh
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                      {(Array.isArray(featuredConfigForm.customSecondaryImage) ? featuredConfigForm.customSecondaryImage : ['']).map((url, idx) => (
+                        <div key={idx} className="flex items-center gap-2 bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
+                          <div className="w-8 h-8 rounded bg-gray-100 border flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            {url.trim() ? (
+                              <img
+                                src={url.trim()}
+                                alt={`Sec ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                                onError={(e) => { e.target.src = '/images/placeholder.jpg'; }}
+                              />
+                            ) : (
+                              <ImageIcon size={14} className="text-gray-400" />
+                            )}
+                          </div>
+                          <input
+                            type="text"
+                            placeholder={`URL Ảnh phụ / Flatlay #${idx + 1}`}
+                            value={url}
+                            onChange={(e) => handleImageInputArrayChange('customSecondaryImage', idx, e.target.value)}
+                            className="flex-1 text-xs px-3 py-1.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImageInputRow('customSecondaryImage', idx)}
+                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Xóa ảnh này"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAddImageInputRow('customSecondaryImage')}
+                      className="w-full py-2 border border-dashed border-blue-300 text-blue-600 bg-white hover:bg-blue-50 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <Plus size={15} />
+                      <span>Thêm ô nhập ảnh phụ / flatlay</span>
+                    </button>
                   </div>
                 </div>
               </div>
