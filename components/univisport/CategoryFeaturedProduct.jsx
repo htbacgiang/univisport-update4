@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ContactForm from '../header/ContactForm';
-import { FaTimes, FaStar, FaPhoneAlt, FaFire, FaCheckCircle, FaChevronLeft, FaChevronRight, FaExpand } from 'react-icons/fa';
+import { FaTimes, FaStar, FaPhoneAlt, FaFire, FaCheckCircle, FaChevronLeft, FaChevronRight, FaExpand, FaPlay } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 
 export default function CategoryFeaturedProduct({ product, sectionTitle }) {
@@ -10,6 +10,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
 
   const [selectedColorIdx, setSelectedColorIdx] = useState(0);
   const [card1MediaIdx, setCard1MediaIdx] = useState(0);
+  const [card2ImgIdx, setCard2ImgIdx] = useState(0);
   const [contactOpen, setContactOpen] = useState(false);
   const [fullscreenMedia, setFullscreenMedia] = useState(null);
   const [imageError, setImageError] = useState({});
@@ -18,12 +19,80 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
   const colors = Array.isArray(product.colors) ? product.colors : [];
   const selectedColor = colors[selectedColorIdx] || null;
 
-  // Card 2 (Center Card): Main Image depends on Color Selection and Product Image
-  const mainImage = selectedColor?.image || product.image || '/images/placeholder.jpg';
+  // Card 2 (Center Card) Image List from Product Colors & Gallery
+  let card2ImagesList = [];
+  if (colors.length > 0) {
+    colors.forEach((c, idx) => {
+      if (c.image && !card2ImagesList.some(i => i.url === c.image)) {
+        card2ImagesList.push({ url: c.image, colorIdx: idx });
+      }
+    });
+  }
+  if (Array.isArray(product.gallery) && product.gallery.length > 0) {
+    product.gallery.forEach(img => {
+      const url = typeof img === 'string' ? img : img?.src;
+      if (url && !card2ImagesList.some(i => i.url === url)) {
+        card2ImagesList.push({ url, colorIdx: -1 });
+      }
+    });
+  }
+  if (card2ImagesList.length === 0 && product.image) {
+    card2ImagesList.push({ url: product.image, colorIdx: -1 });
+  }
+
+  // Auto-slide Card 2 every 5 seconds
+  useEffect(() => {
+    if (card2ImagesList.length <= 1) return;
+    const timer = setInterval(() => {
+      setCard2ImgIdx((prev) => {
+        const nextIdx = (prev + 1) % card2ImagesList.length;
+        const item = card2ImagesList[nextIdx];
+        if (item && item.colorIdx >= 0) {
+          setSelectedColorIdx(item.colorIdx);
+        }
+        return nextIdx;
+      });
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [card2ImagesList.length]);
+
+  const currentCard2Image = card2ImagesList[card2ImgIdx % card2ImagesList.length] || card2ImagesList[0];
+  const displayMainImage = currentCard2Image?.url || selectedColor?.image || product.image || '/images/placeholder.jpg';
+
+  const handlePrevCard2 = (e) => {
+    e.stopPropagation();
+    const newIdx = (card2ImgIdx - 1 + card2ImagesList.length) % card2ImagesList.length;
+    setCard2ImgIdx(newIdx);
+    const item = card2ImagesList[newIdx];
+    if (item && item.colorIdx >= 0) {
+      setSelectedColorIdx(item.colorIdx);
+    }
+  };
+
+  const handleNextCard2 = (e) => {
+    e.stopPropagation();
+    const newIdx = (card2ImgIdx + 1) % card2ImagesList.length;
+    setCard2ImgIdx(newIdx);
+    const item = card2ImagesList[newIdx];
+    if (item && item.colorIdx >= 0) {
+      setSelectedColorIdx(item.colorIdx);
+    }
+  };
+
+  const handleSelectColor = (idx) => {
+    setSelectedColorIdx(idx);
+    const targetImg = colors[idx]?.image;
+    if (targetImg) {
+      const foundIdx = card2ImagesList.findIndex(i => i.url === targetImg);
+      if (foundIdx !== -1) {
+        setCard2ImgIdx(foundIdx);
+      }
+    }
+  };
+
   const displayTitle = cfg.customTitle || product.name;
   const displaySubtitle = cfg.customSubtitle || product.categoryNameVN || 'Stylish Polo';
   const displayDescription = cfg.customDescription || product.description;
-  const displayMainImage = mainImage;
   const customBadgeText = cfg.badgeText || '';
 
   // Card 1 (Left Card): Independent Media List (Video / Fixed Images)
@@ -64,7 +133,14 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
   const openFullscreenCard1 = (e) => {
     e?.stopPropagation();
     if (currentCard1Media) {
-      setFullscreenMedia({ type: currentCard1Media.type, url: currentCard1Media.url });
+      setFullscreenMedia({ type: currentCard1Media.type, url: currentCard1Media.url, source: 'card1' });
+    }
+  };
+
+  const openFullscreenCard2 = (e) => {
+    e?.stopPropagation();
+    if (displayMainImage) {
+      setFullscreenMedia({ type: 'image', url: displayMainImage, source: 'card2' });
     }
   };
 
@@ -108,53 +184,36 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
             onClick={openFullscreenCard1}
             className="col-span-1 md:col-span-4 rounded-xl lg:rounded-2xl relative flex items-center justify-center aspect-[4/5] min-h-[200px] sm:min-h-[280px] md:min-h-[440px] group overflow-hidden cursor-pointer bg-[#f3f3f5] border border-gray-200 shadow-sm"
           >
-            {/* Badges on top left */}
-            <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5 pointer-events-none">
-              {customBadgeText ? (
-                <span className="bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
-                  {customBadgeText}
-                </span>
-              ) : (
-                <>
-                  {discount > 0 && (
-                    <span className="bg-[#2563eb] block md:hidden text-white text-[11px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
-                      NỔI BẬT
-                    </span>
-                  )}
-                  {(product.isNew || discount === 0) && (
-                    <span className="bg-[#105d97] hidden md:block text-white text-[11px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
-                      NỔI BẬT
-                    </span>
-                  )}
-                </>
-              )}
-            </div>
-
-            {/* Expand / Fullscreen Button on top right */}
-            <button
-              type="button"
-              onClick={openFullscreenCard1}
-              className="absolute top-4 right-4 z-20 w-9 h-9 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all opacity-80 group-hover:opacity-100 shadow-md"
-              title={currentCard1Media?.type === 'video' ? 'Xem Video phóng to' : 'Mở xem ảnh phóng to'}
-            >
-              <FaExpand size={13} />
-            </button>
-
             {/* Left Navigation Arrow */}
             {card1MediaList.length > 1 && (
               <button
                 type="button"
                 onClick={handlePrevCard1}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-80 hover:opacity-100 shadow-md"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
                 aria-label="Hình/Video trước"
               >
                 <FaChevronLeft size={12} />
               </button>
             )}
 
+            {/* Expand / Fullscreen Button on bottom right (Opens Lightbox Popup) */}
+            <button
+              type="button"
+              onClick={openFullscreenCard1}
+              className="absolute bottom-4 right-4 z-30 w-9 h-9 bg-black/70 hover:bg-black/90 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 shadow-md"
+              title="Xem phóng to dạng Lightbox"
+            >
+              <FaExpand size={13} />
+            </button>
+
             {/* Card 1 Media (Video or Image) */}
             {currentCard1Media?.type === 'video' ? (
-              <div className="relative w-full h-full rounded-xl lg:rounded-2xl overflow-hidden bg-black" onClick={(e) => e.stopPropagation()}>
+              <div className="relative w-full h-full rounded-xl lg:rounded-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                <style jsx global>{`
+                  video::-webkit-media-controls-fullscreen-button {
+                    display: none !important;
+                  }
+                `}</style>
                 <video
                   src={currentCard1Media.url}
                   autoPlay
@@ -162,7 +221,8 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                   muted
                   playsInline
                   controls
-                  className="w-full h-full object-cover rounded-2xl lg:rounded-3xl cursor-pointer"
+                  controlsList="nofullscreen"
+                  className="w-full h-full object-cover rounded-xl lg:rounded-2xl cursor-pointer"
                 />
               </div>
             ) : (
@@ -170,7 +230,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                 src={imageError[`sec_${card1MediaIdx}`] ? '/images/placeholder.jpg' : getImageUrl(currentCard1Media?.url)}
                 alt={`${displayTitle} preview`}
                 fill
-                className="object-contain md:object-cover rounded-xl lg:rounded-2xl transition-transform duration-500 group-hover:scale-105"
+                className="object-cover rounded-xl lg:rounded-2xl transition-transform duration-500 group-hover:scale-105"
                 onError={() => setImageError(prev => ({ ...prev, [`sec_${card1MediaIdx}`]: true }))}
                 unoptimized={getImageUrl(currentCard1Media?.url).startsWith('http')}
               />
@@ -181,7 +241,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
               <button
                 type="button"
                 onClick={handleNextCard1}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-80 hover:opacity-100 shadow-md"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
                 aria-label="Hình/Video tiếp theo"
               >
                 <FaChevronRight size={12} />
@@ -190,7 +250,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
 
             {/* Card 1 Dots Indicator (Max 3 dots) */}
             {card1MediaList.length > 1 && (
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5  px-2.5 py-1 rounded-full">
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {card1MediaList.slice(0, 3).map((_, idx) => {
                   const activeDotIdx = card1MediaList.length <= 3
                     ? card1MediaIdx
@@ -200,7 +260,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                       key={idx}
                       type="button"
                       onClick={(e) => { e.stopPropagation(); setCard1MediaIdx(idx); }}
-                      className={`w-2 h-2 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
+                      className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
                       aria-label={`Chuyển sang slide ${idx + 1}`}
                     />
                   );
@@ -209,21 +269,78 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
             )}
           </div>
 
-          {/* Column 2: Center Card - Main Product Image (Responds to Color Selection on Right) */}
-          <div className="col-span-1 md:col-span-4 rounded-xl lg:rounded-2xl relative flex items-center justify-center aspect-[4/5] min-h-[200px] sm:min-h-[280px] md:min-h-[440px] group overflow-hidden bg-[#f3f3f5] border border-gray-200 shadow-sm">
-            <Link href={`/san-pham/${product.slug}`} legacyBehavior>
-              <a className="relative w-full h-full block cursor-pointer">
-                <Image
-                  src={imageError['main'] ? '/images/placeholder.jpg' : getImageUrl(displayMainImage)}
-                  alt={displayTitle}
-                  fill
-                  className="object-contain md:object-cover rounded-xl lg:rounded-2xl transition-transform duration-500 group-hover:scale-105"
-                  priority
-                  onError={() => setImageError(prev => ({ ...prev, main: true }))}
-                  unoptimized={getImageUrl(displayMainImage).startsWith('http')}
-                />
-              </a>
-            </Link>
+          {/* Column 2: Center Card - Main Product Image (Responds to Color Selection & Slider Arrows) */}
+          <div
+            onClick={openFullscreenCard2}
+            className="col-span-1 md:col-span-4 rounded-xl lg:rounded-2xl relative flex items-center justify-center aspect-[4/5] min-h-[200px] sm:min-h-[280px] md:min-h-[440px] group overflow-hidden cursor-pointer bg-[#f3f3f5] border border-gray-200 shadow-sm"
+          >
+            {/* Expand / Fullscreen Button on bottom right (Visible on Hover) */}
+            <button
+              type="button"
+              onClick={openFullscreenCard2}
+              className="absolute bottom-4 right-4 z-20 w-9 h-9 bg-black/60 hover:bg-black/90 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 shadow-md"
+              title="Mở xem ảnh phóng to"
+            >
+              <FaExpand size={13} />
+            </button>
+
+            {/* Left Navigation Arrow */}
+            {card2ImagesList.length > 1 && (
+              <button
+                type="button"
+                onClick={handlePrevCard2}
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
+                aria-label="Ảnh sản phẩm trước"
+              >
+                <FaChevronLeft size={12} />
+              </button>
+            )}
+
+            <Image
+              src={imageError['main'] ? '/images/placeholder.jpg' : getImageUrl(displayMainImage)}
+              alt={displayTitle}
+              fill
+              className="object-cover rounded-xl lg:rounded-2xl transition-transform duration-500 group-hover:scale-105"
+              priority
+              onError={() => setImageError(prev => ({ ...prev, main: true }))}
+              unoptimized={getImageUrl(displayMainImage).startsWith('http')}
+            />
+
+            {/* Right Navigation Arrow */}
+            {card2ImagesList.length > 1 && (
+              <button
+                type="button"
+                onClick={handleNextCard2}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
+                aria-label="Ảnh sản phẩm tiếp theo"
+              >
+                <FaChevronRight size={12} />
+              </button>
+            )}
+
+            {/* Card 2 Dots Indicator */}
+            {card2ImagesList.length > 1 && (
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {card2ImagesList.slice(0, 3).map((_, idx) => {
+                  const activeDotIdx = card2ImagesList.length <= 3
+                    ? card2ImgIdx
+                    : card2ImgIdx % 3;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCard2ImgIdx(idx);
+                        if (card2ImagesList[idx]?.colorIdx >= 0) setSelectedColorIdx(card2ImagesList[idx].colorIdx);
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
+                      aria-label={`Chuyển sang ảnh ${idx + 1}`}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Column 3: Right Section - Product Details */}
@@ -285,7 +402,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                         <button
                           key={idx}
                           type="button"
-                          onClick={() => setSelectedColorIdx(idx)}
+                          onClick={() => handleSelectColor(idx)}
                           aria-label={`Chọn màu ${color.name}`}
                           title={color.name}
                           className={`w-6 h-6 rounded-full p-[2px] border transition-all ${selectedColorIdx === idx
@@ -378,73 +495,89 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
             <FaTimes size={20} />
           </button>
 
-          {/* Lightbox Left Nav Arrow */}
-          {card1MediaList.length > 1 && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); handlePrevCard1(e); }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
-              aria-label="Hình/Video trước"
-            >
-              <FaChevronLeft size={18} />
-            </button>
-          )}
-
           {/* Media Content */}
-          {currentCard1Media?.type === 'video' ? (
-            <div className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl" onClick={(e) => e.stopPropagation()}>
-              <video
-                key={currentCard1Media.url}
-                src={currentCard1Media.url}
-                autoPlay
-                controls
-                className="w-full h-full object-contain"
-              />
-            </div>
-          ) : (
+          {fullscreenMedia?.source === 'card2' ? (
             <div className="relative w-full max-w-5xl h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
               <Image
-                key={currentCard1Media?.url}
-                src={getImageUrl(currentCard1Media?.url)}
+                key={fullscreenMedia?.url}
+                src={getImageUrl(fullscreenMedia?.url)}
                 alt={displayTitle}
                 fill
                 style={{ objectFit: 'contain' }}
                 className="rounded-xl shadow-2xl transition-all duration-300"
-                unoptimized={getImageUrl(currentCard1Media?.url).startsWith('http')}
+                unoptimized={getImageUrl(fullscreenMedia?.url).startsWith('http')}
               />
             </div>
-          )}
+          ) : (
+            <>
+              {/* Lightbox Left Nav Arrow */}
+              {card1MediaList.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); handlePrevCard1(e); }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
+                  aria-label="Hình/Video trước"
+                >
+                  <FaChevronLeft size={18} />
+                </button>
+              )}
 
-          {/* Lightbox Right Nav Arrow */}
-          {card1MediaList.length > 1 && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); handleNextCard1(e); }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
-              aria-label="Hình/Video tiếp theo"
-            >
-              <FaChevronRight size={18} />
-            </button>
-          )}
-
-          {/* Lightbox Dots Indicator */}
-          {card1MediaList.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full">
-              {card1MediaList.slice(0, 3).map((_, idx) => {
-                const activeDotIdx = card1MediaList.length <= 3
-                  ? card1MediaIdx
-                  : card1MediaIdx % 3;
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setCard1MediaIdx(idx); }}
-                    className={`w-2.5 h-2.5 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/80'}`}
-                    aria-label={`Chuyển sang slide ${idx + 1}`}
+              {currentCard1Media?.type === 'video' ? (
+                <div className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                  <video
+                    key={currentCard1Media.url}
+                    src={currentCard1Media.url}
+                    autoPlay
+                    controls
+                    className="w-full h-full object-contain"
                   />
-                );
-              })}
-            </div>
+                </div>
+              ) : (
+                <div className="relative w-full max-w-5xl h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                  <Image
+                    key={currentCard1Media?.url}
+                    src={getImageUrl(currentCard1Media?.url)}
+                    alt={displayTitle}
+                    fill
+                    style={{ objectFit: 'contain' }}
+                    className="rounded-xl shadow-2xl transition-all duration-300"
+                    unoptimized={getImageUrl(currentCard1Media?.url).startsWith('http')}
+                  />
+                </div>
+              )}
+
+              {/* Lightbox Right Nav Arrow */}
+              {card1MediaList.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); handleNextCard1(e); }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
+                  aria-label="Hình/Video tiếp theo"
+                >
+                  <FaChevronRight size={18} />
+                </button>
+              )}
+
+              {/* Lightbox Dots Indicator */}
+              {card1MediaList.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full">
+                  {card1MediaList.slice(0, 3).map((_, idx) => {
+                    const activeDotIdx = card1MediaList.length <= 3
+                      ? card1MediaIdx
+                      : card1MediaIdx % 3;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setCard1MediaIdx(idx); }}
+                        className={`w-2.5 h-2.5 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/80'}`}
+                        aria-label={`Chuyển sang slide ${idx + 1}`}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
