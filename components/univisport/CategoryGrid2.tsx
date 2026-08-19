@@ -53,13 +53,13 @@ const categories: Category[] = [
   },
   {
     name: "Đồng phục Sơ mi",
-    slug: "/dong-phuc-doanh-nghiep/cong-so",
+    slug: "/dong-phuc-so-mi",
     image: "/product/cong-so.webp",
     count: 5,
   },
   {
     name: "Vest công sở",
-    slug: "/dong-phuc-vest",
+    slug: "/dong-phuc-vest-cong-so",
     image: "/product/dong-phuc-vest-cong-so.webp",
     count: 4,
   },
@@ -70,8 +70,14 @@ const categories: Category[] = [
     count: 6,
   },
   {
+    name: "Bảo hộ lao động",
+    slug: "/bao-ho-lao-dong",
+    image: "/images/dong-phuc-cong-ty.webp",
+    count: 5,
+  },
+  {
     name: "Quà tặng - Phụ kiện",
-    slug: "/qua-tang-phu-kien-doanh-nghiep",
+    slug: "/phu-kien-qua-tang-doanh-nghiep",
     image: "/product/qua-tang-doanh-nghiep.png",
     count: 5,
   },

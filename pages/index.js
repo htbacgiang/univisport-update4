@@ -504,14 +504,85 @@ function mapProduct(product) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// FALLBACK SECTIONS — không đổi
+// FALLBACK SECTIONS & CORPORATE CATEGORY FILTER
 // ─────────────────────────────────────────────────────────────
+const SECTION_CATEGORY_ALIASES = {
+  "dong-phuc-polo": ["dong-phuc-polo", "dong-phuc-ao-polo", "polo"],
+  "dong-phuc-ao-polo": ["dong-phuc-polo", "dong-phuc-ao-polo", "polo"],
+  "polo": ["dong-phuc-polo", "dong-phuc-ao-polo", "polo"],
+
+  "dong-phuc-so-mi": ["dong-phuc-so-mi", "so-mi"],
+  "so-mi": ["dong-phuc-so-mi", "so-mi"],
+
+  "dong-phuc-vest-cong-so": ["dong-phuc-vest-cong-so", "dong-phuc-vest", "vest"],
+  "dong-phuc-vest": ["dong-phuc-vest-cong-so", "dong-phuc-vest", "vest"],
+  "vest": ["dong-phuc-vest-cong-so", "dong-phuc-vest", "vest"],
+
+  "dong-phuc-teambuilding": ["dong-phuc-teambuilding", "teambuilding"],
+  "teambuilding": ["dong-phuc-teambuilding", "teambuilding"],
+
+  "dong-phuc-ao-gio-doanh-nghiep": ["dong-phuc-ao-gio-doanh-nghiep", "dong-phuc-ao-gio", "ao-gio"],
+
+  "bao-ho-lao-dong": ["bao-ho-lao-dong", "bao-ho"],
+  "bao-ho": ["bao-ho-lao-dong", "bao-ho"],
+
+  "phu-kien-qua-tang-doanh-nghiep": [
+    "phu-kien-qua-tang-doanh-nghiep",
+    "qua-tang-phu-kien-doanh-nghiep",
+    "phu-kien",
+  ],
+  "phu-kien": [
+    "phu-kien-qua-tang-doanh-nghiep",
+    "qua-tang-phu-kien-doanh-nghiep",
+    "phu-kien",
+  ],
+};
+
+const CORPORATE_CATEGORY_MAP = {
+  "dong-phuc-polo": "polo",
+  "dong-phuc-ao-polo": "polo",
+  "polo": "polo",
+  "dong-phuc-so-mi": "so-mi",
+  "so-mi": "so-mi",
+  "dong-phuc-vest-cong-so": "vest",
+  "dong-phuc-vest": "vest",
+  "vest": "vest",
+  "dong-phuc-teambuilding": "teambuilding",
+  "teambuilding": "teambuilding",
+  "dong-phuc-ao-gio-doanh-nghiep": "ao-gio",
+  "bao-ho-lao-dong": "bao-ho",
+  "bao-ho": "bao-ho",
+  "phu-kien-qua-tang-doanh-nghiep": "phu-kien",
+  "phu-kien": "phu-kien",
+};
+
+function filterProductsForSection(products, sectionCategory) {
+  const aliases = SECTION_CATEGORY_ALIASES[sectionCategory] || [sectionCategory];
+  const mappedProductLine = CORPORATE_CATEGORY_MAP[sectionCategory];
+
+  return products.filter((p) => {
+    if (aliases.includes(p.category)) return true;
+    if (p.category === "dong-phuc-doanh-nghiep") {
+      if (sectionCategory === "dong-phuc-doanh-nghiep") return true;
+      if (mappedProductLine && p.productLine === mappedProductLine) return true;
+    }
+    return false;
+  });
+}
+
 const FALLBACK_SECTIONS = [
   {
     _id: "gym",
     title: "Đồng Phục Gym",
     category: "dong-phuc-gym",
     viewAllLink: "/dong-phuc-gym",
+    productLimit: 12,
+  },
+  {
+    _id: "polo",
+    title: "Polo Doanh Nghiệp",
+    category: "dong-phuc-polo",
+    viewAllLink: "/dong-phuc-polo",
     productLimit: 12,
   },
   {
@@ -542,13 +613,6 @@ const FALLBACK_SECTIONS = [
     viewAllLink: "/dong-phuc-golf-tennis",
     productLimit: 12,
   },
-  {
-    _id: "polo",
-    title: "Đồng Phục Áo Polo",
-    category: "dong-phuc-ao-polo",
-    viewAllLink: "/dong-phuc-ao-polo",
-    productLimit: 12,
-  },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -575,7 +639,7 @@ export async function getServerSideProps() {
     }
 
     const sections = sectionConfigs.map((section) => {
-      const categoryProducts = productsData.filter((p) => p.category === section.category);
+      const categoryProducts = filterProductsForSection(productsData, section.category);
       const featured = categoryProducts.find((p) => p.isFeatured === true) || null;
       return {
         _id: String(section._id),
