@@ -498,15 +498,63 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
           {/* Media Content */}
           {fullscreenMedia?.source === 'card2' ? (
             <div className="relative w-full max-w-5xl h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+              {/* Lightbox Left Nav Arrow for Card 2 */}
+              {card2ImagesList.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); handlePrevCard2(e); }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
+                  aria-label="Ảnh trước"
+                >
+                  <FaChevronLeft size={18} />
+                </button>
+              )}
+
               <Image
-                key={fullscreenMedia?.url}
-                src={getImageUrl(fullscreenMedia?.url)}
+                key={displayMainImage}
+                src={getImageUrl(displayMainImage)}
                 alt={displayTitle}
                 fill
                 style={{ objectFit: 'contain' }}
                 className="rounded-xl shadow-2xl transition-all duration-300"
-                unoptimized={getImageUrl(fullscreenMedia?.url).startsWith('http')}
+                unoptimized={getImageUrl(displayMainImage).startsWith('http')}
               />
+
+              {/* Lightbox Right Nav Arrow for Card 2 */}
+              {card2ImagesList.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); handleNextCard2(e); }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
+                  aria-label="Ảnh tiếp theo"
+                >
+                  <FaChevronRight size={18} />
+                </button>
+              )}
+
+              {/* Lightbox Dots Indicator for Card 2 (Max 3 dots) */}
+              {card2ImagesList.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md">
+                  {card2ImagesList.slice(0, 3).map((_, idx) => {
+                    const activeDotIdx = card2ImagesList.length <= 3
+                      ? card2ImgIdx
+                      : card2ImgIdx % 3;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCard2ImgIdx(idx);
+                          if (card2ImagesList[idx]?.colorIdx >= 0) setSelectedColorIdx(card2ImagesList[idx].colorIdx);
+                        }}
+                        className={`w-1 h-1 md:w-2 md:h-2 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
+                        aria-label={`Chuyển sang ảnh ${idx + 1}`}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </div>
           ) : (
             <>
@@ -570,7 +618,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                         key={idx}
                         type="button"
                         onClick={(e) => { e.stopPropagation(); setCard1MediaIdx(idx); }}
-                        className={`w-2.5 h-2.5 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/80'}`}
+                        className={`w-2 h-2 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/80'}`}
                         aria-label={`Chuyển sang slide ${idx + 1}`}
                       />
                     );
