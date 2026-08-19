@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Edit, Trash2, X, GripVertical, Eye, EyeOff, ExternalLink } from 'lucide-react';
+import { Edit, Trash2, X, GripVertical, Eye, EyeOff, ExternalLink, Star, Settings, Video, Upload, Sparkles } from 'lucide-react';
 import styles from '../../../styles/dashboard-products.module.css';
 import { ReactSortable } from "react-sortablejs";
 import { getProductLineOptions, getCollarTypeOptions, getProductLineLabel, getCollarTypeLabel } from '../../../lib/productTaxonomy';
@@ -44,6 +44,20 @@ export default function JSONProductsListPage() {
   const [selectedCollarType, setSelectedCollarType] = useState('');
   const [limit, setLimit] = useState(20);
   const [isSorting, setIsSorting] = useState(false);
+
+  const [featuredConfigProduct, setFeaturedConfigProduct] = useState(null);
+  const [featuredConfigForm, setFeaturedConfigForm] = useState({
+    customTitle: '',
+    customSubtitle: '',
+    customDescription: '',
+    customImage: '',
+    customSecondaryImage: '',
+    videoUrl: '',
+    badgeText: '',
+    soldCount: '',
+    recentCustomers: '',
+  });
+  const [featuredConfigSaving, setFeaturedConfigSaving] = useState(false);
 
   const tableContainerRef = useRef(null);
   const containerRef = useRef(null);
@@ -98,25 +112,27 @@ export default function JSONProductsListPage() {
   );
 
   // Filter products based on search, category, product line, collar type
-  const filteredProducts = allProducts.filter(product => {
+  const filteredProducts = useMemo(() => {
     const normalizedSearch = searchTerm.toLowerCase();
-    const matchesSearch = !searchTerm ||
-      (product.name || '').toLowerCase().includes(normalizedSearch) ||
-      (product.maSanPham || '').toLowerCase().includes(normalizedSearch) ||
-      (product.categoryNameVN || '').toLowerCase().includes(normalizedSearch);
+    return allProducts.filter(product => {
+      const matchesSearch = !searchTerm ||
+        (product.name || '').toLowerCase().includes(normalizedSearch) ||
+        (product.maSanPham || '').toLowerCase().includes(normalizedSearch) ||
+        (product.categoryNameVN || '').toLowerCase().includes(normalizedSearch);
 
-    const matchesCategory = !selectedCategory || product.category === selectedCategory;
-    const matchesProductLine = !selectedProductLine || product.productLine === selectedProductLine;
-    const matchesCollarType = !selectedCollarType || product.collarType === selectedCollarType;
+      const matchesCategory = !selectedCategory || product.category === selectedCategory;
+      const matchesProductLine = !selectedProductLine || product.productLine === selectedProductLine;
+      const matchesCollarType = !selectedCollarType || product.collarType === selectedCollarType;
 
-    return matchesSearch && matchesCategory && matchesProductLine && matchesCollarType;
-  }); // Note: allProducts is already sorted from API. When dragging, we will re-fetch or manually sort.
+      return matchesSearch && matchesCategory && matchesProductLine && matchesCollarType;
+    });
+  }, [allProducts, searchTerm, selectedCategory, selectedProductLine, selectedCollarType]);
 
   useEffect(() => {
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     setDisplayedProducts(filteredProducts.slice(startIndex, endIndex));
-    setTotalPages(Math.ceil(filteredProducts.length / limit));
+    setTotalPages(Math.ceil(filteredProducts.length / limit) || 1);
   }, [filteredProducts, page, limit]);
 
 
@@ -191,16 +207,20 @@ export default function JSONProductsListPage() {
   };
 
   const handleVisibilityToggle = async (product, field) => {
-    const currentValue = product[field] !== false;
+    const currentValue = product[field] === true;
     const nextValue = !currentValue;
     const productKey = product.id ?? product._id;
 
     setAllProducts((prev) =>
-      prev.map((item) =>
-        String(item.id ?? item._id) === String(productKey)
-          ? { ...item, [field]: nextValue }
-          : item
-      )
+      prev.map((item) => {
+        if (String(item.id ?? item._id) === String(productKey)) {
+          return { ...item, [field]: nextValue };
+        }
+        if (field === 'isFeatured' && nextValue === true && item.category === product.category) {
+          return { ...item, isFeatured: false };
+        }
+        return item;
+      })
     );
 
     try {
@@ -209,7 +229,10 @@ export default function JSONProductsListPage() {
         field,
         value: nextValue,
       });
-      toast.success(nextValue ? 'Đã bật hiển thị' : 'Đã ẩn sản phẩm', { autoClose: 1000 });
+      const message = field === 'isFeatured'
+        ? (nextValue ? 'Đã chọn làm sản phẩm nổi bật của danh mục' : 'Đã bỏ sản phẩm nổi bật')
+        : (nextValue ? 'Đã bật hiển thị' : 'Đã ẩn sản phẩm');
+      toast.success(message, { autoClose: 1200 });
     } catch (error) {
       setAllProducts((prev) =>
         prev.map((item) =>
@@ -218,7 +241,57 @@ export default function JSONProductsListPage() {
             : item
         )
       );
-      toast.error(error.response?.data?.err || 'Không thể cập nhật hiển thị');
+    }
+  };
+
+  const openFeaturedConfigModal = (product) => {
+    setFeaturedConfigProduct(product);
+    const secImgDefault = Array.isArray(product.gallery) && product.gallery.length > 0
+      ? (typeof product.gallery[0] === 'string' ? product.gallery[0] : product.gallery[0]?.src || product.image)
+      : (product.image || '');
+
+    setFeaturedConfigForm({
+      customTitle: product.featuredConfig?.customTitle || product.name || '',
+      customSubtitle: product.featuredConfig?.customSubtitle || product.categoryNameVN || 'Stylish Polo',
+      customDescription: product.featuredConfig?.customDescription || product.description || '',
+      customImage: product.featuredConfig?.customImage || product.image || '',
+      customSecondaryImage: product.featuredConfig?.customSecondaryImage || secImgDefault,
+      videoUrl: product.featuredConfig?.videoUrl || '',
+      badgeText: product.featuredConfig?.badgeText || 'NỔI BẬT',
+      soldCount: product.featuredConfig?.soldCount || '1.500+ sản phẩm',
+      recentCustomers: product.featuredConfig?.recentCustomers || 'California Fitness | /feedback/california-fitness, VNPay | https://vnpay.vn, Techcombank',
+    });
+  };
+
+  const closeFeaturedConfigModal = () => {
+    setFeaturedConfigProduct(null);
+  };
+
+  const handleSaveFeaturedConfig = async () => {
+    if (!featuredConfigProduct) return;
+    setFeaturedConfigSaving(true);
+    const productKey = featuredConfigProduct.id ?? featuredConfigProduct._id;
+    try {
+      await axios.post('/api/products/featured-config', {
+        id: productKey,
+        featuredConfig: featuredConfigForm,
+      });
+
+      setAllProducts((prev) =>
+        prev.map((item) =>
+          String(item.id ?? item._id) === String(productKey)
+            ? { ...item, featuredConfig: featuredConfigForm }
+            : item
+        )
+      );
+
+      toast.success('Đã lưu cấu hình sản phẩm nổi bật!', { autoClose: 1500 });
+      closeFeaturedConfigModal();
+    } catch (error) {
+      console.error(error);
+      toast.error('Lỗi khi lưu cấu hình nổi bật');
+    } finally {
+      setFeaturedConfigSaving(false);
     }
   };
 
@@ -399,6 +472,7 @@ export default function JSONProductsListPage() {
                     <th className={styles.tableHeader} scope="col">Giá</th>
                     <th className={styles.tableHeader} scope="col">Trạng thái</th>
                     <th className={styles.tableHeader} scope="col">Trang chủ</th>
+                    <th className={styles.tableHeader} scope="col">Nổi bật</th>
                     <th className={styles.tableHeader} scope="col">Hành động</th>
                   </tr>
                 </thead>
@@ -494,6 +568,32 @@ export default function JSONProductsListPage() {
                             >
                               {product.visibleOnHome !== false ? <Eye size={16} /> : <EyeOff size={16} />}
                             </button>
+                          </td>
+                          <td className={styles.tableCell}>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleVisibilityToggle(product, 'isFeatured')}
+                                className={`p-1.5 rounded-lg border transition-all inline-flex items-center justify-center ${product.isFeatured
+                                  ? 'bg-amber-50 border-amber-300 text-amber-500 hover:bg-amber-100'
+                                  : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-amber-500'
+                                  }`}
+                                aria-label={`${product.isFeatured ? 'Bỏ' : 'Chọn'} sản phẩm nổi bật`}
+                                title={product.isFeatured ? 'Đang là sản phẩm nổi bật của danh mục' : 'Chọn làm sản phẩm nổi bật của danh mục'}
+                              >
+                                <Star size={16} fill={product.isFeatured ? '#f59e0b' : 'none'} />
+                              </button>
+                              {product.isFeatured && (
+                                <button
+                                  type="button"
+                                  onClick={() => openFeaturedConfigModal(product)}
+                                  className="p-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all inline-flex items-center justify-center"
+                                  title="Cấu hình nội dung tùy chọn (Video, Ảnh, Tiêu đề...)"
+                                >
+                                  <Settings size={16} />
+                                </button>
+                              )}
+                            </div>
                           </td>
                           <td className={styles.tableCell}>
                             <div className={styles.actionButtons}>
@@ -611,6 +711,32 @@ export default function JSONProductsListPage() {
                             </button>
                           </td>
                           <td className={styles.tableCell}>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleVisibilityToggle(product, 'isFeatured')}
+                                className={`p-1.5 rounded-lg border transition-all inline-flex items-center justify-center ${product.isFeatured
+                                  ? 'bg-amber-50 border-amber-300 text-amber-500 hover:bg-amber-100'
+                                  : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-amber-500'
+                                  }`}
+                                aria-label={`${product.isFeatured ? 'Bỏ' : 'Chọn'} sản phẩm nổi bật`}
+                                title={product.isFeatured ? 'Đang là sản phẩm nổi bật của danh mục' : 'Chọn làm sản phẩm nổi bật của danh mục'}
+                              >
+                                <Star size={16} fill={product.isFeatured ? '#f59e0b' : 'none'} />
+                              </button>
+                              {product.isFeatured && (
+                                <button
+                                  type="button"
+                                  onClick={() => openFeaturedConfigModal(product)}
+                                  className="p-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all inline-flex items-center justify-center"
+                                  title="Cấu hình nội dung tùy chọn (Video, Ảnh, Tiêu đề...)"
+                                >
+                                  <Settings size={16} />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                          <td className={styles.tableCell}>
                             <div className={styles.actionButtons}>
                               <a
                                 href={`/san-pham/${product.slug}`}
@@ -679,6 +805,177 @@ export default function JSONProductsListPage() {
                 >
                   <Trash2 size={18} />
                   <span>{loading ? 'Đang xóa...' : 'Xóa ngay'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Featured Config Modal */}
+        {featuredConfigProduct && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={closeFeaturedConfigModal}>
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center px-6 py-4 border-b bg-gray-50">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                    <Settings size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-gray-900">
+                      Cấu hình Sản phẩm Nổi bật
+                    </h3>
+                    <p className="text-xs text-gray-500">
+                      {featuredConfigProduct.name} ({featuredConfigProduct.maSanPham})
+                    </p>
+                  </div>
+                </div>
+                <button onClick={closeFeaturedConfigModal} className="text-gray-400 hover:text-gray-700 p-1 rounded-full hover:bg-gray-200">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4 overflow-y-auto flex-1 text-sm">
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">
+                    Tiêu đề hiển thị tùy chỉnh (Custom Title)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={`Để trống nếu dùng tên mặc định: "${featuredConfigProduct.name}"`}
+                    value={featuredConfigForm.customTitle}
+                    onChange={(e) => setFeaturedConfigForm(f => ({ ...f, customTitle: e.target.value }))}
+                    className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-gray-700 mb-1">
+                      Phụ đề / Tagline tùy chỉnh
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="VD: Stylish Polo / Premium Sportswear"
+                      value={featuredConfigForm.customSubtitle}
+                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, customSubtitle: e.target.value }))}
+                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-semibold text-gray-700 mb-1">
+                      Nhãn Badge tùy chỉnh
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="VD: SALE 20%, HOT DEAL, BEST SELLER"
+                      value={featuredConfigForm.badgeText}
+                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, badgeText: e.target.value }))}
+                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-gray-700 mb-1">
+                      Số lượng đã bán (VD: 1.500+ hoặc 2.000+)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="VD: 1.200+ sản phẩm"
+                      value={featuredConfigForm.soldCount}
+                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, soldCount: e.target.value }))}
+                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-semibold text-gray-700 mb-1">
+                      Khách hàng đã đặt & Link (Cú pháp: Tên | Link)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="VD: California Fitness | /feedback/california-fitness, VNPay | https://vnpay.vn, Techcombank"
+                      value={featuredConfigForm.recentCustomers}
+                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, recentCustomers: e.target.value }))}
+                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                    <p className="text-[11px] text-gray-500 mt-1">Cú pháp: <code className="bg-gray-100 px-1 py-0.5 rounded">Tên | Link</code> (Link có thể là bài viết Univi, Website hoặc Facebook).</p>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">
+                    Mô tả tùy chỉnh (Custom Description)
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="Nhập mô tả giới thiệu hoặc khuyến mãi đặc biệt cho khối nổi bật..."
+                    value={featuredConfigForm.customDescription}
+                    onChange={(e) => setFeaturedConfigForm(f => ({ ...f, customDescription: e.target.value }))}
+                    className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
+                    <Video size={16} className="text-blue-600" />
+                    URL Video sản phẩm (Video MP4 / Cloudinary / YouTube)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="VD: /video-univi-2-baseline.mp4 hoặc https://res.cloudinary.com/.../video.mp4"
+                    value={featuredConfigForm.videoUrl}
+                    onChange={(e) => setFeaturedConfigForm(f => ({ ...f, videoUrl: e.target.value }))}
+                    className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Khi có Video, khối hiển thị trên trang chủ sẽ tự động chạy video phát liên tục mượt mà.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-gray-700 mb-1">
+                      Ảnh chính tùy chỉnh (Custom Main Image URL)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Để trống nếu dùng ảnh sản phẩm"
+                      value={featuredConfigForm.customImage}
+                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, customImage: e.target.value }))}
+                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-semibold text-gray-700 mb-1">
+                      Ảnh phụ/Flatlay (Custom Secondary Image URL)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Để trống nếu dùng ảnh thứ 2"
+                      value={featuredConfigForm.customSecondaryImage}
+                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, customSecondaryImage: e.target.value }))}
+                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50">
+                <button
+                  type="button"
+                  onClick={closeFeaturedConfigModal}
+                  className="px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+                  disabled={featuredConfigSaving}
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveFeaturedConfig}
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow transition-colors flex items-center gap-2"
+                  disabled={featuredConfigSaving}
+                >
+                  <Sparkles size={16} />
+                  <span>{featuredConfigSaving ? 'Đang lưu...' : 'Lưu cấu hình'}</span>
                 </button>
               </div>
             </div>

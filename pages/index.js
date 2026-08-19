@@ -8,6 +8,7 @@ import FeedbackSection from "../components/profiles/FeedbackSection";
 import PostCard from "../components/common/PostCard";
 import { readPostsFromDb, formatPosts } from "../lib/utils";
 import ProductSlider from "../components/univisport/ProductSlider";
+import CategoryFeaturedProduct from "../components/univisport/CategoryFeaturedProduct";
 import CategoryGrid from "../components/univisport/CategoryGrid";
 import HeroSection1 from "../components/univisport/HeroSection1";
 import PartnersSection from "../components/univisport/PartnersSection";
@@ -104,6 +105,12 @@ export default function Home({
               products={section.products}
               viewAllLink={section.viewAllLink}
             />
+            {section.featuredProduct && (
+              <CategoryFeaturedProduct
+                product={section.featuredProduct}
+                sectionTitle={section.title}
+              />
+            )}
           </div>
         ) : null
       )}
@@ -443,9 +450,12 @@ function SectionBanner({ banner }) {
 // MAP PRODUCT — không đổi
 // ─────────────────────────────────────────────────────────────
 function mapProduct(product) {
+  if (!product) return null;
   return {
     id: product.id,
     name: product.name,
+    maSanPham: product.maSanPham || "",
+    description: product.description || "",
     price: product.price,
     maxPrice: product.originalPrice || product.price,
     discount: product.originalPrice
@@ -454,6 +464,26 @@ function mapProduct(product) {
       )
       : 0,
     isNew: product.isNew || false,
+    isFeatured: product.isFeatured || false,
+    featuredConfig: product.featuredConfig
+      ? {
+        customTitle: product.featuredConfig.customTitle || "",
+        customSubtitle: product.featuredConfig.customSubtitle || "",
+        customDescription: product.featuredConfig.customDescription || "",
+        customImage: product.featuredConfig.customImage || "",
+        customSecondaryImage: product.featuredConfig.customSecondaryImage || "",
+        videoUrl: product.featuredConfig.videoUrl || "",
+        badgeText: product.featuredConfig.badgeText || "",
+        soldCount: product.featuredConfig.soldCount || "",
+        recentCustomers: product.featuredConfig.recentCustomers || "",
+      }
+      : null,
+    rating: product.rating ?? 5,
+    reviewCount: product.reviewCount ?? 15,
+    categoryNameVN: product.categoryNameVN || "",
+    sizes: product.sizes && product.sizes.length > 0
+      ? product.sizes
+      : ["Extra Large", "Extra Small", "Large", "Medium", "Small"],
     colors: Array.isArray(product.colors)
       ? product.colors.map((color) => ({
         name: color.name || "Màu",
@@ -461,6 +491,9 @@ function mapProduct(product) {
         hex2: color.hex2 || "",
         image: color.image || "",
       }))
+      : [],
+    gallery: Array.isArray(product.gallery)
+      ? product.gallery.map((g) => (typeof g === "string" ? g : g.src || ""))
       : [],
     image:
       product.colors && product.colors.length > 0
@@ -541,25 +574,29 @@ export async function getServerSideProps() {
       sectionConfigs = FALLBACK_SECTIONS;
     }
 
-    const sections = sectionConfigs.map((section) => ({
-      _id: String(section._id),
-      title: section.title,
-      viewAllLink: section.viewAllLink,
-      sectionBanner: section.sectionBanner
-        ? {
-          image: section.sectionBanner.image || "",
-          mobileImage: section.sectionBanner.mobileImage || "",
-          link: section.sectionBanner.link || "",
-          openInNewTab: section.sectionBanner.openInNewTab ?? false,
-          isVisible: section.sectionBanner.isVisible ?? false,
-          borderRadius: section.sectionBanner.borderRadius ?? 8,
-        }
-        : null,
-      products: productsData
-        .filter((p) => p.category === section.category)
-        .slice(0, section.productLimit)
-        .map(mapProduct),
-    }));
+    const sections = sectionConfigs.map((section) => {
+      const categoryProducts = productsData.filter((p) => p.category === section.category);
+      const featured = categoryProducts.find((p) => p.isFeatured === true) || null;
+      return {
+        _id: String(section._id),
+        title: section.title,
+        viewAllLink: section.viewAllLink,
+        sectionBanner: section.sectionBanner
+          ? {
+            image: section.sectionBanner.image || "",
+            mobileImage: section.sectionBanner.mobileImage || "",
+            link: section.sectionBanner.link || "",
+            openInNewTab: section.sectionBanner.openInNewTab ?? false,
+            isVisible: section.sectionBanner.isVisible ?? false,
+            borderRadius: section.sectionBanner.borderRadius ?? 8,
+          }
+          : null,
+        products: categoryProducts
+          .slice(0, section.productLimit)
+          .map(mapProduct),
+        featuredProduct: featured ? mapProduct(featured) : null,
+      };
+    });
 
     const faqSettings = await HomepageFaqSettings.findOne({
       key: "homepage",

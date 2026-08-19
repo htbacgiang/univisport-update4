@@ -1,7 +1,7 @@
 import db from "../../../utils/db";
 import Products from "../../../models/Product";
 
-const VISIBLE_FIELDS = new Set(["visibleOnHome", "visibleOnArticle"]);
+const VISIBLE_FIELDS = new Set(["visibleOnHome", "visibleOnArticle", "isFeatured"]);
 
 const handler = async (req, res) => {
   if (req.method !== "PATCH") {
@@ -18,6 +18,18 @@ const handler = async (req, res) => {
 
     const numericId = Number(id);
     const query = Number.isFinite(numericId) ? { id: numericId } : { _id: id };
+
+    // If setting isFeatured = true, unset isFeatured for other products in the same category first
+    if (field === "isFeatured" && value === true) {
+      const currentProduct = await Products.findOne(query);
+      if (currentProduct && currentProduct.category) {
+        await Products.updateMany(
+          { category: currentProduct.category, _id: { $ne: currentProduct._id } },
+          { $set: { isFeatured: false } }
+        );
+      }
+    }
+
     const product = await Products.findOneAndUpdate(
       query,
       { $set: { [field]: value } },

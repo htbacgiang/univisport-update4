@@ -135,17 +135,22 @@ function reducer(state, action) {
 
 // Categories
 const categories = [
-  { categoryNameVN: 'Đồng phục Gym', category: 'dong-phuc-gym' },
-  { categoryNameVN: 'Đồng phục Yoga – Pilates', category: 'dong-phuc-yoga-pilates' },
-  { categoryNameVN: 'Đồng phục Pickleball', category: 'dong-phuc-pickleball' },
-  { categoryNameVN: 'Đồng phục Chạy bộ', category: 'dong-phuc-chay-bo' },
-  { categoryNameVN: 'Đồng phục MMA', category: 'dong-phuc-mma' },
-  { categoryNameVN: 'Đồng phục Golf Tennis', category: 'dong-phuc-golf-tennis' },
-  { categoryNameVN: 'Đồng phục Áo Gió', category: 'dong-phuc-ao-gio' },
-  { categoryNameVN: 'Đồng phục Áo Polo', category: 'dong-phuc-ao-polo' },
-  { categoryNameVN: 'Đồng phục Áo Thun', category: 'dong-phuc-ao-thun' },
-  { categoryNameVN: 'Đồng phục Doanh nghiệp', category: 'dong-phuc-doanh-nghiep' },
-
+  { key: 'dong-phuc-gym', categoryNameVN: 'Đồng phục Gym', category: 'dong-phuc-gym' },
+  { key: 'dong-phuc-yoga-pilates', categoryNameVN: 'Đồng phục Yoga – Pilates', category: 'dong-phuc-yoga-pilates' },
+  { key: 'dong-phuc-pickleball', categoryNameVN: 'Đồng phục Pickleball', category: 'dong-phuc-pickleball' },
+  { key: 'dong-phuc-chay-bo', categoryNameVN: 'Đồng phục Chạy bộ', category: 'dong-phuc-chay-bo' },
+  { key: 'dong-phuc-mma', categoryNameVN: 'Đồng phục MMA', category: 'dong-phuc-mma' },
+  { key: 'dong-phuc-golf-tennis', categoryNameVN: 'Đồng phục Golf Tennis', category: 'dong-phuc-golf-tennis' },
+  { key: 'dong-phuc-ao-gio', categoryNameVN: 'Đồng phục Áo Gió', category: 'dong-phuc-ao-gio' },
+  { key: 'dong-phuc-ao-polo', categoryNameVN: 'Đồng phục Áo Polo', category: 'dong-phuc-ao-polo' },
+  { key: 'dong-phuc-ao-thun', categoryNameVN: 'Đồng phục Áo Thun', category: 'dong-phuc-ao-thun' },
+  { key: 'dp-so-mi', categoryNameVN: 'Đồng phục Sơ mi', category: 'dong-phuc-doanh-nghiep', productLine: 'so-mi' },
+  { key: 'dp-vest', categoryNameVN: 'Đồng phục Vest công sở', category: 'dong-phuc-doanh-nghiep', productLine: 'vest' },
+  { key: 'polo-dn', categoryNameVN: 'Polo doanh nghiệp', category: 'dong-phuc-doanh-nghiep', productLine: 'polo' },
+  { key: 'dp-teambuilding', categoryNameVN: 'Đồng phục Teambuilding', category: 'dong-phuc-doanh-nghiep', productLine: 'teambuilding' },
+  { key: 'dp-ao-gio-dn', categoryNameVN: 'Đồng phục Áo gió', category: 'dong-phuc-doanh-nghiep', productLine: 'ao-gio' },
+  { key: 'bao-ho-lao-dong', categoryNameVN: 'Bảo hộ lao động', category: 'dong-phuc-doanh-nghiep', productLine: 'bao-ho' },
+  { key: 'phu-kien-qua-tang', categoryNameVN: 'Phụ kiện & Quà tặng', category: 'dong-phuc-doanh-nghiep', productLine: 'phu-kien' },
 ];
 
 export default function CreateJSONProductPage() {
@@ -248,7 +253,9 @@ export default function CreateJSONProductPage() {
     try {
       const response = await axios.get(`/api/products?id=${id}`);
       const product = response.data.product || {};
-      const selCat = categories.find((c) => c.category === product.category) || {};
+      const selCat = categories.find(
+        (c) => c.category === product.category && (!c.productLine || c.productLine === product.productLine)
+      ) || {};
 
       const colorImages = (product.colors || []).map((c, idx) => ({
         src: c.image || '',
@@ -374,11 +381,12 @@ export default function CreateJSONProductPage() {
 
   // Handle category change
   const handleCategoryChange = (e) => {
-    const selectedCategory = categories.find((cat) => cat.category === e.target.value);
+    const selectedKey = e.target.value;
+    const selectedCategory = categories.find((cat) => (cat.key || cat.category) === selectedKey);
     dispatch({
       type: 'UPDATE_FIELD',
       field: 'category',
-      value: e.target.value,
+      value: selectedCategory ? selectedCategory.category : '',
     });
     dispatch({
       type: 'UPDATE_FIELD',
@@ -387,11 +395,15 @@ export default function CreateJSONProductPage() {
     });
     dispatch({
       type: 'UPDATE_FIELD',
-      field: 'shirtType',
-      value: shirtTypeByCategory[e.target.value] || formData.shirtType,
+      field: 'productLine',
+      value: selectedCategory ? (selectedCategory.productLine || '') : '',
     });
-    // Danh mục thay đổi thì dòng sản phẩm/kiểu cổ cũ (nếu có) không còn hợp lệ
-    dispatch({ type: 'UPDATE_FIELD', field: 'productLine', value: '' });
+    dispatch({
+      type: 'UPDATE_FIELD',
+      field: 'shirtType',
+      value: selectedCategory ? (shirtTypeByCategory[selectedCategory.category] || formData.shirtType) : '',
+    });
+    // Danh mục thay đổi thì kiểu cổ cũ (nếu có) không còn hợp lệ
     dispatch({ type: 'UPDATE_FIELD', field: 'collarType', value: '' });
   };
 
@@ -1416,15 +1428,19 @@ export default function CreateJSONProductPage() {
                   Chọn danh mục <span className={styles.required}>*</span>
                 </label>
                 <select
-                  value={formData.category}
+                  value={
+                    categories.find(
+                      (c) => c.category === formData.category && (!c.productLine || c.productLine === formData.productLine)
+                    )?.key || formData.category
+                  }
                   onChange={handleCategoryChange}
                   className={styles.select}
                   required
                   aria-label="Danh mục sản phẩm"
                 >
                   <option value="">Chọn danh mục</option>
-                  {categories.map((cat, index) => (
-                    <option key={index} value={cat.category}>
+                  {categories.map((cat) => (
+                    <option key={cat.key || cat.category} value={cat.key || cat.category}>
                       {cat.categoryNameVN}
                     </option>
                   ))}

@@ -135,6 +135,17 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    featuredConfig: {
+      customTitle: { type: String, default: "" },
+      customSubtitle: { type: String, default: "" },
+      customDescription: { type: String, default: "" },
+      customImage: { type: String, default: "" },
+      customSecondaryImage: { type: String, default: "" },
+      videoUrl: { type: String, default: "" },
+      badgeText: { type: String, default: "" },
+      soldCount: { type: String, default: "" },
+      recentCustomers: { type: String, default: "" },
+    },
     visibleOnHome: {
       type: Boolean,
       default: true,

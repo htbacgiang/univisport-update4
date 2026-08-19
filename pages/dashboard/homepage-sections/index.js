@@ -23,13 +23,31 @@ import {
   Circle,
 } from "lucide-react";
 
-const CATEGORY_SUGGESTIONS = [
-  { label: "Gym", category: "dong-phuc-gym", link: "/dong-phuc-gym" },
-  { label: "Pickleball", category: "dong-phuc-pickleball", link: "/dong-phuc-pickleball" },
-  { label: "Yoga - Pilates", category: "dong-phuc-yoga-pilates", link: "/dong-phuc-yoga-pilates" },
-  { label: "Áo Gió", category: "dong-phuc-ao-gio", link: "/dong-phuc-ao-gio" },
-  { label: "Golf - Tennis", category: "dong-phuc-golf-tennis", link: "/dong-phuc-golf-tennis" },
-  { label: "Áo Polo", category: "dong-phuc-ao-polo", link: "/dong-phuc-ao-polo" },
+const CATEGORY_SUGGESTION_GROUPS = [
+  {
+    group: "Đồng phục thể thao",
+    items: [
+      { label: "Gym", title: "Đồng Phục Gym", category: "dong-phuc-gym", link: "/dong-phuc-gym" },
+      { label: "Pickleball", title: "Đồng Phục Pickleball", category: "dong-phuc-pickleball", link: "/dong-phuc-pickleball" },
+      { label: "Yoga - Pilates", title: "Đồng Phục Yoga - Pilates", category: "dong-phuc-yoga-pilates", link: "/dong-phuc-yoga-pilates" },
+      { label: "Áo gió thể thao", title: "Đồng Phục Áo Gió", category: "dong-phuc-ao-gio", link: "/dong-phuc-ao-gio" },
+      { label: "Golf - Tennis", title: "Đồng Phục Golf - Tennis", category: "dong-phuc-golf-tennis", link: "/dong-phuc-golf-tennis" },
+      { label: "Chạy bộ", title: "Đồng Phục Chạy Bộ", category: "dong-phuc-chay-bo", link: "/dong-phuc-chay-bo" },
+      { label: "MMA", title: "Đồng Phục MMA", category: "dong-phuc-mma", link: "/dong-phuc-mma" },
+    ],
+  },
+  {
+    group: "Đồng phục doanh nghiệp",
+    items: [
+      { label: "Đồng phục Sơ mi", title: "Đồng Phục Sơ Mi", category: "dong-phuc-so-mi", link: "/dong-phuc-so-mi" },
+      { label: "Đồng phục Vest công sở", title: "Đồng Phục Vest Công Sở", category: "dong-phuc-vest-cong-so", link: "/dong-phuc-vest-cong-so" },
+      { label: "Polo doanh nghiệp", title: "Polo Doanh Nghiệp", category: "dong-phuc-polo", link: "/dong-phuc-polo" },
+      { label: "Đồng phục Teambuilding", title: "Đồng Phục Teambuilding", category: "dong-phuc-teambuilding", link: "/dong-phuc-teambuilding" },
+      { label: "Đồng phục Áo gió", title: "Đồng Phục Áo Gió Doanh Nghiệp", category: "dong-phuc-ao-gio", link: "/dong-phuc-ao-gio" },
+      { label: "Bảo hộ lao động", title: "Bảo Hộ Lao Động", category: "bao-ho-lao-dong", link: "/bao-ho-lao-dong" },
+      { label: "Phụ kiện & Quà tặng", title: "Phụ Kiện & Quà Tặng Doanh Nghiệp", category: "phu-kien-qua-tang-doanh-nghiep", link: "/phu-kien-qua-tang-doanh-nghiep" },
+    ],
+  },
 ];
 
 const emptyForm = { title: "", category: "", viewAllLink: "", productLimit: 12 };
@@ -146,7 +164,7 @@ export default function HomepageSectionsPage() {
       ...f,
       category: suggestion.category,
       viewAllLink: suggestion.link,
-      title: f.title || `Đồng Phục ${suggestion.label}`,
+      title: suggestion.title || (f.title || `Đồng Phục ${suggestion.label}`),
     }));
   };
 
@@ -533,23 +551,37 @@ export default function HomepageSectionsPage() {
 
             <form onSubmit={submitForm} className="px-6 py-5 space-y-4">
               {/* Category suggestions */}
-              {!editTarget && (
-                <div>
-                  <p className="text-xs font-medium text-[#64748b] mb-2">Gợi ý danh mục:</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {CATEGORY_SUGGESTIONS.map(s => (
-                      <button
-                        key={s.category}
-                        type="button"
-                        onClick={() => handleCategorySuggestion(s)}
-                        className="px-2.5 py-1 text-xs rounded-full border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
-                      >
-                        {s.label}
-                      </button>
-                    ))}
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-lg p-3 space-y-2.5">
+                <p className="text-xs font-bold text-[#475569] uppercase tracking-wider">
+                  Gợi ý chọn nhanh danh mục:
+                </p>
+                {CATEGORY_SUGGESTION_GROUPS.map((group) => (
+                  <div key={group.group} className="space-y-1.5">
+                    <span className="text-[11px] font-semibold text-[#64748b] block">
+                      {group.group}:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {group.items.map((s) => {
+                        const isSelected = form.category === s.category && form.viewAllLink === s.link;
+                        return (
+                          <button
+                            key={`${group.group}-${s.label}`}
+                            type="button"
+                            onClick={() => handleCategorySuggestion(s)}
+                            className={`px-2.5 py-1 text-xs rounded-full border transition-all duration-150 font-medium ${
+                              isSelected
+                                ? "border-[#105d97] bg-[#105d97] text-white shadow-sm"
+                                : "border-blue-200 bg-blue-50/80 text-blue-700 hover:bg-blue-100 hover:border-blue-300"
+                            }`}
+                          >
+                            {s.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
+                ))}
+              </div>
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-[#374151]">Tiêu đề *</label>

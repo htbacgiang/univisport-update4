@@ -63,7 +63,7 @@ const categories: Category[] = [
   {
     name: "Vest công sở",
     slug: "/dong-phuc-vest",
-    image: "/product/dong-phuc-vest-cong-so.webp",
+    image: "/product/su-kien.webp",
     count: 4,
   },
   {
