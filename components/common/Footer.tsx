@@ -21,6 +21,9 @@ export default function Footer() {
       { name: "Hồ sơ năng lực", href: "/ho-so-nang-luc" },
       { name: "Tuyển dụng", href: "/tuyen-dung" },
       { name: "Liên hệ", href: "/lien-he" },
+      { name: "Blog", href: "/bai-viet" },
+
+
     ],
     products: [
       { name: "Đồng phục Gym", href: "/dong-phuc-gym" },

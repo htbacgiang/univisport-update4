@@ -260,7 +260,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                       key={idx}
                       type="button"
                       onClick={(e) => { e.stopPropagation(); setCard1MediaIdx(idx); }}
-                      className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
+                      className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
                       aria-label={`Chuyển sang slide ${idx + 1}`}
                     />
                   );
@@ -364,14 +364,6 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
 
               {/* Rating, SKU & Sold Count */}
               <div className="flex items-center gap-2 text-sm text-gray-600 flex-wrap mt-0.5">
-                <div className="flex items-center gap-1 text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} size={14} className={i < Math.round(product.rating || 5) ? 'text-amber-400' : 'text-gray-300'} />
-                  ))}
-                  <span className="text-xs text-gray-600 font-semibold ml-1">
-                    ({product.reviewCount || 1})
-                  </span>
-                </div>
                 {product.maSanPham && (
                   <span className="text-xs text-gray-500 font-medium border-l border-gray-300 pl-2">
                     SKU: {product.maSanPham}
@@ -483,13 +475,13 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
       {/* Fullscreen Media Lightbox Popup */}
       {fullscreenMedia && (
         <div
-          className="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999999] flex items-center justify-center p-4 select-none"
+          className="fixed inset-0 bg-black/95 sm:bg-black/90 backdrop-blur-md z-[9999999] flex items-center justify-center p-0 sm:p-4 select-none"
           onClick={() => setFullscreenMedia(null)}
         >
           {/* Close button */}
           <button
             onClick={() => setFullscreenMedia(null)}
-            className="absolute top-4 right-4 z-50 w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-colors"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-50 w-10 h-10 sm:w-11 sm:h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-colors"
             aria-label="Đóng xem phóng to"
           >
             <FaTimes size={20} />
@@ -497,13 +489,13 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
 
           {/* Media Content */}
           {fullscreenMedia?.source === 'card2' ? (
-            <div className="relative w-full max-w-5xl h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <div className="relative w-full h-full sm:h-[85vh] sm:max-w-5xl flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
               {/* Lightbox Left Nav Arrow for Card 2 */}
               {card2ImagesList.length > 1 && (
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handlePrevCard2(e); }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
                   aria-label="Ảnh trước"
                 >
                   <FaChevronLeft size={18} />
@@ -516,7 +508,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                 alt={displayTitle}
                 fill
                 style={{ objectFit: 'contain' }}
-                className="rounded-xl shadow-2xl transition-all duration-300"
+                className="sm:rounded-xl shadow-2xl transition-all duration-300"
                 unoptimized={getImageUrl(displayMainImage).startsWith('http')}
               />
 
@@ -525,7 +517,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handleNextCard2(e); }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
                   aria-label="Ảnh tiếp theo"
                 >
                   <FaChevronRight size={18} />
@@ -563,7 +555,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handlePrevCard1(e); }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
                   aria-label="Hình/Video trước"
                 >
                   <FaChevronLeft size={18} />
@@ -571,7 +563,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
               )}
 
               {currentCard1Media?.type === 'video' ? (
-                <div className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                <div className="relative w-full h-full sm:h-auto sm:max-w-5xl sm:aspect-video flex items-center justify-center bg-black overflow-hidden sm:rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
                   <video
                     key={currentCard1Media.url}
                     src={currentCard1Media.url}
@@ -581,14 +573,14 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                   />
                 </div>
               ) : (
-                <div className="relative w-full max-w-5xl h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                <div className="relative w-full h-full sm:h-[85vh] sm:max-w-5xl flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                   <Image
                     key={currentCard1Media?.url}
                     src={getImageUrl(currentCard1Media?.url)}
                     alt={displayTitle}
                     fill
                     style={{ objectFit: 'contain' }}
-                    className="rounded-xl shadow-2xl transition-all duration-300"
+                    className="sm:rounded-xl shadow-2xl transition-all duration-300"
                     unoptimized={getImageUrl(currentCard1Media?.url).startsWith('http')}
                   />
                 </div>
@@ -599,7 +591,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handleNextCard1(e); }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
                   aria-label="Hình/Video tiếp theo"
                 >
                   <FaChevronRight size={18} />
