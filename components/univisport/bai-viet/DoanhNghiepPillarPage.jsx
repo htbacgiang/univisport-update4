@@ -290,7 +290,19 @@ export const univiCustomers = [
       },
 
     ],
-  }
+  },
+  {
+    name: "Tập đoàn Than – Khoáng sản Việt Nam",
+    category: "Đồng phục áo Polo",
+    description: "Đơn vị trong lĩnh vực khai thác khoáng sản và công nghiệp sử dụng trang phục đồng bộ cho môi trường làm việc kỹ thuật, sản xuất và vận hành.",
+    images: [
+      {
+        src: "/khach-hang/than-khoang-san-viet.jpg",
+        alt: "Đồng phục Tập đoàn Than – Khoáng sản Việt Nam do Univi sản xuất",
+      },
+
+    ],
+  },
 ];
 
 function CustomerCard({ customer }) {

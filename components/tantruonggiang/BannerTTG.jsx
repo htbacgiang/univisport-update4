@@ -506,7 +506,7 @@ export default function Banner() {
                 {VIDEO_LABEL}
                 <span className="hidden h-[2px] w-12 bg-[#1976d2] sm:block" aria-hidden="true" />
               </p>
-              <p className={`font-hero motion-safe:animate-hero-fade-up-100 mx-0 mb-4 max-w-6xl whitespace-nowrap text-[clamp(15px,4.3vw,18px)] uppercase leading-[1.05] text-white sm:mx-auto sm:text-[38px] sm:leading-[0.98] lg:text-[48px] ${HERO_TEXT_SHADOW}`}>
+              <p className={`font-bold motion-safe:animate-hero-fade-up-100 mx-0 mb-4 max-w-6xl whitespace-nowrap text-[clamp(15px,4.3vw,18px)] uppercase leading-[1.05] text-white sm:mx-auto sm:text-[38px] sm:leading-[0.98] lg:text-[48px] ${HERO_TEXT_SHADOW}`} style={{ fontFamily: "'Univi Anton', 'Anton', sans-serif" }}>
                 {renderVideoHeading()}
               </p>
               <p className={`motion-safe:animate-hero-fade-up-200 mx-auto mb-8 hidden max-w-6xl whitespace-nowrap text-base leading-[1.55] text-white/90 sm:block lg:text-lg ${HERO_TEXT_SHADOW}`}>
@@ -539,7 +539,7 @@ export default function Banner() {
                   <span className="hidden h-[2px] w-12 bg-[#1976d2] sm:block" aria-hidden="true" />
                 </p>
               )}
-              <p className={`font-hero motion-safe:animate-hero-fade-up-100 mx-0 mb-4 max-w-6xl whitespace-nowrap text-[clamp(18px,5.4vw,22px)] uppercase leading-[1.05] text-white sm:mx-auto sm:text-[44px] sm:leading-[0.98] lg:text-[54px] ${HERO_TEXT_SHADOW}`}>
+              <p className={`font-bold motion-safe:animate-hero-fade-up-100 mx-0 mb-4 max-w-6xl whitespace-nowrap text-[clamp(18px,5.4vw,22px)] uppercase leading-[1.05] text-white sm:mx-auto sm:text-[44px] sm:leading-[0.98] lg:text-[54px] ${HERO_TEXT_SHADOW}`} style={{ fontFamily: "'Univi Anton', 'Anton', sans-serif" }}>
                 {renderSmartHeading()}
               </p>
               <p className={`motion-safe:animate-hero-fade-up-200 mx-auto mb-4 hidden max-w-6xl text-lg leading-[1.55] text-white/90 sm:block ${HERO_TEXT_SHADOW}`}>
@@ -581,7 +581,7 @@ export default function Banner() {
                 </p>
               )}
               {LIFESTYLE_HEADING && (
-                <p className={`font-hero motion-safe:animate-hero-fade-up-100 mb-4 max-w-6xl whitespace-nowrap text-[clamp(18px,5.4vw,22px)] uppercase leading-[1.05] text-white sm:mb-2 sm:text-[44px] sm:leading-[1.02] lg:text-[56px] ${HERO_TEXT_SHADOW}`}>
+                <p className={`font-bold motion-safe:animate-hero-fade-up-100 mb-4 max-w-6xl whitespace-nowrap text-[clamp(18px,5.4vw,22px)] uppercase leading-[1.05] text-white sm:mb-2 sm:text-[44px] sm:leading-[1.02] lg:text-[56px] ${HERO_TEXT_SHADOW}`} style={{ fontFamily: "'Univi Anton', 'Anton', sans-serif" }}>
                   {renderLifestyleHeading(LIFESTYLE_HEADING)}
                 </p>
               )}
@@ -623,7 +623,7 @@ export default function Banner() {
                 </p>
               )}
               {activeSlide.heading && (
-                <p className="font-hero mb-1 max-w-[88%] text-left text-2xl leading-[0.92] text-white [text-shadow:0_3px_20px_rgba(0,0,0,0.36)] sm:mx-auto sm:mb-[1rem] sm:max-w-[760px] sm:text-center sm:text-[1.2rem] sm:leading-[1.06] md:text-[2.2rem]">
+                <p className="font-bold mb-1 max-w-[88%] text-left text-2xl leading-[0.92] text-white [text-shadow:0_3px_20px_rgba(0,0,0,0.36)] sm:mx-auto sm:mb-[1rem] sm:max-w-[760px] sm:text-center sm:text-[1.2rem] sm:leading-[1.06] md:text-[2.2rem]" style={{ fontFamily: "'Univi Anton', 'Anton', sans-serif" }}>
                   {activeSlide.heading}
                 </p>
               )}

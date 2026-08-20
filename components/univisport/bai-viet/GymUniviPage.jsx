@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import ContactForm from '../../header/ContactForm';
 import FabricCardComponent from '../FabricCardComponent';
+import UniformStylesComponent from '../UniformStylesComponent';
 import ProcessSteps from '../ProcessSteps';
 
 const heroStats = [
@@ -442,6 +443,9 @@ export default function GymUniviPage() {
         </div>
         <div className="mt-6">
           <FabricCardComponent />
+        </div>
+        <div className="mt-8">
+          <UniformStylesComponent />
         </div>
         <div className="mt-6">
           <SimpleTable

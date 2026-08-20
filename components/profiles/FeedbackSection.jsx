@@ -81,7 +81,7 @@ const FeedbackSection = ({ initialFeedbacks }) => {
   return (
     <div className="py-4 sm:py-6 lg:py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-center md:text-2xl text-xl font-medium tracking-tight leading-6 uppercase text-gray-900 mb-4 sm:mb-6 md:mb-10">
+        <h2 className="text-center md:text-2xl text-xl font-bold tracking-tight leading-6 uppercase text-gray-900 mb-4 sm:mb-6 md:mb-10">
           FEEDBACK KHÁCH HÀNG UNIVI
         </h2>
         <div className="relative overflow-hidden">

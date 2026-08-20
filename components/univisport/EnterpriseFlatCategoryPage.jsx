@@ -41,7 +41,6 @@ export default function EnterpriseFlatCategoryPage({
       activeCategory={ENTERPRISE_CATEGORY_SLUG}
       activeProductLine={productLine}
       breadcrumbItems={[
-        { name: 'Trang chủ', href: '/' },
         { name: ENTERPRISE_CATEGORY_LABEL, href: `/${ENTERPRISE_CATEGORY_SLUG}` },
         { name: lineLabel },
       ]}

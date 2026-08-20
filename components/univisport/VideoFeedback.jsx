@@ -535,7 +535,7 @@ export default function VideoFeedback({ initialItems = DEFAULT_VIDEO_FEEDBACK_IT
 
   return (
     <section ref={sectionRef} className="bg-white py-5">
-      <h2 className="text-center text-xl md:text-2xl font-medium tracking-tight leading-6 uppercase text-gray-900 mb-4 sm:mb-6 md:mb-8 pt-2">
+      <h2 className="text-center text-xl md:text-2xl font-bold tracking-tight leading-6 uppercase text-gray-900 mb-4 sm:mb-6 md:mb-8 pt-2">
         Video Feedback Khách Hàng Univi
       </h2>
 

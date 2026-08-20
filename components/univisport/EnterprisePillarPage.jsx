@@ -155,7 +155,7 @@ export default function EnterprisePillarPage({
           sidebar={sidebarContent}
           banner={<BannerCarousel />}
         >
-          <CategoryBreadcrumb items={[{ name: 'Trang chủ', href: '/' }, { name: 'Đồng phục Doanh nghiệp' }]} />
+          <CategoryBreadcrumb items={[{ name: 'Đồng phục Doanh nghiệp' }]} />
 
           <ProductGridSection
             products={initialProducts}

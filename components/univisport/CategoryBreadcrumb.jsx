@@ -3,13 +3,16 @@ import { ChevronRight } from 'lucide-react';
 
 // items: [{ name, href? }] — item không có href được coi là trang hiện tại
 export default function CategoryBreadcrumb({ items = [] }) {
-  if (!items.length) return null;
+  const filteredItems = items.filter(
+    (item) => item.name !== 'Trang chủ' && item.href !== '/'
+  );
+  if (!filteredItems.length) return null;
 
   return (
     <nav aria-label="Breadcrumb" className="mb-4">
       <ol className="flex flex-wrap items-center gap-1.5 text-sm text-gray-500">
-        {items.map((item, idx) => {
-          const isLast = idx === items.length - 1;
+        {filteredItems.map((item, idx) => {
+          const isLast = idx === filteredItems.length - 1;
           return (
             <li key={`${item.name}-${idx}`} className="flex items-center gap-1.5">
               {idx > 0 && (

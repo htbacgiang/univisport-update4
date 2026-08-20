@@ -6,6 +6,7 @@ import { ChevronDown, SlidersHorizontal } from 'lucide-react';
 import BannerCarousel from './BannerCarousel';
 import CategorySidebarLayout from './CategorySidebarLayout';
 import CategoryNavSidebar from './CategoryNavSidebar';
+import CategoryBreadcrumb from './CategoryBreadcrumb';
 import CategoryCardGrid from './CategoryCardGrid';
 import ProductGridSection from './ProductGridSection';
 import parse from 'html-react-parser';
@@ -202,6 +203,13 @@ export default function
     />
   );
 
+  const breadcrumbItems = categorySlug === 'dong-phuc-the-thao'
+    ? [{ name: 'Đồng Phục Thể Thao' }]
+    : [
+        { name: 'Đồng Phục Thể Thao', href: '/dong-phuc-the-thao' },
+        { name: displayCategory },
+      ];
+
   return (
     <DefaultLayout2>
       <div className="h-[70px]"></div>
@@ -212,6 +220,8 @@ export default function
           sidebar={sidebarContent}
           banner={<BannerCarousel />}
         >
+          <CategoryBreadcrumb items={breadcrumbItems} />
+
           {/* H1 + mô tả + Stats card — hiển thị cho tất cả danh mục */}
           <>
             {/* H1 + đoạn mô tả */}

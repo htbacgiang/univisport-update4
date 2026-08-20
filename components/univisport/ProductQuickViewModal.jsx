@@ -153,11 +153,11 @@ export default function ProductQuickViewModal({ slug, onClose }) {
                 thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
                 onSlideChange={(s) => setActiveIndex(s.realIndex)}
                 onSwiper={(s) => (mainSwiperRef.current = s)}
-                className="w-full aspect-square md:aspect-[3/4] rounded-xl overflow-hidden border border-gray-200"
+                className="w-full aspect-[3/4] rounded-xl overflow-hidden border border-gray-200"
               >
                 {images.map((src, index) => (
                   <SwiperSlide key={index}>
-                    <div className="relative w-full aspect-square md:aspect-[3/4] bg-gray-50">
+                    <div className="relative w-full aspect-[3/4] bg-gray-50">
                       <Image
                         src={imageErrors[index] ? '/images/placeholder.jpg' : getImageUrl(src)}
                         alt={`${product.name} ${index + 1}`}
@@ -272,7 +272,7 @@ export default function ProductQuickViewModal({ slug, onClose }) {
 
               {/* Colors */}
               {product.colors?.length > 0 && (
-                <>
+                <div className="hidden md:block">
                   <div className="border-t border-gray-200 my-3"></div>
                   <span className="text-xs font-bold tracking-wide text-gray-500 uppercase">Màu sắc tiêu chuẩn</span>
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -296,47 +296,47 @@ export default function ProductQuickViewModal({ slug, onClose }) {
                       );
                     })}
                   </div>
-                </>
+                </div>
               )}
 
               {/* Sizes */}
-              <div className="border-t border-gray-200 my-3"></div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold tracking-wide text-gray-500 uppercase">Size tiêu chuẩn</span>
-                {sizeGuide && (
-                  <button
-                    type="button"
-                    onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-xs text-[#105d97] hover:underline font-medium"
-                  >
-                    Hướng dẫn chọn size
-                  </button>
-                )}
+              <div className='hidden md:block'>
+                <div className="border-t border-gray-200 my-3"></div>
+                <div className="flex items-center justify-between ">
+                  <span className="text-xs font-bold tracking-wide text-gray-500 uppercase">Size tiêu chuẩn</span>
+                  {sizeGuide && (
+                    <button
+                      type="button"
+                      onClick={() => setIsSizeGuideOpen(true)}
+                      className="text-xs text-[#105d97] hover:underline font-medium"
+                    >
+                      Hướng dẫn chọn size
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2 ">
+                  {(product.sizes && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL', '2XL', '3XL']).map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      aria-label={`Chọn size ${size}`}
+                      className={`min-w-[40px] h-9 px-3 rounded-full text-sm font-semibold border-2 transition-all ${selectedSize === size ? 'border-[#105d97] text-[#105d97] bg-[#eaf2fb]' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
+                  <span className="flex items-center gap-1 text-xs text-gray-600">
+                    <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Có thể may theo size riêng
+                  </span>
+                  <span className="flex items-center gap-1 text-xs text-gray-600">
+                    <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Hỗ trợ fitting mẫu
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {(product.sizes && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL', '2XL', '3XL']).map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    aria-label={`Chọn size ${size}`}
-                    className={`min-w-[40px] h-9 px-3 rounded-full text-sm font-semibold border-2 transition-all ${selectedSize === size ? 'border-[#105d97] text-[#105d97] bg-[#eaf2fb]' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
-                <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Có thể may theo size riêng
-                </span>
-                <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Hỗ trợ fitting mẫu
-                </span>
-              </div>
-
               {/* Custom Branding Section */}
-              <div className="mt-4 rounded-2xl border border-[#cfe3f2] bg-[#eef5fb] p-4">
+              <div className="mt-4 hidden md:block rounded-2xl border border-[#cfe3f2] bg-[#eef5fb] p-4">
                 <h3 className="text-sm font-bold text-[#105d97] uppercase tracking-wide mb-3">Thiết kế theo thương hiệu riêng</h3>
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   {[
@@ -367,7 +367,7 @@ export default function ProductQuickViewModal({ slug, onClose }) {
 
               {/* View full page link */}
               <Link href={`/san-pham/${slug}`} onClick={onClose}
-                className="text-center text-sm text-[#105d97] hover:underline mb-3 md:mb-4"
+                className="text-center text-sm text-[#105d97] hover:underline mb-3 md:mb-4 mt-2"
               >
                 Xem trang chi tiết sản phẩm →
               </Link>
