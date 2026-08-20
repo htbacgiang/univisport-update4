@@ -62,6 +62,10 @@
   --font-univi-quote: "Univi STIX Two Text", Georgia, "Times New Roman", serif;
 }
 
+.font-hero {
+  font-family: "Univi Anton", "Anton", sans-serif !important;
+}
+
 /* Scroll-reveal elements ([data-reveal], see components/collection/Reveal.tsx) start
    hidden via a JS-driven class and only fade in once IntersectionObserver fires.
    Without JS that never happens, so force them visible for scripting-disabled clients
