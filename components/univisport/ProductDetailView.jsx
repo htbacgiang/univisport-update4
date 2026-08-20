@@ -255,38 +255,27 @@ function Breadcrumb({ product }) {
     ? getProductLineLabel(ENTERPRISE_CATEGORY_SLUG, product.productLine)
     : '';
 
+  const displayCategorySlug = isEnterpriseProduct
+    ? (ENTERPRISE_FLAT_SLUGS[product.productLine] || `${categorySlug}/${product.productLine}`)
+    : categorySlug;
+
+  const displayCategoryName = isEnterpriseProduct && enterpriseLineLabel
+    ? enterpriseLineLabel
+    : categoryNameVN;
+
   return (
     <nav aria-label="Breadcrumb" className="mb-3 mt-[60px] md:mt-[70px]">
-      <ol className="flex flex-wrap items-center space-x-1 text-sm text-gray-500">
-        <li>
-          <Link href="/" className="hover:text-[#105d97] transition-colors">
-            Trang chủ
-          </Link>
-        </li>
-        <li><span className="text-gray-400">/</span></li>
-        <li>
+      <ol className="flex items-center space-x-1 text-sm text-gray-500 min-w-0 max-w-full">
+        <li className="shrink-0">
           <Link
-            href={`/${categorySlug}`}
-            className="hover:text-[#105d97] transition-colors"
+            href={`/${displayCategorySlug}`}
+            className="hover:text-[#105d97] transition-colors whitespace-nowrap"
           >
-            {categoryNameVN}
+            {displayCategoryName}
           </Link>
         </li>
-        {isEnterpriseProduct && (
-          <>
-            <li><span className="text-gray-400">/</span></li>
-            <li>
-              <Link
-                href={`/${ENTERPRISE_FLAT_SLUGS[product.productLine] || `${categorySlug}/${product.productLine}`}`}
-                className="hover:text-[#105d97] transition-colors"
-              >
-                {enterpriseLineLabel}
-              </Link>
-            </li>
-          </>
-        )}
-        <li><span className="text-gray-400">/</span></li>
-        <li className="text-gray-700 font-medium" aria-current="page">
+        <li className="shrink-0"><span className="text-gray-400">/</span></li>
+        <li className="text-gray-700 font-medium truncate min-w-0" aria-current="page" title={productName}>
           {productName}
         </li>
       </ol>
@@ -901,7 +890,7 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
                     ))}
                   </Swiper>
                   <button
-                    className="thumb-swiper-button-prev absolute top-1/2 left-1 -translate-y-1/2 z-10 bg-white/90 rounded-full p-1.5 shadow-md border border-gray-200 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-200"
+                    className="thumb-swiper-button-prev opacity-70 hover:opacity-100 absolute top-1/2 left-1 -translate-y-1/2 z-10 bg-white/90 rounded-full p-1.5 shadow-md border border-gray-200 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-200"
                     onClick={() => handleThumbnailNavigation('prev')}
                     aria-label="Hình ảnh trước"
                   >
@@ -910,7 +899,7 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
                     </svg>
                   </button>
                   <button
-                    className="thumb-swiper-button-next absolute top-1/2 right-1 -translate-y-1/2 z-10 bg-white/90 rounded-full p-1.5 shadow-md border border-gray-200 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-200"
+                    className="thumb-swiper-button-next opacity-70 hover:opacity-100 absolute top-1/2 right-1 -translate-y-1/2 z-10 bg-white/90 rounded-full p-1.5 shadow-md border border-gray-200 hover:bg-[#105d97] hover:text-white hover:border-[#105d97] transition-all duration-200"
                     onClick={() => handleThumbnailNavigation('next')}
                     aria-label="Hình ảnh tiếp theo"
                   >

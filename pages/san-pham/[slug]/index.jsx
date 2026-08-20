@@ -69,18 +69,19 @@ export async function getServerSideProps({ params }) {
     const enterpriseLineLabel = isEnterpriseProduct
       ? getProductLineLabel(ENTERPRISE_CATEGORY_SLUG, product.productLine)
       : '';
+
+    const displayCategorySlug = isEnterpriseProduct
+      ? (ENTERPRISE_FLAT_SLUGS[product.productLine] || `${product.category}/${product.productLine}`)
+      : product.category;
+
+    const displayCategoryName = isEnterpriseProduct && enterpriseLineLabel
+      ? enterpriseLineLabel
+      : categoryNameVN;
+
     const breadcrumbListItems = [
       { '@type': 'ListItem', 'position': 1, 'name': 'Trang chủ', 'item': 'https://dongphucunivi.com/' },
-      { '@type': 'ListItem', 'position': 2, 'name': categoryNameVN, 'item': `https://dongphucunivi.com/${product.category}` },
-      ...(isEnterpriseProduct
-        ? [{
-          '@type': 'ListItem',
-          'position': 3,
-          'name': enterpriseLineLabel,
-          'item': `https://dongphucunivi.com/${ENTERPRISE_FLAT_SLUGS[product.productLine] || `${product.category}/${product.productLine}`}`,
-        }]
-        : []),
-      { '@type': 'ListItem', 'position': isEnterpriseProduct ? 4 : 3, 'name': product.name, 'item': canonicalUrl },
+      { '@type': 'ListItem', 'position': 2, 'name': displayCategoryName, 'item': `https://dongphucunivi.com/${displayCategorySlug}` },
+      { '@type': 'ListItem', 'position': 3, 'name': product.name, 'item': canonicalUrl },
     ];
     const productImage = product.colors?.[0]?.image || product.image || 'https://dongphucunivi.com/images/banner-1.webp';
     const validFaqs = Array.isArray(product.faqs)

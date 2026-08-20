@@ -68,9 +68,9 @@ const ProductCard = ({ id, name, description, price, maxPrice, discount, isNew, 
             )}
 
             {/* Action Icons - top right */}
-            <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
+            <div className="absolute top-2 right-2 md:top-3 md:right-3 opacity-80 group-hover:opacity-100 flex flex-col gap-2 z-10">
               <button
-                className="w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform"
+                className="md:w-8 md:h-8 h-6 w-6 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform"
                 aria-label="Xem trước"
                 onClick={(e) => { e.preventDefault(); setShowQuickView(true); }}
               >
