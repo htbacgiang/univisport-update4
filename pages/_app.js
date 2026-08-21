@@ -293,10 +293,16 @@ function MyApp({ Component, pageProps: { session, meta, ...pageProps } }) {
     recordEntry(router.asPath, document.title);
 
     const handleRouteChangeStart = () => {
+      if (typeof window !== "undefined") {
+        document.documentElement.style.scrollBehavior = "auto";
+      }
       recordExit();
     };
 
     const handleRouteChangeComplete = (url) => {
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      }
       if (url.startsWith("/dashboard")) return;
       setTimeout(() => recordEntry(url, document.title), 0);
     };

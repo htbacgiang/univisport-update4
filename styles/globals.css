@@ -6845,9 +6845,9 @@ nav,
   animation-delay: 0.6s;
 }
 
-/* Smooth scroll behavior */
+/* Disable global smooth scroll on html to prevent annoying bottom-to-top scroll animation on page transitions */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 /* Custom scrollbar - removed to use default browser scrollbar */

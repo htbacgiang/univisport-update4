@@ -38,6 +38,14 @@ const menuItems = [
             ],
           },
           { name: "Polo thể thao", link: "/dong-phuc-gym?line=polo-the-thao", isHot: true },
+          {
+            name: "Mẫu Mockup 3D",
+            subDropdown: [
+              { name: "Mẫu áo gym cổ có khóa", link: "/mau-ao-gym-co-co-khoa" },
+              { name: "Mẫu áo gym cổ polo", link: "/mau-ao-gym-co-polo" },
+              { name: "Mẫu áo gym cổ tròn không khóa", link: "/mau-ao-gym-co-tron-khong-khoa" },
+            ],
+          },
         ],
       },
       { name: "Đồng phục Pickleball", link: "/dong-phuc-pickleball" },
@@ -189,14 +197,25 @@ const ResponsiveMenu = ({ isOpen, toggleMenu }) => {
                                         {hasNested ? (
                                           <div>
                                             <div className="flex items-center justify-between px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 rounded-lg">
-                                              <Link
-                                                href={nested.link}
-                                                onClick={toggleMenu}
-                                                className="flex items-center gap-1.5 hover:text-[#105d97]"
-                                              >
-                                                <span className="w-1.5 h-1.5 rounded-full bg-[#105d97]/70 shrink-0" />
-                                                <span className="whitespace-nowrap">{nested.name}</span>
-                                              </Link>
+                                              {nested.link ? (
+                                                <Link
+                                                  href={nested.link}
+                                                  onClick={toggleMenu}
+                                                  className="flex items-center gap-1.5 hover:text-[#105d97]"
+                                                >
+                                                  <span className="w-1.5 h-1.5 rounded-full bg-[#105d97]/70 shrink-0" />
+                                                  <span className="whitespace-nowrap">{nested.name}</span>
+                                                </Link>
+                                              ) : (
+                                                <button
+                                                  type="button"
+                                                  onClick={() => toggleSubSubDropdown(nestedKey)}
+                                                  className="flex items-center gap-1.5 hover:text-[#105d97] text-left cursor-pointer"
+                                                >
+                                                  <span className="w-1.5 h-1.5 rounded-full bg-[#105d97]/70 shrink-0" />
+                                                  <span className="whitespace-nowrap">{nested.name}</span>
+                                                </button>
+                                              )}
                                               <button
                                                 type="button"
                                                 onClick={() => toggleSubSubDropdown(nestedKey)}
@@ -211,7 +230,7 @@ const ResponsiveMenu = ({ isOpen, toggleMenu }) => {
                                             </div>
 
                                             <div
-                                              className={`transition-all duration-300 overflow-hidden ${isNestedOpen ? "max-h-28 opacity-100 mt-1" : "max-h-0 opacity-0"
+                                              className={`transition-all duration-300 overflow-hidden ${isNestedOpen ? "max-h-36 opacity-100 mt-1" : "max-h-0 opacity-0"
                                                 }`}
                                             >
                                               <div className="pl-4 ml-2 border-l border-dashed border-blue-200 space-y-0.5">

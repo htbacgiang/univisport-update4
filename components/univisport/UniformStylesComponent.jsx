@@ -6,14 +6,14 @@ const PRODUCTS = [
   {
     id: 'mag2-gag2',
     code: 'MAG2-GAG2',
-    image: '/images/tshirt-mag2-gag2.jpg',
+    image: '/mockup/tshirt-mag2-gag2.png',
     name: 'Áo Gym Cổ Tròn Phối Tay Raglan Trắng & Thân Xanh',
     description: 'Thiết kế phối màu vai Raglan tăng biên độ chuyển động cho tay và vai, phù hợp HLV & hội viên.',
   },
   {
     id: 'mag4-gag4',
     code: 'MAG4-GAG4',
-    image: '/images/tshirt-mag4-gag4.jpg',
+    image: '/mockup/tshirt-mag4-gag4.jpg',
     name: 'Áo Gym Cổ Tròn Đen Phối Sườn Trắng Athletic Fit',
     description: 'Dải phối trắng bên sườn tạo hiệu ứng thon gọn vóc dáng, tôn đường cơ bắp khỏe khoắn.',
   },
@@ -21,21 +21,21 @@ const PRODUCTS = [
     id: 'mag11-uniaos',
     code: 'MAG11-UNIAO05',
     subCode: '(Áo đường trần ko rõ)',
-    image: '/images/tshirt-mag11-uniaos.jpg',
+    image: '/mockup/tshirt-mag11-gag11.jpg',
     name: 'Áo Gym Xanh Navy Đường Trần Chỉ Nổi Flatlock',
     description: 'Kỹ thuật may đường trần chỉ đè flatlock chống ma sát, co giãn 4 chiều cực kỳ dễ chịu.',
   },
   {
     id: 'mag7-gag7',
     code: 'MAG7-GAG7',
-    image: '/images/tshirt-mag4-gag4.jpg',
+    image: '/mockup/tshirt-mag7-gag7.jpg',
     name: 'Áo Gym Thân Trắng Phối Tay Raglan Đen',
     description: 'Phối màu đối lập tương phản nổi bật, hiện đại và vô cùng thể thao.',
   },
   {
     id: 'mag5-gag5',
     code: 'MAG5-GAG5',
-    image: '/images/tshirt-mag2-gag2.jpg',
+    image: '/mockup/tshirt-mag5-gag5.jpg',
     name: 'Áo Gym Thân Đỏ Phối Tay Raglan Trắng',
     description: 'Tông đỏ thương hiệu năng động, nhiệt huyết, thúc đẩy tinh thần tập luyện bứt phá.',
   },
@@ -43,7 +43,7 @@ const PRODUCTS = [
     id: 'mag14-gag14',
     code: 'MAG14-GAG14',
     isRedCode: true,
-    image: '/images/gym/dong-phuc-gym-univi-nu-trang-den-legging.jpg',
+    image: '/mockup/tshirt-mag14-gag14.jpg',
     name: 'Đồng Phục PT Đôi Nam Nữ Đen Phối Viền Trắng',
     description: 'Hình ảnh mẫu thực tế phòng tập - Form dáng ôm vừa vặn, chuyên nghiệp và chỉn chu.',
   },
@@ -51,7 +51,7 @@ const PRODUCTS = [
     id: 'mag15-gag15',
     code: 'MAG15-GAG15',
     isRedCode: true,
-    image: '/images/gym/dong-phuc-gym-univi-nam-trang-den-quan-short.jpg',
+    image: '/mockup/tshirt-mag15-gag15.jpg',
     name: 'Đồng Phục HLV Đen Phối Dải Sườn Đỏ Nổi Bật',
     description: 'Điểm nhấn phối màu đỏ thương hiệu mạnh mẽ, thu hút ánh nhìn ngay trên sàn tập.',
   },
@@ -59,22 +59,22 @@ const PRODUCTS = [
     id: 'mag28-gag28',
     code: 'MAG28-GAG28',
     isRedCode: true,
-    image: '/images/gym/univi-dong-hanh-cung-the-one-kickfit-3.jpg',
+    image: '/mockup/tshirt-mag28-gag28.jpg',
     name: 'Bộ Đồng Phục Đỏ & Đen Cho Fitness Center & Kickfit',
     description: 'Chất liệu vải UNI DRY thoát ẩm nhanh chóng, thoáng nhẹ tối đa cho cường độ vận động cao.',
   },
   {
     id: 'mag19-gag19',
     code: 'MAG19-GAG19',
-    image: '/images/gym/dong-phuc-hlv-goldmark-fitness-univi.jpg',
+    image: '/mockup/tshirt-mag19-gag19.jpg',
     name: 'Đồng Phục Đen Toàn Bộ Goldmark Fitness',
     description: 'Màu đen quyền lực, lịch sự, giấu mồ hôi tốt và tôn dáng chuẩn Athletic Fit.',
   },
   {
     id: 'mag20-gag20',
-    code: 'CHƯA CÓ TÊN',
+    code: 'MAG26-GAG26',
     isRedCode: true,
-    image: '/images/gym/univi-dong-hanh-cung-fitcaree-2.jpg',
+    image: '/mockup/tshirt-mag26-gag26.png',
     name: 'Áo Gym Đen Phối Vai Cam Năng Động (Mẫu Mới)',
     description: 'Mẫu thiết kế thử nghiệm mới nhất - Phối màu cam tươi sáng mang phong cách trẻ trung.',
   },
@@ -193,7 +193,7 @@ const UniformStylesComponent = () => {
           </div>
           <div className="flex items-center gap-2 text-center sm:text-right">
             <span>📍</span>
-            <span>D4/180 Thanh Bình, P. Mộ Lao, Q. Hà Đông, Hà Nội</span>
+            <span>D14 ngõ 180 đường Thanh Bình, phường Hà Đông, Hà Nội</span>
           </div>
         </div>
       </div>

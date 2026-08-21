@@ -8,7 +8,7 @@ const POLO_PRODUCTS = [
     code: 'MAG30-GAG30',
     subTitle: 'THIẾT KẾ ÁO GYM POLO CÓ KHÓA KÉO',
     isRedCode: true,
-    image: '/images/gym/dong-phuc-hlv-goldmark-fitness-univi.jpg',
+    image: '/mockup/polo-mag30.jpg',
     name: 'Áo Gym Polo Xanh Lá Phối Khóa Kéo Powerzip',
     description: 'Thiết kế cổ Polo kết hợp dây kéo ẩn Powerzip tiện lợi, sắc xanh lá tươi sáng nhận diện độc đáo.',
   },
@@ -17,7 +17,7 @@ const POLO_PRODUCTS = [
     code: 'MAPL10-GAPL10',
     subTitle: 'THIẾT KẾ ÁO POLO CÓ CÚC',
     isRedCode: false,
-    image: '/images/fabric-supercool-polo.jpg',
+    image: '/mockup/polo-mpl10.jpg',
     name: 'Áo Polo Gym Xanh Dương Cổ Cúc Cổ Điển',
     description: 'Form áo Polo truyền thống với bo cổ dệt tinh tế, 3 cúc gài lịch sự, phù hợp nhân sự quầy lễ tân.',
   },
@@ -26,7 +26,7 @@ const POLO_PRODUCTS = [
     code: 'MAPL07-GAPL07',
     subTitle: 'THIẾT KẾ ÁO POLO CÓ CÚC',
     isRedCode: true,
-    image: '/images/gym/dong-phuc-pt-gym.jpg',
+    image: '/mockup/polo-mpl7.jpg',
     name: 'Áo Polo Lễ Tân & PT Phòng Tập Đen Phối Cổ Xanh',
     description: 'Hình ảnh mẫu thực tế quầy Check-in Fitness - Phối màu cổ xanh sang trọng và lịch thiệp.',
   },
@@ -35,7 +35,7 @@ const POLO_PRODUCTS = [
     code: 'MAPL06-GAPLPL06',
     subTitle: 'THIẾT KẾ ÁO GYM POLO CÓ CÚC',
     isRedCode: true,
-    image: '/images/gym/dong-phuc-gym-univi-nam-trang-den-quan-short.jpg',
+    image: '/mockup/polo-mpl6.jpg',
     name: 'Áo Polo PT Nam Nữ Đen Phối Viền Vàng Nổi Bật',
     description: 'Viền phối màu vàng kim ở nẹp cổ và tay áo tạo điểm nhấn cao cấp cho thương hiệu Gym.',
   },
@@ -44,7 +44,7 @@ const POLO_PRODUCTS = [
     code: 'MAPL09-GAPL09',
     subTitle: 'THIẾT KẾ ÁO GYM POLO CÓ KHÓA KÉO',
     isRedCode: true,
-    image: '/images/gym/dong-phuc-gym-univi-nu-trang-den-legging.jpg',
+    image: '/mockup/polo-mpl9.jpg',
     name: 'Áo Polo Nữ Đỏ Phối Khóa Kéo & Vai Trắng',
     description: 'Kiểu dáng Croptop / Slim Fit nữ tính, phối vai trắng thể thao năng động.',
   },
@@ -53,7 +53,7 @@ const POLO_PRODUCTS = [
     code: 'MAPL12-GAPL12',
     subTitle: 'THIẾT KẾ ÁO POLO CÓ CÚC',
     isRedCode: true,
-    image: '/images/gym/univi-dong-hanh-cung-fitcaree-2.jpg',
+    image: '/mockup/polo-mpl12.jpg',
     name: 'Áo Polo Gym Xanh Navy Phối Sọc Ngực Trắng',
     description: 'Dải sọc ngang ngực trắng cá tính, chất liệu UNI DRY co giãn 4 chiều mềm mát.',
   },
@@ -84,7 +84,7 @@ const UniformStylesPoloComponent = () => {
         {/* Center Hero Image */}
         <div className="relative w-full aspect-[16/8] sm:aspect-[16/7] md:aspect-[16/7] min-h-[220px]">
           <Image
-            src="/images/gym-style-hero.jpg"
+            src="/mockup/mau-ao-gym-co-polo.png"
             alt="Kiểu dáng áo Gym UNIVI - Các mẫu áo gym cổ polo"
             fill
             sizes="(max-width: 1024px) 100vw, 1100px"
@@ -107,7 +107,7 @@ const UniformStylesPoloComponent = () => {
         </div>
 
         {/* 3. Product Grid (6 Items in 3 columns) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10 sm:mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 mb-10 sm:mb-12">
           {POLO_PRODUCTS.map((item) => (
             <div
               key={item.id}
@@ -171,7 +171,7 @@ const UniformStylesPoloComponent = () => {
           </div>
           <div className="flex items-center gap-2 text-center sm:text-right">
             <span>📍</span>
-            <span>D4/180 Thanh Bình, P. Mộ Lao, Q. Hà Đông, Hà Nội</span>
+            <span>D14 ngõ 180 đường Thanh Bình, phường Hà Đông, Hà Nội</span>
           </div>
         </div>
       </div>

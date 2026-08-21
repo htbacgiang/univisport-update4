@@ -38,6 +38,14 @@ const sportMenuData = [
         ],
       },
       { name: "Polo thể thao", href: "/dong-phuc-gym?line=polo-the-thao" },
+      {
+        name: "Mẫu Mockup 3D",
+        children: [
+          { name: "Áo gym cổ khóa", href: "/mau-ao-gym-co-co-khoa" },
+          { name: "Áo gym cổ polo", href: "/mau-ao-gym-co-polo" },
+          { name: "Áo gym cổ tròn", href: "/mau-ao-gym-co-tron-khong-khoa" },
+        ],
+      },
     ],
   },
   { name: "Đồng phục Pickleball", href: "/dong-phuc-pickleball" },
@@ -48,10 +56,11 @@ const sportMenuData = [
 
 const SportUniformMenu = ({ isTransparent = false, activePath = "" }) => {
   const [isFitBodyOpen, setIsFitBodyOpen] = useState(false);
+  const [isMockup3DOpen, setIsMockup3DOpen] = useState(false);
   const isActive = isSportPath(activePath);
 
   return (
-    <div className="relative group" onMouseLeave={() => setIsFitBodyOpen(false)}>
+    <div className="relative group" onMouseLeave={() => { setIsFitBodyOpen(false); setIsMockup3DOpen(false); }}>
       <Link
         href="/dong-phuc-the-thao"
         className={getDropdownTriggerClass(isTransparent, isActive)}
@@ -67,157 +76,208 @@ const SportUniformMenu = ({ isTransparent = false, activePath = "" }) => {
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-6">
           <div className="grid grid-cols-12 gap-6 items-start">
 
-          {/* Left Columns: Categories (8 cols) */}
-          <div className="col-span-8 grid grid-cols-3 gap-6 border-r border-gray-100 pr-6">
+            {/* Left Columns: Categories (8 cols) */}
+            <div className="col-span-8 grid grid-cols-3 gap-6 border-r border-gray-100 pr-6">
 
-            {/* Column 1: Đồng phục Gym */}
-            <div>
-              <Link
-                href="/dong-phuc-gym"
-                className="block text-base font-bold text-gray-900 hover:text-[#105d97] mb-3 transition-colors whitespace-nowrap"
-              >
-                Đồng phục Gym
+              {/* Column 1: Đồng phục Gym */}
+              <div>
+                <Link
+                  href="/dong-phuc-gym"
+                  className="block text-base font-bold text-gray-900 hover:text-[#105d97] mb-3 transition-colors whitespace-nowrap"
+                >
+                  Đồng phục Gym
+                </Link>
+
+                <ul className="space-y-2.5 text-sm">
+                  {/* Sub category: Áo thun Fit Body (Click to expand) */}
+                  <li className="space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsFitBodyOpen(!isFitBodyOpen)}
+                      className="w-full flex items-center justify-between text-[#333] hover:text-[#105d97] font-semibold text-[13.5px] transition-colors py-0.5 group/fit text-left cursor-pointer whitespace-nowrap gap-2"
+                    >
+                      <span className="whitespace-nowrap">Áo thun Fit Body</span>
+                      <FaChevronDown
+                        className={`text-[11px] text-gray-400 group-hover/fit:text-[#105d97] transition-transform duration-300 shrink-0 ${isFitBodyOpen ? "rotate-180 text-[#105d97]" : ""
+                          }`}
+                      />
+                    </button>
+
+                    {/* Level 3: Cổ tròn / Cổ trụ (Dropdown on click) */}
+                    <div
+                      className={`transition-all duration-300 overflow-hidden ${isFitBodyOpen ? "max-h-28 opacity-100 mt-1" : "max-h-0 opacity-0"
+                        }`}
+                    >
+                      <ul className="pl-3 space-y-1 border-l-2 border-blue-100 ml-1 py-1">
+                        <li>
+                          <Link
+                            href="/dong-phuc-gym?line=ao-thun-fit-body&collar=co-tron"
+                            className="block text-[13px] text-gray-600 hover:text-[#105d97] py-0.5 font-medium transition-colors whitespace-nowrap"
+                          >
+                            • Áo thun cổ tròn
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href="/dong-phuc-gym?line=ao-thun-fit-body&collar=co-tru"
+                            className="block text-[13px] text-gray-600 hover:text-[#105d97] py-0.5 font-medium transition-colors whitespace-nowrap"
+                          >
+                            • Áo thun cổ trụ
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+                  {/* Polo thể thao */}
+                  <li>
+                    <Link
+                      href="/dong-phuc-gym?line=polo-the-thao"
+                      className="flex items-center gap-1.5 text-[#333] hover:text-[#105d97] font-semibold text-[13.5px] py-0.5 transition-colors whitespace-nowrap"
+                    >
+                      <span className="whitespace-nowrap">Polo thể thao</span>
+                      <span className="inline-flex items-center bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0 shadow-sm animate-pulse">
+                        Hot
+                      </span>
+                    </Link>
+                  </li>
+
+                  {/* Sub category: Mẫu Mockup 3D */}
+                  <li className="space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsMockup3DOpen(!isMockup3DOpen)}
+                      className="w-full flex items-center justify-between text-[#333] hover:text-[#105d97] font-semibold text-[13.5px] transition-colors py-0.5 group/mockup text-left cursor-pointer whitespace-nowrap gap-2"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span className="whitespace-nowrap">Mẫu Mockup 3D</span>
+
+                      </div>
+                      <FaChevronDown
+                        className={`text-[11px] text-gray-400 group-hover/mockup:text-[#105d97] transition-transform duration-300 shrink-0 ${isMockup3DOpen ? "rotate-180 text-[#105d97]" : ""
+                          }`}
+                      />
+                    </button>
+
+                    {/* Level 3: 3D Mockup pages */}
+                    <div
+                      className={`transition-all duration-300 overflow-hidden ${isMockup3DOpen ? "max-h-36 opacity-100 mt-1" : "max-h-0 opacity-0"
+                        }`}
+                    >
+                      <ul className="pl-3 space-y-1 border-l-2 border-blue-100 ml-1 py-1">
+                        <li>
+                          <Link
+                            href="/mau-ao-gym-co-co-khoa"
+                            className="block text-[13px] text-gray-600 hover:text-[#105d97] py-0.5 font-medium transition-colors whitespace-nowrap"
+                          >
+                            • Mẫu áo gym cổ có khóa
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href="/mau-ao-gym-co-polo"
+                            className="block text-[13px] text-gray-600 hover:text-[#105d97] py-0.5 font-medium transition-colors whitespace-nowrap"
+                          >
+                            • Mẫu áo gym cổ polo
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href="/mau-ao-gym-co-tron-khong-khoa"
+                            className="block text-[13px] text-gray-600 hover:text-[#105d97] py-0.5 font-medium transition-colors whitespace-nowrap"
+                          >
+                            • Mẫu áo gym cổ tròn không khóa
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Column 2: Pickleball & Yoga */}
+              <div>
+                <h4 className="text-base font-bold text-gray-900 mb-3 whitespace-nowrap">
+                  Pickleball & Yoga
+                </h4>
+                <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
+                  <li>
+                    <Link href="/dong-phuc-pickleball" className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
+                      Đồng phục Pickleball
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dong-phuc-yoga-pilates" className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
+                      Đồng phục Yoga - Pilates
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Column 3: Golf & Áo gió */}
+              <div>
+                <h4 className="text-base font-bold text-gray-900 mb-3 whitespace-nowrap">
+                  Đồng phục khác
+                </h4>
+                <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
+                  <li>
+                    <Link href="/dong-phuc-golf-tennis" className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
+                      Đồng phục Golf - Tennis
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dong-phuc-ao-gio" className="flex items-center gap-1.5 hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
+                      <span className="whitespace-nowrap">Đồng phục Áo gió</span>
+
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dong-phuc-mma" className="flex items-center gap-1.5 hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
+                      <span className="whitespace-nowrap">Đồng phục MMA</span>
+
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dong-phuc-chay-bo" className="flex items-center gap-1.5 hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
+                      <span className="whitespace-nowrap">Đồng phục Chạy bộ</span>
+
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            {/* Right Columns: Featured Showcase (4 cols) */}
+            <div className="col-span-4 grid grid-cols-2 gap-3">
+
+              {/* Featured Product Card 1 */}
+              <Link href="/dong-phuc-gym" className="group block space-y-1.5">
+                <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow-sm">
+                  <img
+                    src="/images/dptt2.jpg"
+                    alt="Áo Gym Fit Body"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+
+                </div>
+
               </Link>
 
-              <ul className="space-y-2.5 text-sm">
-                {/* Sub category: Áo thun Fit Body (Click to expand) */}
-                <li className="space-y-1">
-                  <button
-                    type="button"
-                    onClick={() => setIsFitBodyOpen(!isFitBodyOpen)}
-                    className="w-full flex items-center justify-between text-[#333] hover:text-[#105d97] font-semibold text-[13.5px] transition-colors py-0.5 group/fit text-left cursor-pointer whitespace-nowrap gap-2"
-                  >
-                    <span className="whitespace-nowrap">Áo thun Fit Body</span>
-                    <FaChevronDown
-                      className={`text-[11px] text-gray-400 group-hover/fit:text-[#105d97] transition-transform duration-300 shrink-0 ${isFitBodyOpen ? "rotate-180 text-[#105d97]" : ""
-                        }`}
-                    />
-                  </button>
+              {/* Featured Product Card 2 */}
+              <Link href="/dong-phuc-gym" className="group block space-y-1.5">
+                <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow-sm">
+                  <img
+                    src="/images/tkdp.jpg"
+                    alt="Polo thể thao Univi"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
 
-                  {/* Level 3: Cổ tròn / Cổ trụ (Dropdown on click) */}
-                  <div
-                    className={`transition-all duration-300 overflow-hidden ${isFitBodyOpen ? "max-h-28 opacity-100 mt-1" : "max-h-0 opacity-0"
-                      }`}
-                  >
-                    <ul className="pl-3 space-y-1 border-l-2 border-blue-100 ml-1 py-1">
-                      <li>
-                        <Link
-                          href="/dong-phuc-gym?line=ao-thun-fit-body&collar=co-tron"
-                          className="block text-[13px] text-gray-600 hover:text-[#105d97] py-0.5 font-medium transition-colors whitespace-nowrap"
-                        >
-                          • Áo thun cổ tròn
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/dong-phuc-gym?line=ao-thun-fit-body&collar=co-tru"
-                          className="block text-[13px] text-gray-600 hover:text-[#105d97] py-0.5 font-medium transition-colors whitespace-nowrap"
-                        >
-                          • Áo thun cổ trụ
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
+                </div>
 
-                {/* Polo thể thao */}
-                <li>
-                  <Link
-                    href="/dong-phuc-gym?line=polo-the-thao"
-                    className="flex items-center gap-1.5 text-[#333] hover:text-[#105d97] font-semibold text-[13.5px] py-0.5 transition-colors whitespace-nowrap"
-                  >
-                    <span className="whitespace-nowrap">Polo thể thao</span>
-                    <span className="inline-flex items-center bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0 shadow-sm animate-pulse">
-                      Hot
-                    </span>
-                  </Link>
-                </li>
-              </ul>
+              </Link>
+
             </div>
-
-            {/* Column 2: Pickleball & Yoga */}
-            <div>
-              <h4 className="text-base font-bold text-gray-900 mb-3 whitespace-nowrap">
-                Pickleball & Yoga
-              </h4>
-              <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
-                <li>
-                  <Link href="/dong-phuc-pickleball" className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
-                    Đồng phục Pickleball
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dong-phuc-yoga-pilates" className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
-                    Đồng phục Yoga - Pilates
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 3: Golf & Áo gió */}
-            <div>
-              <h4 className="text-base font-bold text-gray-900 mb-3 whitespace-nowrap">
-                Đồng phục khác
-              </h4>
-              <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
-                <li>
-                  <Link href="/dong-phuc-golf-tennis" className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
-                    Đồng phục Golf - Tennis
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dong-phuc-ao-gio" className="flex items-center gap-1.5 hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
-                    <span className="whitespace-nowrap">Đồng phục Áo gió</span>
-
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dong-phuc-mma" className="flex items-center gap-1.5 hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
-                    <span className="whitespace-nowrap">Đồng phục MMA</span>
-
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dong-phuc-chay-bo" className="flex items-center gap-1.5 hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
-                    <span className="whitespace-nowrap">Đồng phục Chạy bộ</span>
-
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-          </div>
-
-          {/* Right Columns: Featured Showcase (4 cols) */}
-          <div className="col-span-4 grid grid-cols-2 gap-3">
-
-            {/* Featured Product Card 1 */}
-            <Link href="/dong-phuc-gym" className="group block space-y-1.5">
-              <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow-sm">
-                <img
-                  src="/images/dptt2.jpg"
-                  alt="Áo Gym Fit Body"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-
-              </div>
-
-            </Link>
-
-            {/* Featured Product Card 2 */}
-            <Link href="/dong-phuc-gym" className="group block space-y-1.5">
-              <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow-sm">
-                <img
-                  src="/images/tkdp.jpg"
-                  alt="Polo thể thao Univi"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-
-              </div>
-
-            </Link>
-
-          </div>
 
           </div>
         </div>
@@ -247,110 +307,110 @@ const EnterpriseUniformMenu = ({ isTransparent = false, activePath = "" }) => {
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-6">
           <div className="grid grid-cols-12 gap-6 items-start">
 
-          {/* Left Columns: 2 Cột Menu (8 cols) */}
-          <div className="col-span-8 grid grid-cols-2 gap-6 border-r border-gray-100 pr-6">
+            {/* Left Columns: 2 Cột Menu (8 cols) */}
+            <div className="col-span-8 grid grid-cols-2 gap-6 border-r border-gray-100 pr-6">
 
-            {/* Cột 1: Đồng phục Công ty */}
-            <div>
-              <h4 className="text-base font-bold text-gray-900 mb-3 whitespace-nowrap">
-                Đồng phục Công ty
-              </h4>
-              <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
-                <li>
-                  <Link
-                    href={`/${ENTERPRISE_FLAT_SLUGS['so-mi']}`}
-                    className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                  >
-                    Đồng phục Sơ mi
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/${ENTERPRISE_FLAT_SLUGS['vest']}`}
-                    className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                  >
-                    Đồng phục Vest công sở
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/${ENTERPRISE_FLAT_SLUGS['polo']}`}
-                    className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                  >
-                    Polo doanh nghiệp
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/${ENTERPRISE_FLAT_SLUGS['teambuilding']}`}
-                    className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                  >
-                    Đồng phục Teambuilding
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Cột 2: Đồng phục Khác */}
-            <div>
-              <h4 className="text-base font-bold text-gray-900 mb-3 whitespace-nowrap">
-                Đồng phục Khác
-              </h4>
-              <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
-                <li>
-                  <Link
-                    href={`/${ENTERPRISE_FLAT_SLUGS['ao-gio']}`}
-                    className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                  >
-                    Đồng phục Áo gió
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/${ENTERPRISE_FLAT_SLUGS['bao-ho']}`}
-                    className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                  >
-                    Bảo hộ lao động
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/${ENTERPRISE_FLAT_SLUGS['phu-kien']}`}
-                    className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                  >
-                    Phụ kiện & Quà tặng
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-          </div>
-
-          {/* Right Column: Cột Hình ảnh nổi bật (4 cols) */}
-          <div className="col-span-4 grid grid-cols-2 gap-3">
-            {/* Featured Product Card 1 */}
-            <Link href={`/${ENTERPRISE_FLAT_SLUGS['so-mi']}`} className="group block space-y-1.5">
-              <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow-sm">
-                <img
-                  src="/product/cong-so.webp"
-                  alt="Sơ mi Công Sở"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+              {/* Cột 1: Đồng phục Công ty */}
+              <div>
+                <h4 className="text-base font-bold text-gray-900 mb-3 whitespace-nowrap">
+                  Đồng phục Công ty
+                </h4>
+                <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
+                  <li>
+                    <Link
+                      href={`/${ENTERPRISE_FLAT_SLUGS['so-mi']}`}
+                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
+                    >
+                      Đồng phục Sơ mi
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={`/${ENTERPRISE_FLAT_SLUGS['vest']}`}
+                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
+                    >
+                      Đồng phục Vest công sở
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={`/${ENTERPRISE_FLAT_SLUGS['polo']}`}
+                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
+                    >
+                      Polo doanh nghiệp
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={`/${ENTERPRISE_FLAT_SLUGS['teambuilding']}`}
+                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
+                    >
+                      Đồng phục Teambuilding
+                    </Link>
+                  </li>
+                </ul>
               </div>
 
-            </Link>
-
-            {/* Featured Product Card 2 */}
-            <Link href={`/${ENTERPRISE_FLAT_SLUGS['polo']}`} className="group block space-y-1.5">
-              <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow-sm">
-                <img
-                  src="/images/dong-phuc-cong-ty.webp"
-                  alt="Polo Doanh Nghiệp"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+              {/* Cột 2: Đồng phục Khác */}
+              <div>
+                <h4 className="text-base font-bold text-gray-900 mb-3 whitespace-nowrap">
+                  Đồng phục Khác
+                </h4>
+                <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
+                  <li>
+                    <Link
+                      href={`/${ENTERPRISE_FLAT_SLUGS['ao-gio']}`}
+                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
+                    >
+                      Đồng phục Áo gió
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={`/${ENTERPRISE_FLAT_SLUGS['bao-ho']}`}
+                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
+                    >
+                      Bảo hộ lao động
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={`/${ENTERPRISE_FLAT_SLUGS['phu-kien']}`}
+                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
+                    >
+                      Phụ kiện & Quà tặng
+                    </Link>
+                  </li>
+                </ul>
               </div>
-            </Link>
-          </div>
+
+            </div>
+
+            {/* Right Column: Cột Hình ảnh nổi bật (4 cols) */}
+            <div className="col-span-4 grid grid-cols-2 gap-3">
+              {/* Featured Product Card 1 */}
+              <Link href={`/${ENTERPRISE_FLAT_SLUGS['so-mi']}`} className="group block space-y-1.5">
+                <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow-sm">
+                  <img
+                    src="/product/cong-so.webp"
+                    alt="Sơ mi Công Sở"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+
+              </Link>
+
+              {/* Featured Product Card 2 */}
+              <Link href={`/${ENTERPRISE_FLAT_SLUGS['polo']}`} className="group block space-y-1.5">
+                <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow-sm">
+                  <img
+                    src="/images/dong-phuc-cong-ty.webp"
+                    alt="Polo Doanh Nghiệp"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </Link>
+            </div>
 
           </div>
         </div>

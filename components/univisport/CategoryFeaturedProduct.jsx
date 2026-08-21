@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ContactForm from '../header/ContactForm';
-import { FaTimes, FaStar, FaPhoneAlt, FaFire, FaCheckCircle, FaChevronLeft, FaChevronRight, FaExpand, FaPlay } from 'react-icons/fa';
+import { FaTimes, FaStar, FaPhoneAlt, FaFire, FaCheckCircle, FaChevronLeft, FaChevronRight, FaExpand, } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 
 export default function CategoryFeaturedProduct({ product, sectionTitle }) {

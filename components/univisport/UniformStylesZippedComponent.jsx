@@ -6,23 +6,34 @@ const ROUND_ZIP_PRODUCTS = [
   {
     id: 'mag1-gag1',
     code: 'MAG1-GAG1',
-    image: '/images/tshirt-mag4-gag4.jpg',
-    name: 'Áo Gym Cổ Tròn Có Khoá - Phối Tay Raglan Đỏ & Thân Đen',
-    description: 'Thiết kế cổ tròn tích hợp khóa kéo ngực Powerzip linh hoạt, tay Raglan đỏ phối thân đen thể thao.',
+    image: '/mockup/tshirt-mag1-gag1.jpg',
+    name: 'Áo Gym Cổ Tròn Có Khóa - Đen Phối Tay Raglan Đỏ',
+    description:
+      'Thiết kế thân áo đen mạnh mẽ kết hợp tay Raglan đỏ nổi bật, cổ tròn có khóa kéo tạo diện mạo năng động và chuyên nghiệp.',
   },
   {
     id: 'mag3-gag3',
     code: 'MAG3-GAG3',
-    image: '/images/tshirt-mag2-gag2.jpg',
-    name: 'Áo Gym Cổ Tròn Có Khoá - Thân Trắng Phối Sườn Xanh Navy',
-    description: 'Tông trắng chủ đạo kết hợp dải mảng phối xanh navy ôm sườn, tôn dáng thể thao khỏe khoắn.',
+    image: '/mockup/tshirt-mag3-gag3.jpg',
+    name: 'Áo Gym Cổ Tròn Có Khóa - Trắng Phối Xanh Navy',
+    description:
+      'Thân áo trắng phối mảng xanh navy ở vai và sườn, kết hợp khóa kéo ngực tạo tổng thể khỏe khoắn, hiện đại và tôn dáng.',
   },
   {
     id: 'mag18-gag18',
     code: 'MAG18-GAG18',
-    image: '/images/tshirt-mag11-uniaos.jpg',
-    name: 'Áo Gym Cổ Tròn Có Khoá - Đen Phối Viền Vai Cam & Chỉ Nổi',
-    description: 'Chỉ may nổi flatlock cao cấp chống sờn ma sát, điểm nhấn vai cam nổi bật trên sàn tập.',
+    image: '/mockup/tshirt-mag18-gag18.jpg',
+    name: 'Áo Gym Cổ Tròn Có Khóa - Đen Phối Cam & Viền Trắng',
+    description:
+      'Nền đen thể thao kết hợp mảng phối cam nổi bật cùng đường viền trắng chạy dọc thân áo, tạo điểm nhấn mạnh mẽ và cá tính.',
+  },
+  {
+    id: 'mablbl1-gabl1',
+    code: 'MABLBL1-GABL1',
+    image: '/mockup/tshirt-mablbl1-gabl1.jpg',
+    name: 'Áo Gym Cổ Tròn Có Khóa - Xanh Royal Phối Cam',
+    description:
+      'Màu xanh royal chủ đạo kết hợp mảng vai cam tương phản, thiết kế cổ tròn có khóa kéo mang đến diện mạo trẻ trung và năng động.',
   },
 ];
 
@@ -30,29 +41,60 @@ const COLLAR_ZIP_PRODUCTS = [
   {
     id: 'mag17-gag17',
     code: 'MAG17-GAG17',
-    isRedCode: true,
-    image: '/images/gym/dong-phuc-gym-univi-nu-trang-den-legging.jpg',
-    name: 'Đồng Phục Gym Cổ Trụ Có Khoá - Đen Phối Tím Thể Thao',
-    description: 'Cổ trụ cao lịch sự kết hợp dây kéo tinh tế, dải phối màu tím độc đáo thu hút thị giác.',
+    image: '/mockup/tshirt-mag17-gag17.jpg',
+    name: 'Áo Gym Cổ Trụ Có Khóa - Đen Phối Viền Tím',
+    description:
+      'Nền đen kết hợp đường phối tím chạy dọc vai và sườn áo, tạo hiệu ứng tôn dáng cùng phong cách thể thao nổi bật.',
   },
   {
     id: 'mag22-gag22',
     code: 'MAG22-GAG22',
-    isRedCode: true,
-    image: '/images/gym/dong-phuc-gym-univi-nam-trang-den-quan-short.jpg',
-    name: 'Đồng Phục HLV Cổ Trụ Khóa Kéo - Đen Xám Chỉ Trắng',
-    description: 'Mẫu áo HLV PT chuẩn Athletic Fit, chất liệu UNI DRY co giãn 4 chiều tản nhiệt vượt trội.',
+    image: '/mockup/tshirt-mag22-gag22.jpg',
+    name: 'Áo Gym Cổ Trụ Có Khóa - Đen Phối Viền Trắng',
+    description:
+      'Nền đen kết hợp đường viền trắng chạy dọc vai và sườn áo, tạo vẻ tinh gọn, khỏe khoắn và chuyên nghiệp cho HLV gym.',
   },
   {
     id: 'mag23-gag23',
-    code: 'MAG23 - GAG23',
-    isRedCode: true,
-    image: '/images/gym/univi-dong-hanh-cung-the-one-kickfit-3.jpg',
-    name: 'Đồng Phục Gym Cổ Trụ Có Khoá - Đen Phối Bo Tay Cam',
-    description: 'Điểm nhấn viền bo tay cam năng động, tạo hình ảnh chuyên nghiệp cho phòng tập Fitness.',
+    code: 'MAG23-GAG23',
+    image: '/mockup/tshirt-mag23-gag23.png',
+    name: 'Áo Gym Cổ Trụ Có Khóa - Đen Phối Bo Tay Cam',
+    description:
+      'Thiết kế thân đen cổ trụ có khóa kéo, tạo điểm nhấn bằng bo tay cam nổi bật, mang đến diện mạo năng động và chuyên nghiệp.',
+  },
+  {
+    id: 'mag24-gag24',
+    code: 'MAG24-GAG24',
+    image: '/mockup/tshirt-mag24-gag24.jpg',
+    name: 'Áo Gym Cổ Trụ Có Khóa - Xanh Royal Phối Trắng',
+    description:
+      'Thân áo xanh royal phối tay trắng tương phản, kết hợp cổ trụ và khóa kéo tạo phong cách thể thao trẻ trung, nổi bật và chuyên nghiệp.',
+  },
+  {
+    id: 'mag25-gag25',
+    code: 'MAG25-GAG25',
+    image: '/mockup/tshirt-mag25-gag25.jpg',
+    name: 'Áo Gym Cổ Trụ Có Khóa - Xám Phối Đen',
+    description:
+      'Thiết kế màu xám hiện đại kết hợp mảng phối đen hai bên thân, tạo tổng thể tối giản, mạnh mẽ và dễ ứng dụng cho đồng phục phòng tập.',
+  },
+  {
+    id: 'mag29-gag29',
+    code: 'MAG29-GAG29',
+    image: '/mockup/tshirt-mag29-gag29.jpg',
+    name: 'Áo Gym Cổ Trụ Có Khóa - Đỏ Đô',
+    description:
+      'Tông đỏ đô nổi bật kết hợp thiết kế cổ trụ và khóa kéo tinh gọn, mang đến hình ảnh mạnh mẽ, chuyên nghiệp và dễ nhận diện.',
+  },
+  {
+    id: 'mag31-gag31',
+    code: 'MAG31-GAG31',
+    image: '/mockup/tshirt-mag31-gag31.jpg',
+    name: 'Áo Gym Cổ Trụ Có Khóa - Cam Phối Đen',
+    description:
+      'Màu cam nổi bật kết hợp mảng phối đen dọc hai bên thân và bo tay, tạo diện mạo khỏe khoắn, năng động và giàu nhận diện.',
   },
 ];
-
 const UniformStylesZippedComponent = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [contactPopupOpen, setContactPopupOpen] = useState(false);
@@ -78,7 +120,7 @@ const UniformStylesZippedComponent = () => {
         {/* Center Hero Image */}
         <div className="relative w-full aspect-[16/8] sm:aspect-[16/7] md:aspect-[16/7] min-h-[220px]">
           <Image
-            src="/images/gym-style-hero.jpg"
+            src="/mockup/mau-ao-gym-co-khoa.png"
             alt="Kiểu dáng áo Gym UNIVI - Các mẫu áo gym cổ có khoá"
             fill
             sizes="(max-width: 1024px) 100vw, 1100px"
@@ -105,7 +147,7 @@ const UniformStylesZippedComponent = () => {
           <h3 className="text-base sm:text-xl font-bold uppercase tracking-wide text-slate-800 mb-4 sm:mb-6">
             CỔ TRÒN CÓ KHOÁ
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8">
             {ROUND_ZIP_PRODUCTS.map((item) => (
               <div
                 key={item.id}
@@ -139,7 +181,7 @@ const UniformStylesZippedComponent = () => {
           <h3 className="text-base sm:text-xl font-bold uppercase tracking-wide text-slate-800 mb-4 sm:mb-6">
             CỔ TRỤ CÓ KHOÁ
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8">
             {COLLAR_ZIP_PRODUCTS.map((item) => (
               <div
                 key={item.id}
@@ -198,7 +240,7 @@ const UniformStylesZippedComponent = () => {
           </div>
           <div className="flex items-center gap-2 text-center sm:text-right">
             <span>📍</span>
-            <span>D4/180 Thanh Bình, P. Mộ Lao, Q. Hà Đông, Hà Nội</span>
+            <span>D14 ngõ 180 đường Thanh Bình, phường Hà Đông, Hà Nội</span>
           </div>
         </div>
       </div>
