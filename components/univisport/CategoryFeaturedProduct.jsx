@@ -1,9 +1,213 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ContactForm from '../header/ContactForm';
 import { FaTimes, FaStar, FaPhoneAlt, FaFire, FaCheckCircle, FaChevronLeft, FaChevronRight, FaExpand, } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
+
+function Card1VideoPlayer({ src }) {
+  const videoRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  const formatVideoTime = (seconds) => {
+    if (!seconds || Number.isNaN(seconds)) return "0:00";
+    const minutes = Math.floor(seconds / 60);
+    const rest = Math.floor(seconds % 60);
+    return `${minutes}:${rest.toString().padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlay = () => setPlaying(true);
+    const handlePause = () => setPlaying(false);
+
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
+
+    video.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+
+    return () => {
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+    };
+  }, [src]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const updateTime = () => {
+      if (!video.duration) return;
+      setProgress((video.currentTime / video.duration) * 100);
+      setCurrentTime(video.currentTime);
+    };
+    const updateDuration = () => {
+      setDuration(video.duration || 0);
+      updateTime();
+    };
+
+    video.addEventListener("timeupdate", updateTime);
+    video.addEventListener("loadedmetadata", updateDuration);
+    if (video.readyState >= 1) updateDuration();
+
+    return () => {
+      video.removeEventListener("timeupdate", updateTime);
+      video.removeEventListener("loadedmetadata", updateDuration);
+    };
+  }, [src]);
+
+  const togglePlay = (e) => {
+    e?.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play().then(() => setPlaying(true)).catch(() => { });
+    } else {
+      video.pause();
+      setPlaying(false);
+    }
+  };
+
+  const toggleMute = (e) => {
+    e?.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setMuted(video.muted);
+  };
+
+  const handleSeek = (event) => {
+    event.stopPropagation();
+    const video = videoRef.current;
+    const value = Number(event.target.value);
+    setProgress(value);
+
+    if (!video || !video.duration) return;
+    video.currentTime = (value / 100) * video.duration;
+    setCurrentTime(video.currentTime);
+  };
+
+  return (
+    <div className="relative w-full h-full rounded-xl lg:rounded-2xl overflow-hidden group/video bg-[#0a0a0a]" onClick={(e) => e.stopPropagation()}>
+      <video
+        ref={videoRef}
+        src={src}
+        autoPlay
+        loop
+        muted={muted}
+        playsInline
+        onClick={togglePlay}
+        className="w-full h-full object-cover rounded-xl lg:rounded-2xl cursor-pointer block"
+      />
+
+      {/* Center Play Button when paused */}
+      {!playing && (
+        <button
+          type="button"
+          onClick={togglePlay}
+          aria-label="Phát video"
+          className="absolute inset-0 z-10 flex items-center justify-center border-0 bg-transparent p-0 cursor-pointer"
+        >
+          <span className="flex h-8 w-12 sm:h-11 sm:w-16 items-center justify-center rounded-lg sm:rounded-xl bg-[#FF0000]/70 shadow-lg transition-transform duration-300 group-hover/video:scale-110">
+            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="white">
+              <polygon points="6,4 20,12 6,20" />
+            </svg>
+          </span>
+        </button>
+      )}
+
+      {/* Controls overlay */}
+      <div
+        onClick={(event) => event.stopPropagation()}
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 opacity-0 transition-opacity duration-200 group-hover/video:opacity-100 group-hover:opacity-100 group-focus-within/video:opacity-100"
+      >
+        <div className="pointer-events-auto absolute inset-x-0 bottom-0 h-4">
+          <div className="absolute inset-x-0 bottom-0 h-1 bg-white/40">
+            <div
+              className="h-full bg-red-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div
+            className="absolute bottom-0 h-2.5 w-2.5 sm:h-3 sm:w-3 translate-y-1/2 rounded-full bg-red-500 shadow"
+            style={{ left: `calc(${progress}% - 5px)` }}
+          />
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={0.1}
+            value={progress}
+            onInput={handleSeek}
+            onChange={handleSeek}
+            aria-label="Tua video"
+            className="absolute inset-x-0 bottom-[-6px] m-0 h-6 w-full cursor-pointer opacity-0"
+          />
+        </div>
+
+        <div
+          className="pointer-events-auto flex items-center gap-2 sm:gap-3 px-2 sm:px-3 pb-2 sm:pb-3 pt-6 sm:pt-8"
+          style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.72))" }}
+        >
+          {/* Play / Pause */}
+          <button
+            type="button"
+            onClick={togglePlay}
+            aria-label={playing ? "Tạm dừng" : "Phát"}
+            className="w-7 h-7 sm:w-9 sm:h-9 rounded-full border-0 flex items-center justify-center cursor-pointer backdrop-blur-sm bg-white/20 hover:bg-white/35 transition-colors"
+          >
+            {playing ? (
+              // Pause icon
+              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="white">
+                <rect x="5" y="3" width="4" height="18" rx="1" />
+                <rect x="15" y="3" width="4" height="18" rx="1" />
+              </svg>
+            ) : (
+              // Play icon
+              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="white">
+                <polygon points="5,3 19,12 5,21" />
+              </svg>
+            )}
+          </button>
+
+          {/* Mute / Unmute */}
+          <button
+            type="button"
+            onClick={toggleMute}
+            aria-label={muted ? "Bật tiếng" : "Tắt tiếng"}
+            className="w-7 h-7 sm:w-9 sm:h-9 rounded-full border-0 flex items-center justify-center cursor-pointer backdrop-blur-sm bg-white/20 hover:bg-white/35 transition-colors"
+          >
+            {muted ? (
+              // Muted icon
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <line x1="23" y1="9" x2="17" y2="15" />
+                <line x1="17" y1="9" x2="23" y2="15" />
+              </svg>
+            ) : (
+              // Sound icon
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+              </svg>
+            )}
+          </button>
+
+          <span className="ml-auto whitespace-nowrap text-[10px] sm:text-xs tabular-nums text-white/80">
+            {formatVideoTime(currentTime)} / {formatVideoTime(duration)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function CategoryFeaturedProduct({ product, sectionTitle }) {
   if (!product) return null;
@@ -104,17 +308,32 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
 
   if (cfg.customSecondaryImage) {
     const customImgs = cfg.customSecondaryImage.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
-    customImgs.forEach(img => card1MediaList.push({ type: 'image', url: img }));
+    customImgs.forEach(img => {
+      if (!card1MediaList.some(m => m.url === img)) {
+        card1MediaList.push({ type: 'image', url: img });
+      }
+    });
   }
 
-  // Fallback to gallery or product colors if card1MediaList is empty
+  // Fallback to gallery, product colors, or main image ONLY if card1MediaList is empty
   if (card1MediaList.length === 0) {
     if (Array.isArray(product.gallery) && product.gallery.length > 0) {
-      product.gallery.forEach(img => card1MediaList.push({ type: 'image', url: typeof img === 'string' ? img : img.src }));
-    } else if (colors.length > 1) {
-      colors.forEach(c => { if (c.image) card1MediaList.push({ type: 'image', url: c.image }); });
-    } else {
+      product.gallery.forEach(img => {
+        const url = typeof img === 'string' ? img : img?.src;
+        if (url && !card1MediaList.some(m => m.url === url)) {
+          card1MediaList.push({ type: 'image', url });
+        }
+      });
+    } else if (colors.length > 0) {
+      colors.forEach(c => {
+        if (c.image && !card1MediaList.some(m => m.url === c.image)) {
+          card1MediaList.push({ type: 'image', url: c.image });
+        }
+      });
+    } else if (product.image) {
       card1MediaList.push({ type: 'image', url: product.image });
+    } else {
+      card1MediaList.push({ type: 'image', url: '/images/placeholder.jpg' });
     }
   }
 
@@ -184,15 +403,41 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
             onClick={openFullscreenCard1}
             className="col-span-1 md:col-span-4 rounded-xl lg:rounded-2xl relative flex items-center justify-center aspect-[4/5] min-h-[200px] sm:min-h-[280px] md:min-h-[440px] group overflow-hidden cursor-pointer bg-[#f3f3f5] border border-gray-200 shadow-sm"
           >
+            {/* Card 1 Media (Video or Image) */}
+            {currentCard1Media?.type === 'video' ? (
+              <Card1VideoPlayer key={currentCard1Media.url} src={currentCard1Media.url} />
+            ) : (
+              <Image
+                src={imageError[`sec_${card1MediaIdx}`] ? '/images/placeholder.jpg' : getImageUrl(currentCard1Media?.url)}
+                alt={`${displayTitle} preview`}
+                fill
+                className="object-cover rounded-xl lg:rounded-2xl transition-transform duration-500 group-hover:scale-105"
+                onError={() => setImageError(prev => ({ ...prev, [`sec_${card1MediaIdx}`]: true }))}
+                unoptimized={getImageUrl(currentCard1Media?.url).startsWith('http')}
+              />
+            )}
+
             {/* Left Navigation Arrow */}
             {card1MediaList.length > 1 && (
               <button
                 type="button"
                 onClick={handlePrevCard1}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-30 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
                 aria-label="Hình/Video trước"
               >
                 <FaChevronLeft size={12} />
+              </button>
+            )}
+
+            {/* Right Navigation Arrow */}
+            {card1MediaList.length > 1 && (
+              <button
+                type="button"
+                onClick={handleNextCard1}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-30 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
+                aria-label="Hình/Video tiếp theo"
+              >
+                <FaChevronRight size={12} />
               </button>
             )}
 
@@ -206,51 +451,9 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
               <FaExpand size={13} />
             </button>
 
-            {/* Card 1 Media (Video or Image) */}
-            {currentCard1Media?.type === 'video' ? (
-              <div className="relative w-full h-full rounded-xl lg:rounded-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                <style jsx global>{`
-                  video::-webkit-media-controls-fullscreen-button {
-                    display: none !important;
-                  }
-                `}</style>
-                <video
-                  src={currentCard1Media.url}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  controls
-                  controlsList="nofullscreen"
-                  className="w-full h-full object-cover rounded-xl lg:rounded-2xl cursor-pointer"
-                />
-              </div>
-            ) : (
-              <Image
-                src={imageError[`sec_${card1MediaIdx}`] ? '/images/placeholder.jpg' : getImageUrl(currentCard1Media?.url)}
-                alt={`${displayTitle} preview`}
-                fill
-                className="object-cover rounded-xl lg:rounded-2xl transition-transform duration-500 group-hover:scale-105"
-                onError={() => setImageError(prev => ({ ...prev, [`sec_${card1MediaIdx}`]: true }))}
-                unoptimized={getImageUrl(currentCard1Media?.url).startsWith('http')}
-              />
-            )}
-
-            {/* Right Navigation Arrow */}
-            {card1MediaList.length > 1 && (
-              <button
-                type="button"
-                onClick={handleNextCard1}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
-                aria-label="Hình/Video tiếp theo"
-              >
-                <FaChevronRight size={12} />
-              </button>
-            )}
-
             {/* Card 1 Dots Indicator (Max 3 dots) */}
             {card1MediaList.length > 1 && (
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {card1MediaList.slice(0, 3).map((_, idx) => {
                   const activeDotIdx = card1MediaList.length <= 3
                     ? card1MediaIdx
@@ -563,14 +766,8 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
               )}
 
               {currentCard1Media?.type === 'video' ? (
-                <div className="relative w-full h-full sm:h-auto sm:max-w-5xl sm:aspect-video flex items-center justify-center bg-black overflow-hidden sm:rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                  <video
-                    key={currentCard1Media.url}
-                    src={currentCard1Media.url}
-                    autoPlay
-                    controls
-                    className="w-full h-full object-contain"
-                  />
+                <div className="relative w-full h-[82vh] sm:h-[85vh] max-w-[360px] sm:max-w-md aspect-[9/16] flex items-center justify-center bg-black overflow-hidden rounded-xl sm:rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                  <Card1VideoPlayer key={currentCard1Media.url} src={currentCard1Media.url} />
                 </div>
               ) : (
                 <div className="relative w-full h-full sm:h-[85vh] sm:max-w-5xl flex items-center justify-center" onClick={(e) => e.stopPropagation()}>

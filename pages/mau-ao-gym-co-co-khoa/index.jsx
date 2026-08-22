@@ -5,7 +5,7 @@ const META_TITLE = "Mẫu Áo Gym Cổ Có Khoá | Đồng Phục Gym Univi";
 const META_DESCRIPTION =
   "BST Mẫu Áo Gym Cổ Có Khoá Univi - Bao gồm Áo cổ tròn có khoá & Áo cổ trụ có khoá Powerzip. Thiết kế thể thao, co giãn 4 chiều, tùy chọn phối màu cổ & tay theo thương hiệu.";
 const CANONICAL = "https://dongphucunivi.com/mau-ao-gym-co-co-khoa";
-const OG_IMAGE = "https://dongphucunivi.com/images/gym-style-hero.jpg";
+const OG_IMAGE = "https://dongphucunivi.com/mockup/mau-ao-gym-co-polo.png";
 const OG_IMAGE_ALT = "Kiểu dáng mẫu áo gym cổ có khoá Univi";
 
 export default function MauAoGymCoCoKhoaPage() {

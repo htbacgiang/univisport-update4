@@ -5,7 +5,7 @@ const META_TITLE = "Mẫu Áo Gym Cổ Tròn Không Khoá | Đồng Phục Gym U
 const META_DESCRIPTION =
   "BST Mẫu Áo Gym Cổ Tròn Không Khoá Univi - Thiết kế chuẩn Athletic Fit, chất liệu UNI DRY thoát ẩm nhanh chóng, tùy chọn phối màu cổ & tay theo thương hiệu.";
 const CANONICAL = "https://dongphucunivi.com/mau-ao-gym-co-tron-khong-khoa";
-const OG_IMAGE = "https://dongphucunivi.com/images/gym-style-hero.jpg";
+const OG_IMAGE = "https://dongphucunivi.com/mockup/mau-ao-gym-co-tron-ko-khoa.jpg";
 const OG_IMAGE_ALT = "Kiểu dáng mẫu áo gym cổ tròn không khoá Univi";
 
 export default function MauAoGymCoTronKhongKhoaPage() {

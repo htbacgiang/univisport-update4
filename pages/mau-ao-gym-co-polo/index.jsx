@@ -5,7 +5,7 @@ const META_TITLE = "Mẫu Áo Gym Cổ Polo | Đồng Phục Gym Univi";
 const META_DESCRIPTION =
   "BST Mẫu Áo Gym Cổ Polo Univi - Bao gồm thiết kế Áo Polo Cổ Cúc truyền thống & Áo Polo Cổ Khóa Kéo Powerzip. Tùy chọn phối màu cổ & tay theo nhận diện thương hiệu.";
 const CANONICAL = "https://dongphucunivi.com/mau-ao-gym-co-polo";
-const OG_IMAGE = "https://dongphucunivi.com/images/gym-style-hero.jpg";
+const OG_IMAGE = "https://dongphucunivi.com/mockup/mau-ao-gym-co-khoa.png";
 const OG_IMAGE_ALT = "Kiểu dáng mẫu áo gym cổ polo Univi";
 
 export default function MauAoGymCoPoloPage() {

@@ -41,9 +41,9 @@ const menuItems = [
           {
             name: "Mẫu Mockup 3D",
             subDropdown: [
-              { name: "Mẫu áo gym cổ có khóa", link: "/mau-ao-gym-co-co-khoa" },
-              { name: "Mẫu áo gym cổ polo", link: "/mau-ao-gym-co-polo" },
-              { name: "Mẫu áo gym cổ tròn không khóa", link: "/mau-ao-gym-co-tron-khong-khoa" },
+              { name: "Áo gym cổ có khóa", link: "/mau-ao-gym-co-co-khoa" },
+              { name: "Áo gym cổ polo", link: "/mau-ao-gym-co-polo" },
+              { name: "Áo gym cổ tròn không khóa", link: "/mau-ao-gym-co-tron-khong-khoa" },
             ],
           },
         ],

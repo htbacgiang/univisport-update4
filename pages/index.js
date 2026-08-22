@@ -13,6 +13,7 @@ import CategoryGrid from "../components/univisport/CategoryGrid";
 import HeroSection1 from "../components/univisport/HeroSection1";
 import PartnersSection from "../components/univisport/PartnersSection";
 import FabricCardComponent from "../components/univisport/FabricCardComponent";
+import Mockup3DSection from "../components/univisport/Mockup3DSection";
 import VideoFeedback from "../components/univisport/VideoFeedback";
 import db from "../utils/db";
 import Product from "../models/Product";
@@ -118,9 +119,10 @@ export default function Home({
       <VideoSection />
       <FeedbackSection initialFeedbacks={initialFeedbacks} />
       <PartnersSection />
-      <VideoFeedback />
       <HeroSection1 />
       <FabricCardComponent />
+      <Mockup3DSection />
+      <VideoFeedback />
       <FAQComponent items={homepageFaqs} />
       <BlogHero />
       <div className="container mx-auto px-4 py-4 md:py-10">
@@ -157,7 +159,7 @@ export default function Home({
 function VideoSection() {
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -169,7 +171,7 @@ function VideoSection() {
     return `${minutes}:${rest.toString().padStart(2, "0")}`;
   };
 
-  // IntersectionObserver: tự phát + bật tiếng khi scroll vào view
+  // IntersectionObserver: Tự động phát video khi scroll vào view
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -177,21 +179,29 @@ function VideoSection() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.muted = false;
-          video.volume = 1;
-          setMuted(false);
-          video
-            .play()
-            .then(() => setPlaying(true))
-            .catch(() => {
-              setPlaying(false);
-            });
+          // Thử phát video (nếu trình duyệt chặn âm thanh tự động, fallback sang muted để phát được)
+          const promise = video.play();
+          if (promise !== undefined) {
+            promise
+              .then(() => {
+                setPlaying(true);
+              })
+              .catch(() => {
+                // Trình duyệt chặn autoplay có tiếng -> Chuyển sang tắt tiếng (muted) và phát lại
+                video.muted = true;
+                setMuted(true);
+                video
+                  .play()
+                  .then(() => setPlaying(true))
+                  .catch(() => setPlaying(false));
+              });
+          }
         } else {
           video.pause();
           setPlaying(false);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.25 }
     );
 
     observer.observe(video);

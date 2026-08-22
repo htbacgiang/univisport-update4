@@ -41,9 +41,9 @@ const sportMenuData = [
       {
         name: "Mẫu Mockup 3D",
         children: [
-          { name: "Áo gym cổ khóa", href: "/mau-ao-gym-co-co-khoa" },
-          { name: "Áo gym cổ polo", href: "/mau-ao-gym-co-polo" },
-          { name: "Áo gym cổ tròn", href: "/mau-ao-gym-co-tron-khong-khoa" },
+          { name: "Áo gym cổ có khóa", link: "/mau-ao-gym-co-co-khoa" },
+          { name: "Áo gym cổ polo", link: "/mau-ao-gym-co-polo" },
+          { name: "Áo gym cổ tròn không khóa", link: "/mau-ao-gym-co-tron-khong-khoa" },
         ],
       },
     ],
