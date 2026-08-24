@@ -921,15 +921,23 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
                 <div className="min-w-0">
                   <span className="text-xs font-medium tracking-[0.15em] text-gray-500 uppercase">Giá tham khảo</span>
                   <div className="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap mt-1">
-                    <span className="text-sm sm:text-base font-semibold text-red-500">Từ</span>
-                    <span className="text-lg sm:text-2xl font-bold text-red-500 whitespace-nowrap">
-                      {product.price.toLocaleString('vi-VN')}đ
-                    </span>
-                    {product.unit && (
-                      <span className="text-xs sm:text-sm font-normal text-gray-400">/{product.unit}</span>
+                    {product.price && product.price > 0 ? (
+                      <>
+                        <span className="text-sm sm:text-base font-semibold text-red-500">Từ</span>
+                        <span className="text-lg sm:text-2xl font-bold text-red-500 whitespace-nowrap">
+                          {product.price.toLocaleString('vi-VN')}đ
+                        </span>
+                        {product.unit && (
+                          <span className="text-xs sm:text-sm font-normal text-gray-400">/{product.unit}</span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-lg sm:text-2xl font-bold text-red-500 whitespace-nowrap">
+                        Liên hệ
+                      </span>
                     )}
                   </div>
-                  {product.originalPrice > 0 && product.originalPrice > product.price && (
+                  {product.price > 0 && product.originalPrice > 0 && product.originalPrice > product.price && (
                     <span className="block text-sm text-gray-400 line-through font-normal mt-0.5">
                       {product.originalPrice.toLocaleString('vi-VN')}đ
                     </span>

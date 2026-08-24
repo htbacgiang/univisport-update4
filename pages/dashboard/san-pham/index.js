@@ -10,25 +10,29 @@ import styles from '../../../styles/dashboard-products.module.css';
 import { ReactSortable } from "react-sortablejs";
 import { getProductLineOptions, getCollarTypeOptions, getProductLineLabel, getCollarTypeLabel } from '../../../lib/productTaxonomy';
 
-const CATEGORY_NAMES = {
-  'dong-phuc-gym': 'Đồng phục Gym',
-  'dong-phuc-yoga-pilates': 'Đồng phục Yoga - Pilates',
-  'dong-phuc-pickleball': 'Đồng phục Pickleball',
-  'dong-phuc-chay-bo': 'Đồng phục Chạy bộ',
-  'dong-phuc-mma': 'Đồng phục MMA',
-  'dong-phuc-ao-gio': 'Đồng phục Áo Gió',
-  'dong-phuc-golf-tennis': 'Đồng phục Golf - Tennis',
-};
-
-const CATEGORY_ORDER = [
-  'dong-phuc-gym',
-  'dong-phuc-yoga-pilates',
-  'dong-phuc-pickleball',
-  'dong-phuc-chay-bo',
-  'dong-phuc-mma',
-  'dong-phuc-ao-gio',
-  'dong-phuc-golf-tennis',
+const CATEGORY_TAB_DEFINITIONS = [
+  { key: 'dong-phuc-gym', label: 'Đồng phục Gym', matchFn: (p) => p.category === 'dong-phuc-gym' },
+  { key: 'dong-phuc-yoga-pilates', label: 'Đồng phục Yoga - Pilates', matchFn: (p) => p.category === 'dong-phuc-yoga-pilates' },
+  { key: 'dong-phuc-pickleball', label: 'Đồng phục Pickleball', matchFn: (p) => p.category === 'dong-phuc-pickleball' },
+  { key: 'dong-phuc-chay-bo', label: 'Đồng phục Chạy bộ', matchFn: (p) => p.category === 'dong-phuc-chay-bo' },
+  { key: 'dong-phuc-mma', label: 'Đồng phục MMA', matchFn: (p) => p.category === 'dong-phuc-mma' },
+  { key: 'dong-phuc-golf-tennis', label: 'Đồng phục Golf - Tennis', matchFn: (p) => p.category === 'dong-phuc-golf-tennis' },
+  { key: 'dong-phuc-ao-gio', label: 'Đồng phục Áo Gió', matchFn: (p) => p.category === 'dong-phuc-ao-gio' || (p.category === 'dong-phuc-doanh-nghiep' && p.productLine === 'ao-gio') },
+  { key: 'dong-phuc-ao-polo', label: 'Đồng phục Áo Polo', matchFn: (p) => p.category === 'dong-phuc-ao-polo' },
+  { key: 'dong-phuc-ao-thun', label: 'Đồng phục Áo Thun', matchFn: (p) => p.category === 'dong-phuc-ao-thun' },
+  { key: 'dp-so-mi', label: 'Đồng phục Sơ mi', matchFn: (p) => p.category === 'dong-phuc-so-mi' || (p.category === 'dong-phuc-doanh-nghiep' && p.productLine === 'so-mi') },
+  { key: 'dp-vest', label: 'Đồng phục Vest công sở', matchFn: (p) => p.category === 'dong-phuc-vest-cong-so' || (p.category === 'dong-phuc-doanh-nghiep' && p.productLine === 'vest') },
+  { key: 'polo-dn', label: 'Polo doanh nghiệp', matchFn: (p) => (p.category === 'dong-phuc-doanh-nghiep' && p.productLine === 'polo') },
+  { key: 'dp-teambuilding', label: 'Đồng phục Teambuilding', matchFn: (p) => p.category === 'dong-phuc-teambuilding' || (p.category === 'dong-phuc-doanh-nghiep' && p.productLine === 'teambuilding') },
+  { key: 'bao-ho-lao-dong', label: 'Bảo hộ lao động', matchFn: (p) => p.category === 'bao-ho-lao-dong' || p.category === 'dong-phuc-bao-ho-lao-dong' || (p.category === 'dong-phuc-doanh-nghiep' && p.productLine === 'bao-ho') },
+  { key: 'phu-kien-qua-tang', label: 'Phụ kiện & Quà tặng', matchFn: (p) => p.category === 'phu-kien-qua-tang-doanh-nghiep' || p.category === 'phu-kien-qua-tang' || (p.category === 'dong-phuc-doanh-nghiep' && p.productLine === 'phu-kien') },
 ];
+
+const getCategoryLabel = (product) => {
+  if (product.categoryNameVN) return product.categoryNameVN;
+  const found = CATEGORY_TAB_DEFINITIONS.find((t) => t.matchFn(product));
+  return found ? found.label : (product.category || 'Không xác định');
+};
 
 export default function JSONProductsListPage() {
   const [allProducts, setAllProducts] = useState([]);
@@ -39,7 +43,7 @@ export default function JSONProductsListPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedTabKey, setSelectedTabKey] = useState('');
   const [selectedProductLine, setSelectedProductLine] = useState('');
   const [selectedCollarType, setSelectedCollarType] = useState('');
   const [limit, setLimit] = useState(20);
@@ -62,22 +66,37 @@ export default function JSONProductsListPage() {
   const tableContainerRef = useRef(null);
   const containerRef = useRef(null);
 
-  const categoryTabs = useMemo(() => {
-    const fromProducts = allProducts.reduce((acc, product) => {
-      if (product.category) {
-        acc.set(product.category, product.categoryNameVN || CATEGORY_NAMES[product.category] || product.category);
-      }
-      return acc;
-    }, new Map(CATEGORY_ORDER.map((slug) => [slug, CATEGORY_NAMES[slug]])));
+  const visibleCategoryTabs = useMemo(() => {
+    const predefinedTabsWithCounts = CATEGORY_TAB_DEFINITIONS.map(tab => {
+      const count = allProducts.filter(tab.matchFn).length;
+      return { ...tab, count };
+    }).filter(tab => tab.count > 0);
 
-    return Array.from(fromProducts.entries()).sort(([a], [b]) => {
-      const orderA = CATEGORY_ORDER.indexOf(a);
-      const orderB = CATEGORY_ORDER.indexOf(b);
-      if (orderA === -1 && orderB === -1) return a.localeCompare(b);
-      if (orderA === -1) return 1;
-      if (orderB === -1) return -1;
-      return orderA - orderB;
+    const matchedCategoryKeys = new Set();
+    allProducts.forEach(p => {
+      if (p.category && CATEGORY_TAB_DEFINITIONS.some(tab => tab.matchFn(p))) {
+        matchedCategoryKeys.add(p.category);
+      }
     });
+
+    const dynamicTabsMap = new Map();
+    allProducts.forEach(p => {
+      if (p.category && !matchedCategoryKeys.has(p.category)) {
+        if (!dynamicTabsMap.has(p.category)) {
+          const count = allProducts.filter(item => item.category === p.category).length;
+          if (count > 0) {
+            dynamicTabsMap.set(p.category, {
+              key: p.category,
+              label: p.categoryNameVN || p.category,
+              count,
+              matchFn: (item) => item.category === p.category,
+            });
+          }
+        }
+      }
+    });
+
+    return [...predefinedTabsWithCounts, ...Array.from(dynamicTabsMap.values())];
   }, [allProducts]);
 
   const fetchProducts = useCallback(async () => {
@@ -102,31 +121,38 @@ export default function JSONProductsListPage() {
     fetchProducts();
   }, [fetchProducts]);
 
+  const selectedCategoryForOptions = useMemo(() => {
+    const currentTab = visibleCategoryTabs.find(tab => tab.key === selectedTabKey);
+    return currentTab?.key || '';
+  }, [visibleCategoryTabs, selectedTabKey]);
+
   const productLineFilterOptions = useMemo(
-    () => getProductLineOptions(selectedCategory),
-    [selectedCategory]
+    () => getProductLineOptions(selectedCategoryForOptions),
+    [selectedCategoryForOptions]
   );
   const collarTypeFilterOptions = useMemo(
-    () => getCollarTypeOptions(selectedCategory, selectedProductLine),
-    [selectedCategory, selectedProductLine]
+    () => getCollarTypeOptions(selectedCategoryForOptions, selectedProductLine),
+    [selectedCategoryForOptions, selectedProductLine]
   );
 
-  // Filter products based on search, category, product line, collar type
+  // Filter products based on search, category tab, product line, collar type
   const filteredProducts = useMemo(() => {
     const normalizedSearch = searchTerm.toLowerCase();
+    const currentTab = visibleCategoryTabs.find(tab => tab.key === selectedTabKey);
+
     return allProducts.filter(product => {
       const matchesSearch = !searchTerm ||
         (product.name || '').toLowerCase().includes(normalizedSearch) ||
         (product.maSanPham || '').toLowerCase().includes(normalizedSearch) ||
         (product.categoryNameVN || '').toLowerCase().includes(normalizedSearch);
 
-      const matchesCategory = !selectedCategory || product.category === selectedCategory;
+      const matchesCategory = !selectedTabKey || (currentTab ? currentTab.matchFn(product) : product.category === selectedTabKey);
       const matchesProductLine = !selectedProductLine || product.productLine === selectedProductLine;
       const matchesCollarType = !selectedCollarType || product.collarType === selectedCollarType;
 
       return matchesSearch && matchesCategory && matchesProductLine && matchesCollarType;
     });
-  }, [allProducts, searchTerm, selectedCategory, selectedProductLine, selectedCollarType]);
+  }, [allProducts, searchTerm, selectedTabKey, visibleCategoryTabs, selectedProductLine, selectedCollarType]);
 
   useEffect(() => {
     const startIndex = (page - 1) * limit;
@@ -453,20 +479,29 @@ export default function JSONProductsListPage() {
         <div className={styles.filterSection} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '1rem' }}>
           <div className="flex flex-wrap gap-2 mb-2">
             <button
-              onClick={() => { setSelectedCategory(''); setSelectedProductLine(''); setSelectedCollarType(''); setPage(1); }}
-              className={`px-4 py-2 rounded-md font-medium transition-colors ${selectedCategory === '' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              onClick={() => { setSelectedTabKey(''); setSelectedProductLine(''); setSelectedCollarType(''); setPage(1); }}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${selectedTabKey === '' ? 'bg-blue-600 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
             >
-              Tất cả
+              <span>Tất cả</span>
+              <span className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${selectedTabKey === '' ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-600'}`}>
+                {allProducts.length}
+              </span>
             </button>
-            {categoryTabs.map(([category, categoryName]) => (
-              <button
-                key={category}
-                onClick={() => { setSelectedCategory(category); setSelectedProductLine(''); setSelectedCollarType(''); setPage(1); }}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${selectedCategory === category ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-              >
-                {categoryName}
-              </button>
-            ))}
+            {visibleCategoryTabs.map((tab) => {
+              const isSelected = selectedTabKey === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => { setSelectedTabKey(tab.key); setSelectedProductLine(''); setSelectedCollarType(''); setPage(1); }}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${isSelected ? 'bg-blue-600 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                >
+                  <span>{tab.label}</span>
+                  <span className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${isSelected ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-600'}`}>
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           {(productLineFilterOptions.length > 0 || selectedProductLine) && (
@@ -563,7 +598,7 @@ export default function JSONProductsListPage() {
                     <th className={styles.tableHeader} scope="col">Hành động</th>
                   </tr>
                 </thead>
-                {(selectedCategory && !searchTerm) ? (
+                {(selectedTabKey && !searchTerm) ? (
                   <ReactSortable
                     list={displayedProducts}
                     setList={handleSort}
@@ -611,7 +646,7 @@ export default function JSONProductsListPage() {
                           </td>
                           <td className={styles.tableCell}>
                             <span className={styles.category}>
-                              {product.categoryNameVN || CATEGORY_NAMES[product.category] || 'Không xác định'}
+                              {getCategoryLabel(product)}
                             </span>
                           </td>
                           <td className={styles.tableCell}>
@@ -624,8 +659,8 @@ export default function JSONProductsListPage() {
                           </td>
                           <td className={styles.tableCell}>
                             <span className={styles.price}>
-                              {product.price?.toLocaleString('vi-VN') || 0}đ
-                              {product.originalPrice && product.originalPrice > product.price && (
+                              {product.price && product.price > 0 ? `${product.price.toLocaleString('vi-VN')}đ` : 'Liên hệ'}
+                              {product.price > 0 && product.originalPrice && product.originalPrice > product.price && (
                                 <span className={styles.originalPrice}>
                                   {' '}({product.originalPrice.toLocaleString('vi-VN')}đ)
                                 </span>
@@ -752,7 +787,7 @@ export default function JSONProductsListPage() {
                           </td>
                           <td className={styles.tableCell}>
                             <span className={styles.category}>
-                              {product.categoryNameVN || CATEGORY_NAMES[product.category] || 'Không xác định'}
+                              {getCategoryLabel(product)}
                             </span>
                           </td>
                           <td className={styles.tableCell}>
@@ -765,8 +800,8 @@ export default function JSONProductsListPage() {
                           </td>
                           <td className={styles.tableCell}>
                             <span className={styles.price}>
-                              {product.price?.toLocaleString('vi-VN') || 0}đ
-                              {product.originalPrice && product.originalPrice > product.price && (
+                              {product.price && product.price > 0 ? `${product.price.toLocaleString('vi-VN')}đ` : 'Liên hệ'}
+                              {product.price > 0 && product.originalPrice && product.originalPrice > product.price && (
                                 <span className={styles.originalPrice}>
                                   {' '}({product.originalPrice.toLocaleString('vi-VN')}đ)
                                 </span>

@@ -27,6 +27,7 @@ const ProductCard = ({ id, name, description, price, maxPrice, discount, isNew, 
   };
 
   const formatPrice = (price) => {
+    if (!price || price <= 0) return 'Liên hệ';
     return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
   };
 
@@ -61,7 +62,7 @@ const ProductCard = ({ id, name, description, price, maxPrice, discount, isNew, 
             <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
             {/* Discount Badge - top left */}
-            {discount > 0 && (
+            {discount > 0 && price > 0 && (
               <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold rounded-full w-10 h-10 flex items-center justify-center z-10">
                 - {discount}%
               </div>
@@ -92,7 +93,7 @@ const ProductCard = ({ id, name, description, price, maxPrice, discount, isNew, 
             <span className="text-base font-bold text-red-500 tracking-tight">
               {formatPrice(price)}
             </span>
-            {maxPrice > 0 && maxPrice > price && (
+            {price > 0 && maxPrice > 0 && maxPrice > price && (
               <span className="text-sm text-gray-400 line-through font-normal">
                 {formatPrice(maxPrice)}
               </span>

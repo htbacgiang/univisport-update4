@@ -174,6 +174,7 @@ export default function CreateJSONProductPage() {
   const [originalSlug, setOriginalSlug] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newProductId, setNewProductId] = useState(null);
+  const [priceType, setPriceType] = useState('numeric');
   const [eyeDropperState, setEyeDropperState] = useState({ open: false, index: null, colorKey: null, hoveredColor: null });
   const eyeDropperCanvasRef = useRef(null);
   const eyeDropperImgRef = useRef(null);
@@ -310,6 +311,7 @@ export default function CreateJSONProductPage() {
       });
 
       setImages(allImages);
+      setPriceType((product.price === 0 || !product.price) ? 'contact' : 'numeric');
       setIsSlugLocked(false);
       setOriginalSlug(product.slug || '');
     } catch (err) {
@@ -539,6 +541,7 @@ export default function CreateJSONProductPage() {
       }
     });
     setImages([]);
+    setPriceType('numeric');
     setIsSlugLocked(true);
     setOriginalSlug('');
     setErrors([]);
@@ -1526,32 +1529,89 @@ export default function CreateJSONProductPage() {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  Giá bán <span className={styles.required}>*</span>
+                  Lựa chọn giá sản phẩm <span className={styles.required}>*</span>
                 </label>
-                <input
-                  type="number"
-                  value={formData.price}
-                  onChange={(e) => dispatch({ type: 'UPDATE_FIELD', field: 'price', value: Number(e.target.value) })}
-                  className={styles.input}
-                  min="0"
-                  placeholder="Giá bán"
-                  required
-                  aria-label="Giá bán"
-                />
+                <div style={{ display: 'flex', gap: '1.5rem', marginTop: '0.25rem', marginBottom: '0.5rem', alignItems: 'center' }}>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500, color: '#374151' }}>
+                    <input
+                      type="radio"
+                      name="priceType"
+                      value="numeric"
+                      checked={priceType === 'numeric'}
+                      onChange={() => {
+                        setPriceType('numeric');
+                      }}
+                      style={{ cursor: 'pointer', width: '1rem', height: '1rem', accentColor: '#105d97' }}
+                    />
+                    Nhập giá cụ thể
+                  </label>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500, color: '#374151' }}>
+                    <input
+                      type="radio"
+                      name="priceType"
+                      value="contact"
+                      checked={priceType === 'contact'}
+                      onChange={() => {
+                        setPriceType('contact');
+                        dispatch({ type: 'UPDATE_FIELD', field: 'price', value: 0 });
+                        dispatch({ type: 'UPDATE_FIELD', field: 'originalPrice', value: 0 });
+                      }}
+                      style={{ cursor: 'pointer', width: '1rem', height: '1rem', accentColor: '#105d97' }}
+                    />
+                    Liên hệ
+                  </label>
+                </div>
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Giá gốc</label>
-                <input
-                  type="number"
-                  value={formData.originalPrice}
-                  onChange={(e) => dispatch({ type: 'UPDATE_FIELD', field: 'originalPrice', value: Number(e.target.value) })}
-                  className={styles.input}
-                  min="0"
-                  placeholder="Giá gốc"
-                  aria-label="Giá gốc"
-                />
-              </div>
+              {priceType === 'numeric' ? (
+                <>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      Giá bán <span className={styles.required}>*</span>
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => dispatch({ type: 'UPDATE_FIELD', field: 'price', value: Number(e.target.value) })}
+                      className={styles.input}
+                      min="0"
+                      placeholder="Giá bán"
+                      required
+                      aria-label="Giá bán"
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Giá gốc</label>
+                    <input
+                      type="number"
+                      value={formData.originalPrice}
+                      onChange={(e) => dispatch({ type: 'UPDATE_FIELD', field: 'originalPrice', value: Number(e.target.value) })}
+                      className={styles.input}
+                      min="0"
+                      placeholder="Giá gốc"
+                      aria-label="Giá gốc"
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className={styles.formGroup}>
+                  <div style={{
+                    padding: '0.75rem 1rem',
+                    backgroundColor: '#eff6ff',
+                    border: '1px solid #bfdbfe',
+                    borderRadius: '0.5rem',
+                    color: '#1e40af',
+                    fontSize: '0.875rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <span style={{ fontWeight: 600 }}>Giá: Liên hệ</span>
+                    <span style={{ color: '#3b82f6' }}>(Sản phẩm sẽ hiển thị nhãn "Liên hệ" thay vì số tiền trên website)</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className={styles.formSection}>
