@@ -34,9 +34,31 @@ const getCategoryLabel = (product) => {
   return found ? found.label : (product.category || 'Không xác định');
 };
 
+const parseCustomerPairs = (str) => {
+  if (typeof str !== 'string' || !str.trim()) return [{ name: '', link: '' }];
+  const items = str
+    .split(/[\n,]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => {
+      const parts = item.split('|');
+      return { name: parts[0]?.trim() || '', link: parts[1]?.trim() || '' };
+    });
+  return items.length > 0 ? items : [{ name: '', link: '' }];
+};
+
+const serializeCustomerPairs = (pairs) => {
+  if (!Array.isArray(pairs)) return '';
+  return pairs
+    .filter((p) => p && p.name && p.name.trim() !== '')
+    .map((p) => (p.link && p.link.trim() ? `${p.name.trim()} | ${p.link.trim()}` : p.name.trim()))
+    .join(', ');
+};
+
 export default function JSONProductsListPage() {
   const [allProducts, setAllProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
+  const [customerPairs, setCustomerPairs] = useState([{ name: '', link: '' }]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
@@ -206,10 +228,10 @@ export default function JSONProductsListPage() {
   };
 
   const handleSort = async (newList) => {
-    if (!selectedCategory || isSorting || searchTerm) return;
+    if (isSorting || searchTerm) return;
 
     // Check if order actually changed
-    const isChanged = newList.some((item, index) => item.id !== displayedProducts[index]?.id);
+    const isChanged = newList.some((item, index) => (item.id ?? item._id) !== (displayedProducts[index]?.id ?? displayedProducts[index]?._id));
     if (!isChanged) return;
 
     setDisplayedProducts(newList);
@@ -217,16 +239,24 @@ export default function JSONProductsListPage() {
 
     const startIndex = (page - 1) * limit;
     const newFilteredProducts = [...filteredProducts];
-    newFilteredProducts.splice(startIndex, limit, ...newList);
+    newFilteredProducts.splice(startIndex, newList.length, ...newList);
+
+    // Sync allProducts state locally
+    const reorderedMap = new Map();
+    newFilteredProducts.forEach(p => reorderedMap.set(String(p.id ?? p._id), p));
+    const newAllProducts = [
+      ...newFilteredProducts,
+      ...allProducts.filter(p => !reorderedMap.has(String(p.id ?? p._id)))
+    ];
+    setAllProducts(newAllProducts);
 
     try {
-      await axios.post('/api/products/reorder', { category: selectedCategory, items: newFilteredProducts });
-      // Re-fetch to ensure sync with DB
-      fetchProducts();
+      await axios.post('/api/products/reorder', { category: selectedTabKey, items: newFilteredProducts });
       toast.success('Đã lưu thứ tự mới', { autoClose: 1000 });
     } catch (error) {
       console.error(error);
       toast.error('Lỗi khi lưu thứ tự');
+      fetchProducts();
     } finally {
       setIsSorting(false);
     }
@@ -326,6 +356,26 @@ export default function JSONProductsListPage() {
     }
   };
 
+  const handleCustomerPairChange = (index, field, value) => {
+    setCustomerPairs((prev) => {
+      const next = [...prev];
+      if (!next[index]) next[index] = { name: '', link: '' };
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  };
+
+  const handleAddCustomerRow = () => {
+    setCustomerPairs((prev) => [...prev, { name: '', link: '' }]);
+  };
+
+  const handleRemoveCustomerRow = (index) => {
+    setCustomerPairs((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      return next.length > 0 ? next : [{ name: '', link: '' }];
+    });
+  };
+
   const openFeaturedConfigModal = (product) => {
     setFeaturedConfigProduct(product);
 
@@ -348,6 +398,10 @@ export default function JSONProductsListPage() {
       return defaultList.length > 0 ? defaultList : [''];
     };
 
+    const rawCust = product.featuredConfig?.recentCustomers || product.recentCustomers || '';
+    const initialPairs = parseCustomerPairs(rawCust);
+    setCustomerPairs(initialPairs.length > 0 ? initialPairs : [{ name: '', link: '' }]);
+
     setFeaturedConfigForm({
       customTitle: product.featuredConfig?.customTitle || product.name || '',
       customSubtitle: product.featuredConfig?.customSubtitle || product.categoryNameVN || 'Stylish Polo',
@@ -357,7 +411,7 @@ export default function JSONProductsListPage() {
       videoUrl: product.featuredConfig?.videoUrl || '',
       badgeText: product.featuredConfig?.badgeText || 'NỔI BẬT',
       soldCount: product.featuredConfig?.soldCount || '1.500+ sản phẩm',
-      recentCustomers: product.featuredConfig?.recentCustomers || 'California Fitness | /feedback/california-fitness, VNPay | https://vnpay.vn, Techcombank',
+      recentCustomers: rawCust,
     });
   };
 
@@ -378,8 +432,11 @@ export default function JSONProductsListPage() {
       ? featuredConfigForm.customSecondaryImage.map(s => s.trim()).filter(Boolean).join(', ')
       : (featuredConfigForm.customSecondaryImage || '').trim();
 
+    const serializedCustomers = serializeCustomerPairs(customerPairs);
+
     const configToSave = {
       ...featuredConfigForm,
+      recentCustomers: serializedCustomers,
       customImage: formattedCustomImage,
       customSecondaryImage: formattedCustomSecondaryImage,
     };
@@ -572,6 +629,13 @@ export default function JSONProductsListPage() {
           </div>
         </div>
 
+        {!searchTerm && (
+          <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-700 mb-3">
+            <GripVertical className="h-4 w-4 shrink-0 text-blue-600" />
+            <span>Kéo thả biểu tượng <strong><GripVertical className="inline h-3.5 w-3.5" /></strong> ở đầu mỗi dòng để thay đổi vị trí hiển thị sản phẩm.</span>
+          </div>
+        )}
+
         {loading && allProducts.length === 0 ? (
           <div className={styles.loading}>Đang tải...</div>
         ) : (
@@ -598,7 +662,7 @@ export default function JSONProductsListPage() {
                     <th className={styles.tableHeader} scope="col">Hành động</th>
                   </tr>
                 </thead>
-                {(selectedTabKey && !searchTerm) ? (
+                {!searchTerm ? (
                   <ReactSortable
                     list={displayedProducts}
                     setList={handleSort}
@@ -705,16 +769,17 @@ export default function JSONProductsListPage() {
                               >
                                 <Star size={16} fill={product.isFeatured ? '#f59e0b' : 'none'} />
                               </button>
-                              {product.isFeatured && (
-                                <button
-                                  type="button"
-                                  onClick={() => openFeaturedConfigModal(product)}
-                                  className="p-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all inline-flex items-center justify-center"
-                                  title="Cấu hình nội dung tùy chọn (Video, Ảnh, Tiêu đề...)"
-                                >
-                                  <Settings size={16} />
-                                </button>
-                              )}
+                              <button
+                                type="button"
+                                onClick={() => openFeaturedConfigModal(product)}
+                                className={`p-1.5 rounded-lg border transition-all inline-flex items-center justify-center ${product.isFeatured
+                                  ? 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100'
+                                  : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100 hover:text-blue-600'
+                                  }`}
+                                title="Cấu hình sản phẩm (Khách hàng đã đặt, Video, Tiêu đề...)"
+                              >
+                                <Settings size={16} />
+                              </button>
                             </div>
                           </td>
                           <td className={styles.tableCell}>
@@ -1010,18 +1075,65 @@ export default function JSONProductsListPage() {
                       className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                   </div>
-                  <div>
-                    <label className="block font-semibold text-gray-700 mb-1">
-                      Khách hàng đã đặt & Link (Cú pháp: Tên | Link)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="VD: California Fitness | /feedback/california-fitness, VNPay | https://vnpay.vn, Techcombank"
-                      value={featuredConfigForm.recentCustomers}
-                      onChange={(e) => setFeaturedConfigForm(f => ({ ...f, recentCustomers: e.target.value }))}
-                      className="w-full px-3.5 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                    <p className="text-[11px] text-gray-500 mt-1">Cú pháp: <code className="bg-gray-100 px-1 py-0.5 rounded">Tên | Link</code> (Link có thể là bài viết Univi, Website hoặc Facebook).</p>
+                </div>
+
+                {/* Customer tags 2-input list editor (Full width row) */}
+                <div className="bg-gray-50/80 p-4 rounded-xl border border-gray-200 flex flex-col gap-3">
+                  <div className="flex justify-between items-center flex-wrap gap-2 pb-2 border-b border-gray-200">
+                    <div>
+                      <label className="block font-bold text-gray-800 text-xs uppercase tracking-wide">
+                        Khách hàng đã đặt sản phẩm này & Link
+                      </label>
+                      <p className="text-[11px] text-gray-500 mt-0.5">
+                        Tách riêng 2 ô (Tên & Link). Link FB / Website / Bài viết sẽ hiển thị nhấp được trên trang chi tiết sản phẩm.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleAddCustomerRow}
+                      className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-white hover:bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200 shadow-2xs transition-all"
+                    >
+                      <Plus size={14} /> Thêm khách hàng
+                    </button>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {customerPairs.map((pair, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-[11px] text-gray-500 font-medium mb-1">Tên khách hàng #{idx + 1}</label>
+                            <input
+                              type="text"
+                              placeholder="VD: Bloom Fitness & Yoga"
+                              value={pair.name}
+                              onChange={(e) => handleCustomerPairChange(idx, 'name', e.target.value)}
+                              className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] text-gray-500 font-medium mb-1">Link FB / Website #{idx + 1}</label>
+                            <input
+                              type="text"
+                              placeholder="VD: https://facebook.com/bloomfitness"
+                              value={pair.link}
+                              onChange={(e) => handleCustomerPairChange(idx, 'link', e.target.value)}
+                              className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                        {customerPairs.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveCustomerRow(idx)}
+                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors self-end mb-0.5"
+                            title="Xóa dòng này"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
 

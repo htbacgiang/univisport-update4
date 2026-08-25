@@ -16,10 +16,7 @@ const handler = async (req, res) => {
 
     const bulkOps = items.map((item, index) => ({
       updateOne: {
-        filter: {
-          ...(item._id ? { _id: item._id } : { id: item.id }),
-          ...(category ? { category } : {}),
-        },
+        filter: item._id ? { _id: item._id } : { id: item.id },
         update: { $set: { displayOrder: index } }
       }
     }));

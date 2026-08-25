@@ -178,6 +178,21 @@ const getGalleryItemSrc = (item) => {
   return item?.src || item?.url || item?.image || item?.secure_url || '';
 };
 
+const parseRecentCustomers = (rawString) => {
+  if (!rawString || typeof rawString !== 'string') return [];
+  return rawString
+    .split(/[\n,]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => {
+      const parts = item.split('|');
+      const name = parts[0]?.trim() || '';
+      const link = parts[1]?.trim() || '';
+      return { name, link };
+    })
+    .filter((cust) => cust.name.length > 0);
+};
+
 const getGalleryDimensions = (item) => {
   const aspectRatio = item?.aspectRatio || 'landscape-3-4';
   const fallbackMap = {
@@ -621,6 +636,11 @@ function ProductReviews({ productSlug, initialRating, initialReviewCount }) {
 export default function ProductDetailView({ product, relatedProducts = [] }) {
   const dispatch = useDispatch();
 
+  const customerList = useMemo(() => {
+    const raw = product?.featuredConfig?.recentCustomers || product?.recentCustomers || '';
+    return parseRecentCustomers(raw);
+  }, [product]);
+
   const parseOptions = {
     replace(domNode) {
       if (domNode.type === "tag" && domNode.name === "a") {
@@ -1027,6 +1047,44 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
                   <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Hỗ trợ fitting mẫu
                 </span>
               </div>
+
+              {/* Khách hàng đã đặt sản phẩm này */}
+              {customerList && customerList.length > 0 && (
+                <div className="mt-4 pt-3.5 border-t border-gray-100">
+                  <span className="text-xs font-bold tracking-wider text-gray-500 uppercase block mb-2.5">
+                    Khách hàng đã đặt sản phẩm này:
+                  </span>
+                  <div className="flex flex-wrap gap-2.5">
+                    {customerList.map((cust, idx) => {
+                      const pillContent = (
+                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-semibold text-xs sm:text-sm transition-all group cursor-pointer shadow-2xs">
+                          <span className="w-4 h-4 rounded-full bg-slate-300 group-hover:bg-[#105d97] group-hover:text-white text-slate-600 flex items-center justify-center text-[10px] transition-colors shrink-0">
+                            <FaCheck className="w-2.5 h-2.5" />
+                          </span>
+                          <span className="truncate max-w-[220px]">{cust.name}</span>
+                        </span>
+                      );
+
+                      return cust.link ? (
+                        <a
+                          key={idx}
+                          href={cust.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`Xem chi tiết ${cust.name}`}
+                          className="no-underline hover:no-underline inline-block"
+                        >
+                          {pillContent}
+                        </a>
+                      ) : (
+                        <div key={idx} className="inline-block">
+                          {pillContent}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Custom Branding Section */}
               <div className="mt-5 rounded-2xl border border-[#cfe3f2] bg-[#eef5fb] p-4">

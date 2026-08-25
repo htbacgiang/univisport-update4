@@ -340,14 +340,7 @@ const EnterpriseUniformMenu = ({ isTransparent = false, activePath = "" }) => {
                       Polo doanh nghiệp
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      href={`/${ENTERPRISE_FLAT_SLUGS['teambuilding']}`}
-                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                    >
-                      Đồng phục Teambuilding
-                    </Link>
-                  </li>
+
                 </ul>
               </div>
 
@@ -357,14 +350,6 @@ const EnterpriseUniformMenu = ({ isTransparent = false, activePath = "" }) => {
                   Đồng phục Khác
                 </h4>
                 <ul className="space-y-2.5 text-[13.5px] text-gray-700 font-medium">
-                  <li>
-                    <Link
-                      href={`/${ENTERPRISE_FLAT_SLUGS['ao-gio']}`}
-                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
-                    >
-                      Đồng phục Áo gió
-                    </Link>
-                  </li>
                   <li>
                     <Link
                       href={`/${ENTERPRISE_FLAT_SLUGS['bao-ho']}`}
@@ -379,6 +364,14 @@ const EnterpriseUniformMenu = ({ isTransparent = false, activePath = "" }) => {
                       className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
                     >
                       Phụ kiện & Quà tặng
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={`/${ENTERPRISE_FLAT_SLUGS['teambuilding']}`}
+                      className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap"
+                    >
+                      Đồng phục Teambuilding
                     </Link>
                   </li>
                 </ul>

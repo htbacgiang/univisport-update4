@@ -56,6 +56,27 @@ const generateSlug = (value = '') =>
     .replace(/-+/g, '-')
     .replace(/(^-|-$)/g, '');
 
+const parseCustomerPairs = (str) => {
+  if (typeof str !== 'string' || !str.trim()) return [{ name: '', link: '' }];
+  const items = str
+    .split(/[\n,]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => {
+      const parts = item.split('|');
+      return { name: parts[0]?.trim() || '', link: parts[1]?.trim() || '' };
+    });
+  return items.length > 0 ? items : [{ name: '', link: '' }];
+};
+
+const serializeCustomerPairs = (pairs) => {
+  if (!Array.isArray(pairs)) return '';
+  return pairs
+    .filter((p) => p && p.name && p.name.trim() !== '')
+    .map((p) => (p.link && p.link.trim() ? `${p.name.trim()} | ${p.link.trim()}` : p.name.trim()))
+    .join(', ');
+};
+
 const generateRandomReviewCount = () => Math.floor(Math.random() * 21) + 10;
 
 const shirtTypeOptions = [
@@ -111,6 +132,7 @@ const initialState = {
   colors: [],
   gallery: [],
   faqs: [],
+  recentCustomers: '',
 };
 
 // Reducer
@@ -157,6 +179,7 @@ export default function CreateJSONProductPage() {
   const router = useRouter();
   const { id } = router.query;
   const [formData, dispatch] = useReducer(reducer, initialState);
+  const [customerPairs, setCustomerPairs] = useState([{ name: '', link: '' }]);
   const [images, setImages] = useState([
     {
       src: '',
@@ -214,6 +237,26 @@ export default function CreateJSONProductPage() {
       });
     };
   }, [images]);
+
+  const handleCustomerPairChange = (index, field, value) => {
+    setCustomerPairs((prev) => {
+      const next = [...prev];
+      if (!next[index]) next[index] = { name: '', link: '' };
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  };
+
+  const handleAddCustomerRow = () => {
+    setCustomerPairs((prev) => [...prev, { name: '', link: '' }]);
+  };
+
+  const handleRemoveCustomerRow = (index) => {
+    setCustomerPairs((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      return next.length > 0 ? next : [{ name: '', link: '' }];
+    });
+  };
 
   // Real-time slug validation
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -301,6 +344,7 @@ export default function CreateJSONProductPage() {
             image: img.src || '',
           })),
           gallery: product.gallery || [],
+          recentCustomers: product.featuredConfig?.recentCustomers || product.recentCustomers || '',
           faqs: Array.isArray(product.faqs)
             ? product.faqs.map((faq) => ({
               question: faq.question || '',
@@ -309,6 +353,10 @@ export default function CreateJSONProductPage() {
             : [],
         },
       });
+
+      const rawCust = product.featuredConfig?.recentCustomers || product.recentCustomers || '';
+      const initialPairs = parseCustomerPairs(rawCust);
+      setCustomerPairs(initialPairs.length > 0 ? initialPairs : [{ name: '', link: '' }]);
 
       setImages(allImages);
       setPriceType((product.price === 0 || !product.price) ? 'contact' : 'numeric');
@@ -541,6 +589,7 @@ export default function CreateJSONProductPage() {
       }
     });
     setImages([]);
+    setCustomerPairs([{ name: '', link: '' }]);
     setPriceType('numeric');
     setIsSlugLocked(true);
     setOriginalSlug('');
@@ -851,6 +900,11 @@ export default function CreateJSONProductPage() {
           image: img.src,
         })),
         gallery: formData.gallery.filter(img => img.src && img.src.trim() !== ''),
+        recentCustomers: serializeCustomerPairs(customerPairs),
+        featuredConfig: {
+          ...(formData.featuredConfig || {}),
+          recentCustomers: serializeCustomerPairs(customerPairs),
+        },
         faqs: validFaqs.map((faq) => ({
           question: faq.question.trim(),
           answer: faq.answer.trim(),
@@ -1525,6 +1579,78 @@ export default function CreateJSONProductPage() {
                   placeholder="Chất liệu (ví dụ: Cotton, Polyester)"
                   aria-label="Chất liệu"
                 />
+              </div>
+
+              <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <label className={styles.label} style={{ margin: 0 }}>
+                    Khách hàng đã đặt sản phẩm này & Link
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAddCustomerRow}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      color: '#105d97',
+                      background: '#eff6ff',
+                      border: '1px solid #bfdbfe',
+                      padding: '0.25rem 0.625rem',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Plus size={14} /> Thêm khách hàng
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                  {customerPairs.map((pair, idx) => (
+                    <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                        <input
+                          type="text"
+                          placeholder={`Tên KH #${idx + 1} (VD: Bloom Fitness & Yoga)`}
+                          value={pair.name}
+                          onChange={(e) => handleCustomerPairChange(idx, 'name', e.target.value)}
+                          className={styles.input}
+                          aria-label={`Tên khách hàng #${idx + 1}`}
+                        />
+                        <input
+                          type="text"
+                          placeholder={`Link FB / Website #${idx + 1} (VD: https://facebook.com/...)`}
+                          value={pair.link}
+                          onChange={(e) => handleCustomerPairChange(idx, 'link', e.target.value)}
+                          className={styles.input}
+                          aria-label={`Link khách hàng #${idx + 1}`}
+                        />
+                      </div>
+                      {customerPairs.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCustomerRow(idx)}
+                          style={{
+                            padding: '0.5rem',
+                            color: '#ef4444',
+                            background: '#fef2f2',
+                            border: '1px solid #fecaca',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                          }}
+                          title="Xóa dòng này"
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <span className={styles.helpText} style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.375rem', display: 'block' }}>
+                  Tách riêng 2 ô (Tên khách hàng & Link FB / Website). Link sẽ hiển thị nhấp được trên trang chi tiết sản phẩm.
+                </span>
               </div>
 
               <div className={styles.formGroup}>
