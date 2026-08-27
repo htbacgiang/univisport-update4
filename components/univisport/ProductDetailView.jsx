@@ -8,6 +8,7 @@ import { GiSewingMachine } from 'react-icons/gi';
 import { HiOutlineOfficeBuilding } from 'react-icons/hi';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Thumbs } from 'swiper/modules';
@@ -635,6 +636,20 @@ function ProductReviews({ productSlug, initialRating, initialReviewCount }) {
 // Main Component
 export default function ProductDetailView({ product, relatedProducts = [] }) {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const currentPath = router?.asPath || '';
+
+  const hideStandardSize = useMemo(() => {
+    const categorySlug = (product?.category || '').toLowerCase().replace(/\s+/g, '-');
+    const flatSlug = ENTERPRISE_FLAT_SLUGS[product?.productLine];
+    return (
+      product?.productLine === 'phu-kien' ||
+      categorySlug === 'phu-kien-qua-tang-doanh-nghiep' ||
+      flatSlug === 'phu-kien-qua-tang-doanh-nghiep' ||
+      product?.category === 'phu-kien-qua-tang-doanh-nghiep' ||
+      currentPath.includes('phu-kien-qua-tang-doanh-nghiep')
+    );
+  }, [product, currentPath]);
 
   const customerList = useMemo(() => {
     const raw = product?.featuredConfig?.recentCustomers || product?.recentCustomers || '';
@@ -1009,44 +1024,48 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
                 </>
               )}
 
-              <div className="border-t border-gray-200 my-3"></div>
+              {!hideStandardSize && (
+                <>
+                  <div className="border-t border-gray-200 my-3"></div>
 
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium tracking-[0.15em] text-gray-500 uppercase">Size tiêu chuẩn</span>
-                {sizeGuide && (
-                  <button
-                    type="button"
-                    onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-xs text-[#105d97] hover:underline font-medium"
-                  >
-                    Hướng dẫn chọn size
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {(product.sizes && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL', '2XL', '3XL']).map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => dispatch(setSize(size))}
-                    aria-label={`Chọn size ${size}`}
-                    className={`min-w-[40px] h-9 px-3 rounded-full text-sm font-semibold border-2 transition-all duration-200 ${selectedSize === size ? 'border-[#105d97] text-[#105d97] bg-[#eaf2fb]' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium tracking-[0.15em] text-gray-500 uppercase">Size tiêu chuẩn</span>
+                    {sizeGuide && (
+                      <button
+                        type="button"
+                        onClick={() => setIsSizeGuideOpen(true)}
+                        className="text-xs text-[#105d97] hover:underline font-medium"
+                      >
+                        Hướng dẫn chọn size
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {(product.sizes && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL', '2XL', '3XL']).map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => dispatch(setSize(size))}
+                        aria-label={`Chọn size ${size}`}
+                        className={`min-w-[40px] h-9 px-3 rounded-full text-sm font-semibold border-2 transition-all duration-200 ${selectedSize === size ? 'border-[#105d97] text-[#105d97] bg-[#eaf2fb]' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
 
-              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
-                <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Có thể may theo size riêng
-                </span>
-                <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Có bảng size theo từng giới tính
-                </span>
-                <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Hỗ trợ fitting mẫu
-                </span>
-              </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
+                    <span className="flex items-center gap-1 text-xs text-gray-600">
+                      <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Có thể may theo size riêng
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-gray-600">
+                      <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Có bảng size theo từng giới tính
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-gray-600">
+                      <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Hỗ trợ fitting mẫu
+                    </span>
+                  </div>
+                </>
+              )}
 
               {/* Khách hàng đã đặt sản phẩm này */}
               {customerList && customerList.length > 0 && (

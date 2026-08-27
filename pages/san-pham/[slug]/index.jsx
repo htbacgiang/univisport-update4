@@ -42,12 +42,20 @@ export async function getServerSideProps({ params }) {
 
     const product = JSON.parse(JSON.stringify(productDoc));
 
-    // Fetch related products
-    const relatedProductsDocs = await Product.find({
+    // Fetch related products (cùng productLine nếu có, đặc biệt là các danh mục con của Đồng phục doanh nghiệp)
+    const relatedFilter = {
       category: product.category,
       slug: { $ne: slug },
       visibleOnArticle: { $ne: false },
-    }).sort({ displayOrder: 1, createdAt: -1 }).limit(6).lean();
+    };
+    if (product.productLine) {
+      relatedFilter.productLine = product.productLine;
+    }
+
+    const relatedProductsDocs = await Product.find(relatedFilter)
+      .sort({ displayOrder: 1, createdAt: -1 })
+      .limit(6)
+      .lean();
 
     const relatedProducts = relatedProductsDocs.map((p) => ({
       id: p._id.toString(),

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Thumbs } from 'swiper/modules';
 import 'swiper/css';
@@ -9,6 +10,7 @@ import ContactForm from '../header/ContactForm';
 import { FaTimes, FaTag, FaCheck } from 'react-icons/fa';
 import { FiPrinter, FiDroplet, FiPenTool, FiBox, FiSave, FiEdit2 } from 'react-icons/fi';
 import { GiSewingMachine } from 'react-icons/gi';
+import { ENTERPRISE_FLAT_SLUGS } from '../../lib/enterpriseFlatSlugs';
 
 const SIZE_GUIDE_BY_SHIRT_TYPE = {
   'ao-thun': {
@@ -53,6 +55,21 @@ export default function ProductQuickViewModal({ slug, onClose }) {
   const mainSwiperRef = useRef(null);
   const thumbsSwiperRef = useRef(null);
   const overlayRef = useRef(null);
+
+  const router = useRouter();
+  const currentPath = router?.asPath || '';
+
+  const hideStandardSize = useMemo(() => {
+    const categorySlug = (product?.category || '').toLowerCase().replace(/\s+/g, '-');
+    const flatSlug = ENTERPRISE_FLAT_SLUGS[product?.productLine];
+    return (
+      product?.productLine === 'phu-kien' ||
+      categorySlug === 'phu-kien-qua-tang-doanh-nghiep' ||
+      flatSlug === 'phu-kien-qua-tang-doanh-nghiep' ||
+      product?.category === 'phu-kien-qua-tang-doanh-nghiep' ||
+      currentPath.includes('phu-kien-qua-tang-doanh-nghiep')
+    );
+  }, [product, currentPath]);
 
   const sizeGuide = useMemo(() => {
     const shirtType = normalizeShirtType(product);
@@ -308,41 +325,43 @@ export default function ProductQuickViewModal({ slug, onClose }) {
               )}
 
               {/* Sizes */}
-              <div className='hidden md:block'>
-                <div className="border-t border-gray-200 my-3"></div>
-                <div className="flex items-center justify-between ">
-                  <span className="text-xs font-bold tracking-wide text-gray-500 uppercase">Size tiêu chuẩn</span>
-                  {sizeGuide && (
-                    <button
-                      type="button"
-                      onClick={() => setIsSizeGuideOpen(true)}
-                      className="text-xs text-[#105d97] hover:underline font-medium"
-                    >
-                      Hướng dẫn chọn size
-                    </button>
-                  )}
+              {!hideStandardSize && (
+                <div className='hidden md:block'>
+                  <div className="border-t border-gray-200 my-3"></div>
+                  <div className="flex items-center justify-between ">
+                    <span className="text-xs font-bold tracking-wide text-gray-500 uppercase">Size tiêu chuẩn</span>
+                    {sizeGuide && (
+                      <button
+                        type="button"
+                        onClick={() => setIsSizeGuideOpen(true)}
+                        className="text-xs text-[#105d97] hover:underline font-medium"
+                      >
+                        Hướng dẫn chọn size
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-2 ">
+                    {(product.sizes && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL', '2XL', '3XL']).map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        aria-label={`Chọn size ${size}`}
+                        className={`min-w-[40px] h-9 px-3 rounded-full text-sm font-semibold border-2 transition-all ${selectedSize === size ? 'border-[#105d97] text-[#105d97] bg-[#eaf2fb]' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
+                    <span className="flex items-center gap-1 text-xs text-gray-600">
+                      <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Có thể may theo size riêng
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-gray-600">
+                      <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Hỗ trợ fitting mẫu
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-2 ">
-                  {(product.sizes && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL', '2XL', '3XL']).map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      aria-label={`Chọn size ${size}`}
-                      className={`min-w-[40px] h-9 px-3 rounded-full text-sm font-semibold border-2 transition-all ${selectedSize === size ? 'border-[#105d97] text-[#105d97] bg-[#eaf2fb]' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
-                  <span className="flex items-center gap-1 text-xs text-gray-600">
-                    <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Có thể may theo size riêng
-                  </span>
-                  <span className="flex items-center gap-1 text-xs text-gray-600">
-                    <FaCheck className="w-3 h-3 text-green-500 flex-shrink-0" /> Hỗ trợ fitting mẫu
-                  </span>
-                </div>
-              </div>
+              )}
               {/* Custom Branding Section */}
               <div className="mt-4 hidden md:block rounded-2xl border border-[#cfe3f2] bg-[#eef5fb] p-4">
                 <h3 className="text-sm font-bold text-[#105d97] uppercase tracking-wide mb-3">Thiết kế theo thương hiệu riêng</h3>
