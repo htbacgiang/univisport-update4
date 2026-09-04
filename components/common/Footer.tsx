@@ -33,12 +33,12 @@ export default function Footer() {
       { name: "Đồng phục áo gió", href: "/dong-phuc-ao-gio" },
     ],
     enterprise: [
-      { name: "Đồng phục áo sơ mi", href: "/dong-phuc-doanh-nghiep" },
-      { name: "Vest công sở", href: "/dong-phuc-doanh-nghiep/polo" },
-      { name: "Polo doanh nghiệp", href: "/dong-phuc-doanh-nghiep/cong-so" },
-      { name: "Bảo hộ lao động", href: "/dong-phuc-bao-ho-lao-dong" },
+      { name: "Đồng phục áo sơ mi", href: "/dong-phuc-so-mi" },
+      { name: "Vest công sở", href: "/dong-phuc-vest-cong-so" },
+      { name: "Polo doanh nghiệp", href: "/dong-phuc-polo" },
+      { name: "Bảo hộ lao động", href: "/bao-ho-lao-dong" },
       { name: "Teambuilding", href: "/dong-phuc-teambuilding" },
-      { name: "Phụ kiện và quà tặng", href: "/dong-phuc-phu-kien-qua-tang" },
+      { name: "Phụ kiện và quà tặng", href: "/phu-kien-qua-tang-doanh-nghiep" },
 
     ],
   };

@@ -7,14 +7,19 @@ const FABRICS = [
     id: 'supercool',
     name: 'UNISUPERCOOL',
     category: 'sport',
-    bgGradient: 'from-[#172545] via-[#1c2c4e] to-[#121e38]',
-    pattern: 'mesh',
+    bgImage: '/mockup/fabric-supercool-bg.jpg',
     image: '/images/fabric-supercool-polo.png',
     cardTitle: 'ĐẶC TÍNH CHẤT LIỆU UNISUPERCOOL',
+    composition: [
+      { percentage: '89%', name: 'Polyamide' },
+      { percentage: '11%', name: 'Elastane' },
+    ],
     bullets: [
-      'Sợi Polyamide cao cấp (76-90%), mang lại cảm giác mát lạnh tức thì khi tiếp xúc da.',
-      'Độ mềm mịn đỉnh cao, co giãn 4 chiều linh hoạt theo từng biên độ chuyển động.',
-      'Khả năng chống nhăn tự nhiên, giữ form áo chuẩn đẹp và sang trọng suốt ngày dài.',
+      'Thoáng khí vượt trội.',
+      'Thoát ẩm nhanh, đẩy mồ hôi ra bề mặt, hạn chế cảm giác bết dính.',
+      'Dòng vải an toàn cho da, đã được kiểm định.',
+      'Co giãn đa chiều, linh hoạt theo từng chuyển động.',
+      'Mềm mại, nhẹ và êm mịn trên da.',
     ],
     features: ['Co giãn 4 chiều', 'Mát lạnh tức thì', 'Chống nhăn tự nhiên', 'Chuẩn form PT'],
   },
@@ -22,15 +27,19 @@ const FABRICS = [
     id: 'quickdry',
     name: 'UNIQUICKDRY',
     category: 'sport',
-    bgGradient: 'from-[#037fa9] via-[#058dbb] to-[#046e96]',
-    pattern: 'linear',
-    image: '/images/fabric-quickdry-polo.jpg',
-    cardTitle: 'ĐẶC TÍNH CHẤT LIỆU UNIVI',
+    bgImage: '/mockup/uni-quickdry.jpg',
+    image: '/images/fabric-quickdry-polo.png',
+    cardTitle: 'ĐẶC TÍNH CHẤT LIỆU UNI QUICK DRY',
+    composition: [
+      { percentage: '88%', name: 'Polyester' },
+      { percentage: '12%', name: 'Elastane' },
+    ],
     bullets: [
-      'Thoáng khí vượt trội, giữ cơ thể luôn thoáng mát khi vận động.',
+      'Thoáng khí vượt trội, giúp cơ thể luôn thoáng mát khi vận động.',
       'Thoát ẩm nhanh, đẩy mồ hôi ra bề mặt, hạn chế cảm giác bết dính.',
       'Dòng vải an toàn cho da, đã được kiểm định.',
       'Co giãn đa chiều, linh hoạt theo từng chuyển động của cơ thể.',
+      'Mềm mại & nhẹ, êm mịn trên da, thoải mái khi mặc trong thời gian dài.',
     ],
     features: ['Thoát ẩm 1 chiều', 'Khô siêu tốc', 'Chống tia UV', 'Bền màu vượt trội'],
   },
@@ -38,15 +47,21 @@ const FABRICS = [
     id: 'uniair',
     name: 'UNIAIR',
     category: 'sport',
-    bgGradient: 'from-[#0ea5e9] via-[#38bdf8] to-[#0284c7]',
-    pattern: 'air',
+    bgImage: '/mockup/uni-air.jpg',
     image: '/images/fabric-uniair-polo.png',
     cardTitle: 'ĐẶC TÍNH CHẤT LIỆU UNIAIR',
+    composition: [
+      { percentage: '89%', name: 'Polyamide' },
+      { percentage: '11%', name: 'Elastane' },
+    ],
     bullets: [
-      'Công nghệ dệt cấu trúc dệt lỗ kim siêu nhỏ Air-Mesh, tối đa hóa lưu thông không khí.',
-      'Trọng lượng siêu nhẹ, mặc như không mặc, cho cảm giác thanh thoát tuyệt đối.',
-      'Khả năng tản nhiệt siêu tốc, giúp hạ nhiệt cơ thể nhanh chóng khi vận động mạnh.',
-      'Co giãn 4 chiều linh hoạt, hạn chế tối đa ma sát và cảm giác gò bó.',
+      'Thoáng khí vượt trội.',
+      'Thoát ẩm nhanh, đẩy mồ hôi ra bề mặt.',
+      'Hạn chế cảm giác bết dính.',
+      'An toàn cho da, đã được kiểm định.',
+      'Co giãn đa chiều, linh hoạt theo chuyển động.',
+      'Mềm mại & nhẹ, êm mịn trên da.',
+      'Thoải mái khi mặc trong thời gian dài.',
     ],
     features: ['Cấu trúc Air-Mesh', 'Siêu nhẹ & thoáng', 'Tản nhiệt siêu tốc', 'Kháng khuẩn bám mùi'],
   },
@@ -54,15 +69,19 @@ const FABRICS = [
     id: 'polo-casau',
     name: 'POLO CÁ SẤU',
     category: 'office',
-    bgGradient: 'from-[#5ba9cc] via-[#6ab7da] to-[#4c9cbd]',
-    pattern: 'pique',
+    bgImage: '/mockup/uni-pique.jpg',
     image: '/images/fabric-casau-polo.png',
     cardTitle: 'ĐẶC TÍNH CHẤT LIỆU POLO CÁ SẤU',
+    composition: [
+      { percentage: '86%', name: 'Polyamide' },
+      { percentage: '14%', name: 'Elastane' },
+    ],
     bullets: [
-      'Cấu trúc dệt mắt Pique (cá sấu) sang trọng, tạo độ dày dặn và đứng form chuẩn.',
-      'Hàng ngàn lỗ thoáng khí li ti trên bề mặt giúp lưu thông gió, giảm tích nhiệt.',
-      'Vẻ ngoài lịch lãm, chỉn chu, rất phù hợp cho nhân viên lễ tân, sale và quản lý.',
-      'Thấm hút mồ hôi tốt, tạo cảm giác khô ráo, tự tin trong suốt ca làm việc dài.',
+      'Thoáng khí vượt trội, giữ cơ thể luôn thoáng mát khi vận động.',
+      'Thoát ẩm nhanh, đẩy mồ hôi ra bề mặt, hạn chế cảm giác bết dính.',
+      'Dòng vải an toàn cho da, đã được kiểm định.',
+      'Co giãn đa chiều, linh hoạt theo từng chuyển động của cơ thể.',
+      'Mềm mại & nhẹ, êm mịn trên da, thoải mái khi mặc trong thời gian dài.',
     ],
     features: ['Đứng form lịch sự', 'Dệt mắt Pique', 'Thoáng khí tối ưu', 'Chuẩn lễ tân & quản lý'],
   },
@@ -70,15 +89,19 @@ const FABRICS = [
     id: 'polo-hoatiet',
     name: 'POLO HOẠ TIẾT',
     category: 'office',
-    bgGradient: 'from-[#97cacc] via-[#aee0e2] to-[#88bec1]',
-    pattern: 'geometric',
-    image: '/images/fabric-hoatiet-polo.jpg',
+    bgImage: '/mockup/fabric-hoatiet-polo.jpg',
+    image: '/images/fabric-hoatiet-polo.png',
     cardTitle: 'ĐẶC TÍNH CHẤT LIỆU POLO HOẠ TIẾT',
+    composition: [
+      { percentage: '86%', name: 'Polyamide' },
+      { percentage: '14%', name: 'Elastane' },
+    ],
     bullets: [
-      'Kỹ thuật in chuyển nhiệt / dệt Jacquard họa tiết hình học chìm độc quyền, sắc nét.',
-      'Công nghệ khóa màu tiên tiến, không phai màu, không bong tróc khi giặt sấy.',
-      'Nền vải thể thao cao cấp siêu nhẹ, mềm mượt và thoát nhiệt nhanh chóng.',
-      'Tạo dấu ấn nhận diện thương hiệu hiện đại, trẻ trung và năng động cho doanh nghiệp.',
+      'Thoáng khí vượt trội.',
+      'Thoát ẩm nhanh, hạn chế cảm giác bết dính khi vận động.',
+      'Dòng vải an toàn cho da, đã được kiểm định.',
+      'Co giãn đa chiều, hỗ trợ chuyển động cơ thể.',
+      'Mềm mại, nhẹ, êm mịn và thoải mái khi mặc lâu.',
     ],
     features: ['Họa tiết in chìm', 'Không phai màu', 'Siêu nhẹ & mát', 'Độc quyền thương hiệu'],
   },
@@ -120,33 +143,27 @@ const FabricCardComponent = () => {
                     type="button"
                     onClick={() => setSelectedId(fabric.id)}
                     className={`group relative w-full h-14 sm:h-24 md:h-[100px] rounded-xl sm:rounded-2xl md:rounded-[20px] overflow-hidden text-center cursor-pointer transition-all duration-300 transform ${isActive
-                      ? 'ring-2 sm:ring-4 ring-[#105d97]/40 scale-[1.02] shadow-lg'
+                      ? 'ring-2 sm:ring-4 ring-[#105d97]/60 scale-[1.02] shadow-lg'
                       : 'hover:scale-[1.015] hover:shadow-md opacity-95 hover:opacity-100'
                       }`}
                   >
-                    {/* Background Gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-r ${fabric.bgGradient}`} />
-
-                    {/* Fabric Texture Pattern Overlay */}
+                    {/* Real Fabric Background Image */}
                     <div
-                      className="absolute inset-0 opacity-30 mix-blend-overlay bg-repeat"
-                      style={{
-                        backgroundImage:
-                          fabric.pattern === 'mesh'
-                            ? 'radial-gradient(#ffffff 1.2px, transparent 1.2px)'
-                            : 'linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)',
-                        backgroundSize: fabric.pattern === 'mesh' ? '6px 6px' : '4px 100%',
-                      }}
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                      style={{ backgroundImage: `url(${fabric.bgImage})` }}
                     />
+
+                    {/* Dark contrast overlay so text is always clear */}
+                    <div className={`absolute inset-0 transition-colors duration-300 ${isActive ? 'bg-black/30' : 'bg-black/40 group-hover:bg-black/30'}`} />
 
                     {/* Active State Indicator / Glow */}
                     {isActive && (
-                      <div className="absolute inset-0 border-2 border-white/40 rounded-xl sm:rounded-2xl md:rounded-[20px] pointer-events-none" />
+                      <div className="absolute inset-0 border-2 border-white/60 rounded-xl sm:rounded-2xl md:rounded-[20px] pointer-events-none" />
                     )}
 
                     {/* Card Title */}
                     <div className="relative h-full flex items-center justify-center px-1 sm:px-4">
-                      <span className="text-[10px] min-[380px]:text-xs sm:text-xl md:text-2xl font-black text-white uppercase tracking-tight sm:tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] group-hover:scale-105 transition-transform duration-200 leading-tight">
+                      <span className="text-[10px] min-[380px]:text-xs sm:text-xl md:text-2xl font-black text-white uppercase tracking-tight sm:tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-200 leading-tight">
                         {fabric.name}
                       </span>
                     </div>
@@ -170,33 +187,27 @@ const FabricCardComponent = () => {
                     type="button"
                     onClick={() => setSelectedId(fabric.id)}
                     className={`group relative w-full h-14 sm:h-24 md:h-[100px] rounded-xl sm:rounded-2xl md:rounded-[20px] overflow-hidden text-center cursor-pointer transition-all duration-300 transform ${isActive
-                      ? 'ring-2 sm:ring-4 ring-[#105d97]/40 scale-[1.02] shadow-lg'
+                      ? 'ring-2 sm:ring-4 ring-[#105d97]/60 scale-[1.02] shadow-lg'
                       : 'hover:scale-[1.015] hover:shadow-md opacity-95 hover:opacity-100'
                       }`}
                   >
-                    {/* Background Gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-r ${fabric.bgGradient}`} />
-
-                    {/* Fabric Texture Pattern Overlay */}
+                    {/* Real Fabric Background Image */}
                     <div
-                      className="absolute inset-0 opacity-35 mix-blend-overlay bg-repeat"
-                      style={{
-                        backgroundImage:
-                          fabric.pattern === 'pique'
-                            ? 'radial-gradient(circle, #ffffff 1.5px, transparent 1.5px)'
-                            : 'linear-gradient(45deg, rgba(255,255,255,0.25) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.25) 75%, transparent 75%, transparent)',
-                        backgroundSize: fabric.pattern === 'pique' ? '8px 8px' : '16px 16px',
-                      }}
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                      style={{ backgroundImage: `url(${fabric.bgImage})` }}
                     />
+
+                    {/* Dark contrast overlay so text is always clear */}
+                    <div className={`absolute inset-0 transition-colors duration-300 ${isActive ? 'bg-black/30' : 'bg-black/40 group-hover:bg-black/30'}`} />
 
                     {/* Active State Indicator / Glow */}
                     {isActive && (
-                      <div className="absolute inset-0 border-2 border-white/40 rounded-xl sm:rounded-2xl md:rounded-[20px] pointer-events-none" />
+                      <div className="absolute inset-0 border-2 border-white/60 rounded-xl sm:rounded-2xl md:rounded-[20px] pointer-events-none" />
                     )}
 
                     {/* Card Title */}
                     <div className="relative h-full flex items-center justify-center px-1 sm:px-4">
-                      <span className="text-xs sm:text-xl md:text-2xl font-black text-white uppercase tracking-tight sm:tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] group-hover:scale-105 transition-transform duration-200 leading-tight">
+                      <span className="text-xs sm:text-xl md:text-2xl font-black text-white uppercase tracking-tight sm:tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-200 leading-tight">
                         {fabric.name}
                       </span>
                     </div>
@@ -207,7 +218,7 @@ const FabricCardComponent = () => {
           </div>
         </div>
 
-        {/* Right Column: Dynamic Shirt Image + Dynamic Characteristic Card */}
+        {/* Right Column: Dynamic Shirt Image + Composition + Dynamic Characteristic Card */}
         <div className="lg:col-span-6 flex flex-col justify-between space-y-3">
           {/* Top: Dynamic Polo Shirts Image */}
           <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] md:aspect-[16/10] bg-white overflow-hidden flex items-center justify-center">
@@ -220,6 +231,83 @@ const FabricCardComponent = () => {
               className="object-contain p-2 transition-all duration-500 animate-fadeIn"
               priority
             />
+          </div>
+
+          {/* Middle: Thành phần chất liệu & Icon đặc tính (Nhỏ gọn, không border) */}
+          <div className="flex flex-col items-center justify-center pb-1">
+            {/* Composition Text: 89% POLYAMIDE / 11% ELASTANE */}
+            <div className="text-xs sm:text-sm md:text-base font-bold tracking-wider text-slate-800 uppercase text-center font-sans">
+              {selectedFabric.composition
+                ? selectedFabric.composition
+                  .map((comp) => `${comp.percentage} ${comp.name.toUpperCase()}`)
+                  .join(' / ')
+                : '89% POLYAMIDE / 11% ELASTANE'}
+            </div>
+
+            {/* 3 Circular Feature Icons */}
+            <div className="flex items-center justify-center gap-3 sm:gap-4">
+              {/* Icon 1: Thoáng khí (Airflow / Breathability) */}
+              <div className="flex flex-col items-center">
+                <svg
+                  className="w-7 h-7 sm:w-8 sm:h-8 text-slate-800"
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle cx="24" cy="24" r="22" strokeWidth="1.6" />
+                  {/* Top 3 Upward arrows */}
+                  <path d="M18 16V11M18 11L16 13M18 11L20 13" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M24 17V9M24 9L22 11M24 9L26 11" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M30 16V11M30 11L28 13M30 11L32 13" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* Fabric middle membrane */}
+                  <path d="M13 23.5C14.5 24.5 16 23 17.5 23.5C19 24 20.5 23 22 23.5C23.5 24 25 23 26.5 23.5C28 24 29.5 23 31 23.5C32.5 24 34 23 35.5 23.5" strokeWidth="1.6" strokeLinecap="round" />
+                  <path d="M13 25.5C14.5 26.5 16 25 17.5 25.5C19 26 20.5 25 22 25.5C23.5 26 25 25 26.5 25.5C28 26 29.5 25 31 25.5C32.5 26 34 25 35.5 25.5" strokeWidth="1.6" strokeLinecap="round" />
+                  {/* Bottom 3 Downward arrows */}
+                  <path d="M18 32V37M18 37L16 35M18 37L20 35" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M24 31V39M24 39L22 37M24 39L26 37" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M30 32V37M30 37L28 35M30 37L32 35" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+
+              {/* Icon 2: Thoát ẩm / Nhanh khô (Moisture Wicking / Quick Dry) */}
+              <div className="flex flex-col items-center">
+                <svg
+                  className="w-7 h-7 sm:w-8 sm:h-8 text-slate-800"
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle cx="24" cy="24" r="22" strokeWidth="1.6" />
+                  {/* 3 Droplets */}
+                  <path d="M24 10C24 10 21.5 14.5 21.5 16.5C21.5 17.88 22.62 19 24 19C25.38 19 26.5 17.88 26.5 16.5C26.5 14.5 24 10 24 10Z" strokeWidth="1.6" strokeLinejoin="round" />
+                  <path d="M17.5 13C17.5 13 15.7 15.8 15.7 17.2C15.7 18.2 16.5 19 17.5 19C18.5 19 19.3 18.2 19.3 17.2C19.3 15.8 17.5 13 17.5 13Z" strokeWidth="1.6" strokeLinejoin="round" />
+                  <path d="M30.5 13C30.5 13 28.7 15.8 28.7 17.2C28.7 18.2 29.5 19 30.5 19C31.5 19 32.3 18.2 32.3 17.2C32.3 15.8 30.5 13 30.5 13Z" strokeWidth="1.6" strokeLinejoin="round" />
+                  {/* Fabric line */}
+                  <path d="M12 23.5H36" strokeWidth="1.6" strokeLinecap="round" />
+                  {/* Bottom 3 Upward arrows */}
+                  <path d="M18 36V28M18 28L16 30M18 28L20 30" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M24 37V27M24 27L22 29M24 27L26 29" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M30 36V28M30 28L28 30M30 28L32 30" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+
+              {/* Icon 3: Mềm mại & Nhẹ (Soft & Lightweight Feather) */}
+              <div className="flex flex-col items-center">
+                <svg
+                  className="w-7 h-7 sm:w-8 sm:h-8 text-slate-800"
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle cx="24" cy="24" r="22" strokeWidth="1.6" />
+                  {/* Feather body & stem */}
+                  <path d="M34 14C30 15 25 18 23 23C21 28 17 31 12 34C15 34 19 33.5 23 30.5C28 27 32 22 34 14Z" strokeWidth="1.6" strokeLinejoin="round" />
+                  <path d="M34 14C31 16 27 20 23 25C19 30 16 33 12 34" strokeWidth="1.6" strokeLinecap="round" />
+                  <path d="M23 23C25 21 28 18.5 31 16.5" strokeWidth="1.4" strokeLinecap="round" />
+                  <path d="M19 28C21 26 24 23.5 26 22" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* Bottom: Dynamic Đặc Tính Chất Liệu Card */}
@@ -245,8 +333,6 @@ const FabricCardComponent = () => {
                 </li>
               ))}
             </ul>
-
-
           </div>
         </div>
       </div>
