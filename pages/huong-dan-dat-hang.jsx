@@ -1,11 +1,13 @@
 import Head from "next/head";
+import Link from "next/link";
+import { ClipboardList, Sparkles, Phone, Mail, MapPin, CheckCircle2, Clock, Truck, CreditCard } from "lucide-react";
 import DefaultLayout from "../components/layout/DefaultLayout";
 
 export default function OrderGuide() {
   const meta = {
-    title: "Hướng dẫn đặt hàng - Đồng Phục Univi",
-    description: "Hướng dẫn chi tiết cách đặt hàng thiết kế và in đồng phục theo yêu cầu tại Đồng Phục Univi. Quy trình tư vấn, thiết kế và sản xuất.",
-    keywords: "hướng dẫn đặt hàng, thiết kế đồng phục, in đồng phục theo yêu cầu, đồng phục univi",
+    title: "Hướng Dẫn Đặt Hàng & Quy Trình May Đồng Phục - Đồng Phục Univi",
+    description: "Hướng dẫn chi tiết quy trình đặt may đồng phục thiết kế và in theo yêu cầu tại Đồng Phục Univi. Hỗ trợ thiết kế miễn phí, may mẫu và giao hàng toàn quốc.",
+    keywords: "hướng dẫn đặt hàng, quy trình đặt may đồng phục, thiết kế đồng phục, in đồng phục theo yêu cầu, đồng phục univi",
     robots: "index, follow",
     author: "Đồng Phục Univi",
     canonical: "https://dongphucunivi.com/huong-dan-dat-hang",
@@ -34,272 +36,296 @@ export default function OrderGuide() {
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content="https://dongphucunivi.com/images/banner-home-1.jpg" />
       </Head>
-      <div className="h-[80px]"></div>
-      <div className="min-h-screen my-8">
-        <div className="container mx-auto px-4">
-          <div className="">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-              Hướng dẫn đặt hàng
-            </h1>
 
-            <div className="prose prose-lg max-w-none">
-              <p className="text-gray-600 mb-1">
-                <strong>Ngày cập nhật:</strong> {new Date().toLocaleDateString('vi-VN')}
-              </p>
+      <div className="h-[70px] md:h-[80px]"></div>
 
-              <section className="mb-2">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">1. Tổng quan</h2>
-                <p className="text-gray-700 leading-6">
-                  Hướng dẫn này sẽ giúp bạn dễ dàng đặt hàng thiết kế và in đồng phục theo yêu cầu tại Đồng Phục Univi.
-                  Chúng tôi chuyên thiết kế và sản xuất đồng phục theo đúng nhu cầu của khách hàng với chất lượng cao nhất.
-                </p>
-              </section>
+      {/* Main Page Container */}
+      <main className="min-h-screen bg-white py-6 md:py-8">
+        <div className="container mx-auto px-4 max-w-6xl">
 
-              <section className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">2. Quy trình đặt hàng</h2>
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Bước 1: Tư vấn và trao đổi yêu cầu</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Liên hệ với chúng tôi qua hotline hoặc email</li>
-                      <li>Mô tả chi tiết nhu cầu đồng phục (loại, số lượng, mục đích sử dụng)</li>
-                      <li>Thảo luận về thiết kế, màu sắc, logo, thông điệp</li>
-                      <li>Chia sẻ hình ảnh tham khảo hoặc ý tưởng thiết kế</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Bước 2: Thiết kế và báo giá</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Chúng tôi thiết kế mẫu đồng phục theo yêu cầu</li>
-                      <li>Gửi bản thiết kế để khách hàng xem xét và chỉnh sửa</li>
-                      <li>Báo giá chi tiết dựa trên thiết kế và số lượng</li>
-                      <li>Thảo luận về thời gian sản xuất và giao hàng</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Bước 3: Xác nhận đơn hàng</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Khách hàng duyệt và phê duyệt thiết kế cuối cùng</li>
-                      <li>Xác nhận số lượng, kích thước, màu sắc</li>
-                      <li>Ký hợp đồng và thanh toán đặt cọc (nếu có)</li>
-                      <li>Bắt đầu quá trình sản xuất</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Bước 4: Sản xuất và kiểm tra chất lượng</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Chúng tôi tiến hành sản xuất theo thiết kế đã duyệt</li>
-                      <li>Kiểm tra chất lượng từng sản phẩm</li>
-                      <li>Chụp ảnh mẫu sản phẩm để khách hàng xác nhận</li>
-                      <li>Hoàn thiện và đóng gói sản phẩm</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Bước 5: Giao hàng và thanh toán</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Giao hàng đến địa chỉ khách hàng yêu cầu</li>
-                      <li>Khách hàng kiểm tra và nhận hàng</li>
-                      <li>Thanh toán số tiền còn lại</li>
-                      <li>Hỗ trợ sau bán hàng nếu cần thiết</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-
-              <section className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">3. Thông tin cần cung cấp khi đặt hàng</h2>
-                <div className="space-y-3">
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Thông tin sản phẩm:</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Loại đồng phục (áo thun, áo polo, áo khoác, quần, v.v.)</li>
-                      <li>Số lượng cần sản xuất</li>
-                      <li>Kích thước và số lượng theo từng size</li>
-                      <li>Màu sắc chủ đạo</li>
-                      <li>Chất liệu vải mong muốn</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Thông tin thiết kế:</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Logo công ty/tổ chức (file vector hoặc hình ảnh chất lượng cao)</li>
-                      <li>Nội dung text cần in/thêu</li>
-                      <li>Vị trí đặt logo và text</li>
-                      <li>Màu sắc của logo và text</li>
-                      <li>Phong cách thiết kế mong muốn</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Thông tin giao hàng:</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Địa chỉ giao hàng chi tiết</li>
-                      <li>Thời gian cần giao hàng</li>
-                      <li>Thông tin liên hệ người nhận hàng</li>
-                      <li>Yêu cầu đặc biệt về đóng gói (nếu có)</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-
-              <section className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">4. Phương thức thanh toán</h2>
-                <div className="space-y-3">
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Thanh toán online:</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Chuyển khoản ngân hàng</li>
-                      <li>Ví điện tử (MoMo, ZaloPay)</li>
-                      <li>Internet Banking</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Thanh toán theo đợt:</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Đặt cọc 50% khi ký hợp đồng</li>
-                      <li>Thanh toán 50% còn lại khi giao hàng</li>
-                      <li>COD (Cash on Delivery) cho đơn hàng nhỏ</li>
-                      <li>Thanh toán tại xưởng sản xuất</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Lưu ý về thanh toán:</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Đơn hàng trên 10 triệu VNĐ: Đặt cọc tối thiểu 30%</li>
-                      <li>Đơn hàng dưới 10 triệu VNĐ: Có thể thanh toán toàn bộ khi giao hàng</li>
-                      <li>Hỗ trợ thanh toán theo đợt cho đơn hàng lớn</li>
-                      <li>Cung cấp hóa đơn VAT theo yêu cầu</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-
-              <section className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">5. Thời gian sản xuất và giao hàng</h2>
-                <div className="space-y-3">
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">5.1. Thời gian sản xuất</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li><strong>Đơn hàng nhỏ (dưới 50 sản phẩm):</strong> 3–5 ngày làm việc</li>
-                      <li><strong>Đơn hàng trung bình (50–200 sản phẩm):</strong> 5–7 ngày làm việc</li>
-                      <li><strong>Đơn hàng lớn (trên 200 sản phẩm):</strong> 7–14 ngày làm việc</li>
-                      <li><strong>Đơn hàng đặc biệt (thiết kế phức tạp):</strong> 10–21 ngày làm việc</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">5.2. Thời gian giao hàng</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li><strong>Hà Nội &amp; TP.HCM:</strong> 1–2 ngày làm việc</li>
-                      <li><strong>Các tỉnh thành khác:</strong> 2–5 ngày làm việc</li>
-                      <li><strong>Vùng sâu, vùng xa:</strong> 5–7 ngày làm việc</li>
-                      <li><strong>Giao hàng nhanh:</strong> Có thể sắp xếp theo yêu cầu</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">5.3. Phí vận chuyển</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li><strong>Miễn phí:</strong> Đơn hàng từ 5 triệu VNĐ</li>
-                      <li><strong>30.000 VNĐ:</strong> Đơn hàng dưới 5 triệu VNĐ</li>
-                      <li><strong>50.000 VNĐ:</strong> Giao hàng nhanh (trong ngày)</li>
-                      <li><strong>Giao hàng tận nơi:</strong> Có thể sắp xếp cho đơn hàng lớn</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">5.4. Theo dõi tiến độ sản xuất</h3>
-                    <p className="text-gray-700 leading-6 mb-2">Chúng tôi sẽ cập nhật tiến độ sản xuất cho khách hàng:</p>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Email xác nhận đơn hàng và thời gian sản xuất</li>
-                      <li>Hình ảnh mẫu sản phẩm khi hoàn thành</li>
-                      <li>Thông báo khi bắt đầu sản xuất</li>
-                      <li>Thông báo khi hoàn thành và chuẩn bị giao hàng</li>
-                      <li>Mã vận đơn để theo dõi giao hàng</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-
-              <section className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">6. Kiểm tra và nhận hàng</h2>
-                <div className="space-y-3">
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Lưu ý quan trọng khi nhận hàng:</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Kiểm tra kỹ sản phẩm trước khi ký nhận</li>
-                      <li>Đảm bảo số lượng, kích thước, màu sắc đúng như đơn hàng</li>
-                      <li>Kiểm tra chất lượng in/thêu logo và text</li>
-                      <li>Kiểm tra tình trạng sản phẩm (không bị lỗi, rách, bẩn)</li>
-                      <li>So sánh với thiết kế đã duyệt trước đó</li>
-                      <li>Nếu có vấn đề, từ chối nhận hàng và liên hệ ngay với chúng tôi</li>
-                      <li>Giữ lại hóa đơn và phiếu giao hàng</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Cam kết chất lượng:</h3>
-                    <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
-                      <li>Sản phẩm đúng thiết kế đã duyệt</li>
-                      <li>Chất lượng in/thêu sắc nét, bền màu</li>
-                      <li>Đúng số lượng và kích thước yêu cầu</li>
-                      <li>Đóng gói cẩn thận, không bị hư hỏng</li>
-                      <li>Hỗ trợ sửa chữa nếu có lỗi từ phía sản xuất</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-
-              <section className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">7. Câu hỏi thường gặp</h2>
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Tôi có thể chỉnh sửa thiết kế sau khi đã duyệt không?</h3>
-                    <p className="text-gray-700 leading-6">
-                      Có thể chỉnh sửa nhỏ trước khi bắt đầu sản xuất. Nếu đã sản xuất,
-                      việc chỉnh sửa sẽ phát sinh thêm chi phí và thời gian.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Làm sao để biết giá cả chính xác?</h3>
-                    <p className="text-gray-700 leading-6">
-                      Giá cả phụ thuộc vào số lượng, chất liệu, kỹ thuật in/thêu và độ phức tạp thiết kế.
-                      Chúng tôi sẽ báo giá chi tiết sau khi trao đổi yêu cầu cụ thể.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Tôi có thể hủy đơn hàng không?</h3>
-                    <p className="text-gray-700 leading-6">
-                      Có thể hủy trước khi bắt đầu sản xuất. Nếu đã sản xuất,
-                      chúng tôi sẽ tính phí theo tỷ lệ hoàn thành công việc.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-gray-800 mb-2">Có hỗ trợ thiết kế logo không?</h3>
-                    <p className="text-gray-700 leading-6">
-                      Có, chúng tôi có đội ngũ thiết kế chuyên nghiệp có thể hỗ trợ thiết kế logo
-                      và toàn bộ bộ nhận diện thương hiệu cho khách hàng.
-                    </p>
-                  </div>
-                </div>
-              </section>
-
-              <section className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">8. Liên hệ hỗ trợ</h2>
-                <p className="text-gray-700 leading-6 mb-3">
-                  Nếu bạn cần hỗ trợ thêm về quy trình đặt hàng hoặc tư vấn thiết kế, đừng ngần ngại liên hệ với chúng tôi:
-                </p>
-                <div className="bg-gray-100 p-3 rounded-lg">
-                  <p className="text-gray-700 mb-1"><strong>Đồng Phục Univi</strong></p>
-                  <p className="text-gray-700 mb-1"><strong>Hotline:</strong> 0834.204.999 / 096.156.7997</p>
-                  <p className="text-gray-700 mb-1"><strong>Email:</strong> dongphucunivi@gmail.com</p>
-                  <p className="text-gray-700 mb-1"><strong>Địa chỉ:</strong> Nhà D14, đường Thanh Bình, phường Hà Đông, Hà Nội</p>
-                  <p className="text-gray-600 text-sm mt-2"><strong>Thời gian làm việc:</strong> 8:00 – 22:00 (Thứ 2 – Chủ nhật)</p>
-                </div>
-              </section>
+          {/* Breadcrumb / Page Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-100 text-sky-700 text-xs md:text-sm font-semibold tracking-wide uppercase mb-3 border border-sky-200">
+              <ClipboardList className="w-4 h-4 text-sky-600" />
+              Quy Trình Đặt Hàng Chuyên Nghiệp
             </div>
+            <h1 className="text-xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+              HƯỚNG DẪN ĐẶT HÀNG ĐỒNG PHỤC UNIVI
+            </h1>
+            <p className="mt-2.5 text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+              Đơn giản - Nhanh chóng - Hỗ trợ thiết kế và may mẫu tận tâm từ A đến Z
+            </p>
+          </div>
+
+          {/* Vertical Layout - Sections */}
+          <div className="space-y-10">
+
+            {/* ========================================================================= */}
+            {/* SECTION 1: QUY TRÌNH 5 BƯỚC ĐẶT HÀNG ĐỒNG PHỤC */}
+            {/* ========================================================================= */}
+            <div className="relative bg-white rounded-3xl border-2 border-sky-400/80 shadow-[0_12px_36px_rgba(56,189,248,0.18)] overflow-hidden transition-all duration-300 hover:shadow-[0_16px_44px_rgba(56,189,248,0.25)]">
+              {/* Header Badge Banner */}
+              <div className="p-4 sm:p-6 pb-2">
+                <div className="w-full bg-gradient-to-r from-sky-500 via-sky-400 to-sky-500 rounded-full py-3 px-4 sm:px-6 shadow-md flex items-center justify-center gap-2 sm:gap-3 text-white">
+                  <h2 className="text-sm sm:text-lg md:text-xl font-bold uppercase tracking-wider text-center drop-shadow-sm">
+                    QUY TRÌNH 5 BƯỚC ĐẶT HÀNG ĐỒNG PHỤC
+                  </h2>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 sm:p-8 pt-4 space-y-6 text-slate-700 leading-relaxed text-sm sm:text-base">
+                {/* Intro */}
+                <p className="font-medium text-slate-800 text-justify sm:text-left bg-sky-50/60 p-4 rounded-xl border border-sky-100">
+                  Để mang lại trải nghiệm đặt may đồng phục chuẩn xác, đúng ý tưởng và nhanh chóng nhất, Đồng Phục Univi xây dựng quy trình làm việc chuẩn hóa gồm 5 bước chuyên nghiệp:
+                </p>
+
+                {/* 5 Steps Process */}
+                <div className="space-y-4">
+                  {/* Step 1 */}
+                  <div className="bg-sky-50/40 p-4 sm:p-5 rounded-2xl border border-sky-100 flex flex-col sm:flex-row items-start gap-4">
+                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 text-white font-bold flex items-center justify-center flex-shrink-0 shadow-sm text-sm">
+                      01
+                    </div>
+                    <div className="space-y-1.5 flex-1">
+                      <h3 className="font-bold text-slate-900 text-base sm:text-lg text-sky-950">
+                        Bước 1: Tiếp nhận yêu cầu & Tư vấn giải pháp
+                      </h3>
+                      <p className="text-slate-700 text-xs sm:text-sm">
+                        Quý khách liên hệ qua Hotline/Zalo <strong>0834.204.999</strong> hoặc để lại thông tin trên website. Chuyên viên tư vấn của Univi sẽ lắng nghe nhu cầu về: loại áo (thể thao, chạy bộ, polo, công sở, áo gió...), số lượng dự kiến, ngân sách và mục đích sử dụng.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div className="bg-sky-50/40 p-4 sm:p-5 rounded-2xl border border-sky-100 flex flex-col sm:flex-row items-start gap-4">
+                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 text-white font-bold flex items-center justify-center flex-shrink-0 shadow-sm text-sm">
+                      02
+                    </div>
+                    <div className="space-y-1.5 flex-1">
+                      <h3 className="font-bold text-slate-900 text-base sm:text-lg text-sky-950">
+                        Bước 2: Lên market thiết kế 2D & Báo giá chi tiết
+                      </h3>
+                      <p className="text-slate-700 text-xs sm:text-sm">
+                        Đội ngũ thiết kế chuyên nghiệp của Univi lên bản vẽ phối màu, vị trí in/thêu logo thương hiệu hoàn toàn <strong>miễn phí</strong>. Đồng thời gửi kèm bảng báo giá chi tiết, các phương án chất liệu vải và bảng thông số size chuẩn để Quý khách lựa chọn.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="bg-sky-50/40 p-4 sm:p-5 rounded-2xl border border-sky-100 flex flex-col sm:flex-row items-start gap-4">
+                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 text-white font-bold flex items-center justify-center flex-shrink-0 shadow-sm text-sm">
+                      03
+                    </div>
+                    <div className="space-y-1.5 flex-1">
+                      <h3 className="font-bold text-slate-900 text-base sm:text-lg text-sky-950">
+                        Bước 3: Chốt mẫu thiết kế, Ký hợp đồng & Đặt cọc
+                      </h3>
+                      <p className="text-slate-700 text-xs sm:text-sm">
+                        Hai bên thống nhất maket thiết kế cuối cùng, chi tiết bảng phân bổ size áo (S, M, L, XL, 2XL...). Tiến hành ký hợp đồng hoặc xác nhận đơn đặt hàng, Quý khách đặt cọc theo thỏa thuận để xưởng bắt đầu đưa vào kế hoạch sản xuất.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 4 */}
+                  <div className="bg-sky-50/40 p-4 sm:p-5 rounded-2xl border border-sky-100 flex flex-col sm:flex-row items-start gap-4">
+                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 text-white font-bold flex items-center justify-center flex-shrink-0 shadow-sm text-sm">
+                      04
+                    </div>
+                    <div className="space-y-1.5 flex-1">
+                      <h3 className="font-bold text-slate-900 text-base sm:text-lg text-sky-950">
+                        Bước 4: Sản xuất hàng loạt & Kiểm định chất lượng (KCS)
+                      </h3>
+                      <p className="text-slate-700 text-xs sm:text-sm">
+                        Xưởng tiến hành cắt may, in PET/in chuyển nhiệt công nghệ cao hoặc thêu vi tính theo đúng quy chuẩn. Bộ phận kiểm soát chất lượng (KCS) kiểm tra kỹ lưỡng từng đường chỉ, độ nét hình in, làm sạch chỉ thừa và là ủi phẳng phiu, đóng gói chuyên nghiệp.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 5 */}
+                  <div className="bg-sky-50/40 p-4 sm:p-5 rounded-2xl border border-sky-100 flex flex-col sm:flex-row items-start gap-4">
+                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 text-white font-bold flex items-center justify-center flex-shrink-0 shadow-sm text-sm">
+                      05
+                    </div>
+                    <div className="space-y-1.5 flex-1">
+                      <h3 className="font-bold text-slate-900 text-base sm:text-lg text-sky-950">
+                        Bước 5: Giao hàng tận nơi & Chăm sóc bảo hành
+                      </h3>
+                      <p className="text-slate-700 text-xs sm:text-sm">
+                        Đơn hàng được giao đúng hẹn đến địa chỉ Quý khách yêu cầu trên toàn quốc. Quý khách đồng kiểm tra số lượng và chất lượng, thanh toán phần còn lại. Univi kích hoạt chính sách bảo hành sản phẩm may và hình in đồng hành lâu dài.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* ========================================================================= */}
+            {/* SECTION 2: THÔNG TIN CẦN CHUẨN BỊ, THANH TOÁN & TIẾN ĐỘ */}
+            {/* ========================================================================= */}
+            <div className="relative bg-white rounded-3xl border-2 border-sky-400/80 shadow-[0_12px_36px_rgba(56,189,248,0.18)] overflow-hidden transition-all duration-300 hover:shadow-[0_16px_44px_rgba(56,189,248,0.25)]">
+              {/* Header Badge Banner */}
+              <div className="p-4 sm:p-6 pb-2">
+                <div className="w-full bg-gradient-to-r from-sky-500 via-sky-400 to-sky-500 rounded-full py-3 px-4 sm:px-6 shadow-md flex items-center justify-center gap-2 sm:gap-3 text-white">
+                  <h2 className="text-sm sm:text-lg md:text-xl font-bold uppercase tracking-wider text-center drop-shadow-sm">
+                    THÔNG TIN CẦN CHUẨN BỊ, THANH TOÁN & TIẾN ĐỘ
+                  </h2>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 sm:p-8 pt-4 space-y-7 text-slate-700 leading-relaxed text-sm sm:text-base">
+
+                {/* 1. Thông tin cần chuẩn bị */}
+                <div className="space-y-3">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span className="text-sky-600">1.</span> Thông tin Quý khách nên chuẩn bị trước
+                  </h3>
+                  <div className="space-y-3 pl-2 sm:pl-4">
+                    <div className="bg-sky-50/40 p-4 rounded-xl border border-sky-100 space-y-2">
+                      <h4 className="font-bold text-slate-900 text-sky-900 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-sky-500"></span>
+                        Thông tin nhu cầu sản phẩm:
+                      </h4>
+                      <ul className="space-y-1.5 pl-4 list-none text-xs sm:text-sm">
+                        <li className="flex items-start gap-2">
+                          <span className="text-sky-500 font-bold text-base leading-tight">•</span>
+                          <span>Số lượng áo cần may và phân bổ size nam/nữ (nếu đã có).</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sky-500 font-bold text-base leading-tight">•</span>
+                          <span>Màu sắc mong muốn (theo bảng màu thương hiệu hoặc nhận diện sự kiện).</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sky-500 font-bold text-base leading-tight">•</span>
+                          <span>Yêu cầu chất liệu vải: Vải mè thể thao, thun lạnh 4 chiều, cá sấu Poly, Cotton 100%...</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-sky-50/40 p-4 rounded-xl border border-sky-100 space-y-2">
+                      <h4 className="font-bold text-slate-900 text-sky-900 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-sky-500"></span>
+                        File thiết kế và logo thương hiệu:
+                      </h4>
+                      <ul className="space-y-1.5 pl-4 list-none text-xs sm:text-sm">
+                        <li className="flex items-start gap-2">
+                          <span className="text-sky-500 font-bold text-base leading-tight">•</span>
+                          <span>File logo gốc (Vector AI, Corel, PDF hoặc hình ảnh PNG/JPG độ phân giải cao).</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sky-500 font-bold text-base leading-tight">•</span>
+                          <span>Slogan, câu chữ hoặc danh sách tên/số in ấn riêng cho từng thành viên (nếu có).</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Phương thức thanh toán */}
+                <div className="space-y-3">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span className="text-sky-600">2.</span> Quy định đặt cọc & Phương thức thanh toán
+                  </h3>
+                  <div className="space-y-2 pl-4 sm:pl-6">
+                    <div className="flex items-start gap-2">
+                      <span className="text-sky-500 font-bold text-lg leading-tight">•</span>
+                      <p className="text-slate-700">
+                        <strong>Quy định đặt cọc:</strong> Sau khi chốt thiết kế và số lượng, Quý khách đặt cọc từ <strong>30% - 50%</strong> giá trị đơn hàng để xưởng tiến hành mua vải và lên chuyền sản xuất.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sky-500 font-bold text-lg leading-tight">•</span>
+                      <p className="text-slate-700">
+                        <strong>Thanh toán đợt cuối:</strong> Thanh toán số tiền còn lại sau khi nhận bàn giao hàng, đồng kiểm tra đủ số lượng và chất lượng sản phẩm.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sky-500 font-bold text-lg leading-tight">•</span>
+                      <p className="text-slate-700">
+                        <strong>Hình thức thanh toán:</strong> Chuyển khoản ngân hàng chính thức, quét mã VietQR hoặc thanh toán tiền mặt trực tiếp tại xưởng; hỗ trợ xuất hóa đơn VAT điện tử đầy đủ theo quy định.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Thời gian sản xuất & Vận chuyển */}
+                <div className="space-y-3">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span className="text-sky-600">3.</span> Thời gian sản xuất & Giao nhận hàng
+                  </h3>
+                  <div className="space-y-2 pl-4 sm:pl-6">
+                    <div className="flex items-start gap-2">
+                      <span className="text-sky-500 font-bold text-lg leading-tight">•</span>
+                      <p className="text-slate-700">
+                        <strong>Thời gian sản xuất tiêu chuẩn:</strong> Từ <strong>3 - 7 ngày làm việc</strong> tùy thuộc vào số lượng và độ phức tạp của thiết kế.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sky-500 font-bold text-lg leading-tight">•</span>
+                      <p className="text-slate-700">
+                        <strong>Hỗ trợ may gấp sự kiện:</strong> Univi có chuyền sản xuất linh hoạt hỗ trợ các đơn hàng may gấp phục vụ giải đấu, sự kiện teambuilding trong <strong>24h - 48h</strong>.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sky-500 font-bold text-lg leading-tight">•</span>
+                      <p className="text-slate-700">
+                        <strong>Chính sách giao hàng:</strong> Miễn phí vận chuyển nội thành Hà Nội và hỗ trợ phí ship ưu đãi cho khách hàng trên toàn quốc.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* ========================================================================= */}
+            {/* SUPPORT & CONTACT INFO CARD */}
+            {/* ========================================================================= */}
+            <div className="bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-900/40">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                    <Sparkles className="w-6 h-6 text-sky-400" />
+                    Tư Vấn & Báo Giá Nhanh 24/7
+                  </h3>
+                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Đội ngũ chuyên viên Đồng Phục Univi sẵn sàng hỗ trợ tư vấn chất liệu, thiết kế mẫu demo và gửi bảng giá ưu đãi nhất cho Quý khách:
+                  </p>
+                </div>
+
+                <div className="space-y-3 bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10 text-sm">
+                  <div className="flex items-center gap-3">
+                    <Phone className="w-5 h-5 text-sky-400 flex-shrink-0" />
+                    <div>
+                      <span className="text-slate-300">Hotline/Zalo: </span>
+                      <a href="tel:0834204999" className="font-bold text-white hover:text-sky-300 transition-colors">0834.204.999</a>
+                      <span className="text-slate-400"> / </span>
+                      <a href="tel:0961567997" className="font-bold text-white hover:text-sky-300 transition-colors">096.156.7997</a>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-sky-400 flex-shrink-0" />
+                    <div>
+                      <span className="text-slate-300">Email: </span>
+                      <a href="mailto:dongphucunivi@gmail.com" className="font-bold text-white hover:text-sky-300 transition-colors">dongphucunivi@gmail.com</a>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-sky-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-slate-300">Địa chỉ: </span>
+                      <span className="font-medium text-white">Nhà D14, ngõ 180 Thanh Bình, Hà Đông, Hà Nội</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
-      </div>
+      </main>
     </DefaultLayout>
   );
 }

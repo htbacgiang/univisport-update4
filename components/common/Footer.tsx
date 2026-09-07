@@ -269,10 +269,10 @@ export default function Footer() {
                   Chính sách bảo mật
                 </Link>
                 <Link
-                  href="/dieu-khoan-su-dung"
+                  href="/chinh-sach-bao-hanh"
                   className="text-gray-400 hover:text-gray-100 transition-colors text-sm"
                 >
-                  Điều khoản sử dụng
+                  Chính sách bảo hành
                 </Link>
                 <Link
                   href="/sitemap.xml"
