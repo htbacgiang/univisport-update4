@@ -40,7 +40,7 @@ export const theThaoFaqs = [
   ["Có thể thiết kế đồng phục theo màu thương hiệu không?", "Có thể tư vấn màu nền, màu phối, vị trí logo và concept theo nhận diện thương hiệu. Màu trên file thiết kế nên được đối chiếu bằng mẫu thực tế."],
   ["Có hỗ trợ thiết kế đồng phục thể thao không?", "Đồng Phục Univi có định hướng tư vấn và lên concept theo bộ môn và nhận diện thương hiệu. Quy trình cụ thể và phạm vi chỉnh sửa cần được xác nhận theo từng dự án."],
   ["Có thể tái sản xuất mẫu cũ không?", "Có thể trao đổi nếu còn mẫu, thông tin thiết kế, màu, logo và bảng size. Nên cung cấp lại dữ liệu cũ để kiểm tra trước khi xác nhận đơn bổ sung."],
-  ["Đồng Phục Univi có xưởng sản xuất không?", "Theo hồ sơ hiện có, Univi sở hữu xưởng trên 2.000m² tại Đan Phượng, Hà Nội và công suất gần 100.000 sản phẩm/tháng. Tiến độ thực tế cần xác nhận theo từng mẫu, số lượng, nguyên liệu và lịch sản xuất."],
+  ["Đồng Phục Univi có xưởng sản xuất không?", "Theo hồ sơ hiện có, Univi sở hữu xưởng trên 2.000m² tại phường Chương Mỹ, Hà Nội và công suất gần 100.000 sản phẩm/tháng. Tiến độ thực tế cần xác nhận theo từng mẫu, số lượng, nguyên liệu và lịch sản xuất."],
 ];
 
 function SectionHeading({ number, children }) {
@@ -1377,7 +1377,7 @@ export default function TheThaoPillarPage() {
 
           <SectionSubheading>11.2 Năng lực xưởng</SectionSubheading>
           <Prose>
-            Theo hồ sơ năng lực và nội dung giới thiệu hiện có, Đồng Phục Univi sở hữu xưởng trên 2.000m² tại Đan Phượng, Hà Nội và công suất gần 100.000 sản phẩm/tháng. Tiến độ thực tế phụ thuộc vào mẫu, số lượng, kỹ thuật logo, nguyên liệu và lịch sản xuất.
+            Theo hồ sơ năng lực và nội dung giới thiệu hiện có, Đồng Phục Univi sở hữu xưởng trên 2.000m² tại phường Chương Mỹ, Hà Nội và công suất gần 100.000 sản phẩm/tháng. Tiến độ thực tế phụ thuộc vào mẫu, số lượng, kỹ thuật logo, nguyên liệu và lịch sản xuất.
           </Prose>
 
           <SectionSubheading>11.3 Giải pháp 2S Uniform</SectionSubheading>

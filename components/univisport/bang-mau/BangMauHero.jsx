@@ -23,7 +23,15 @@ const STATS = [
   { icon: MessageCircleHeart, label: "Tư vấn màu", sub: "Miễn phí" },
 ];
 
-export default function BangMauHero({ fabrics }) {
+const DEFAULT_FABRICS = [
+  { slug: "uniair", name: "UNI AIR - UNIA12", composition: "90% Polyester / 10% Elastane" },
+  { slug: "supercool", name: "UNI SUPERCOOL - UNIA02", composition: "89% Polyamide / 11% Elastane" },
+  { slug: "quickdry", name: "UNI QUICKDRY - UNIA01", composition: "88% Polyester / 12% Elastane" },
+  { slug: "polo-ca-sau", name: "UNI COOL PIQUÉ - UNIA114", composition: "86% Polyamide / 14% Elastane" },
+];
+
+export default function BangMauHero({ fabrics = DEFAULT_FABRICS }) {
+  const fabricList = Array.isArray(fabrics) && fabrics.length > 0 ? fabrics : DEFAULT_FABRICS;
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#0a2f4d] via-[#0e4676] to-[#105d97]">
       <div
@@ -35,7 +43,7 @@ export default function BangMauHero({ fabrics }) {
         aria-hidden="true"
       />
 
-      <div className="relative container mx-auto px-4 py-14 md:py-20">
+      <div className="relative container mx-auto px-4 py-14 md:py-18">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
           {/* Left: copy */}
           <div>
@@ -72,7 +80,7 @@ export default function BangMauHero({ fabrics }) {
 
           {/* Right: fabric cards */}
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            {fabrics.map((fabric) => {
+            {fabricList.map((fabric) => {
               const photo = FABRIC_IMAGES[fabric.slug];
               return (
                 <a

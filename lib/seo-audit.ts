@@ -548,7 +548,7 @@ const SEO_ENTITY_DICTIONARY: EntityDictionaryEntry[] = [
   { entity: "Univi", type: "Brand", variants: ["UNIVI"] },
   { entity: "Unicore Holdings", type: "Brand", variants: ["unicore"] },
   { entity: "Hà Nội", type: "Location", variants: ["ha noi", "hn"] },
-  { entity: "Đan Phượng", type: "Location", variants: ["dan phuong"] },
+  { entity: "Chương Mỹ", type: "Location", variants: ["chuong my", "phường chương mỹ", "đan phượng", "dan phuong"] },
   { entity: "Việt Nam", type: "Location", variants: ["viet nam", "vietnam"] },
   { entity: "TP Hồ Chí Minh", type: "Location", variants: ["hồ chí minh", "ho chi minh", "tphcm", "sài gòn"] },
   { entity: "Huấn luyện viên", type: "Audience", variants: ["trainer", "coach"] },

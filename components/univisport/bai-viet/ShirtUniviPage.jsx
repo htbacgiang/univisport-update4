@@ -94,7 +94,7 @@ const saiLamThuongGap = [
 ];
 
 const nangLucB2B = [
-  ['Năng lực sản xuất', 'Univi công bố xưởng 2.000 m² tại Đan Phượng và công suất 100.000 sản phẩm/tháng — nền tảng để triển khai các đơn hàng cần điều phối nhiều hạng mục và nhiều đợt giao.'],
+  ['Năng lực sản xuất', 'Univi công bố xưởng 2.000 m² tại phường Chương Mỹ, Hà Nội và công suất 100.000 sản phẩm/tháng — nền tảng để triển khai các đơn hàng cần điều phối nhiều hạng mục và nhiều đợt giao.'],
   ['R&D chất liệu', 'Univi có hoạt động R&D về chất liệu, form dáng và trải nghiệm người mặc; knowledge ghi nhận các dòng UNI QUICK DRY, UNI SUPER COOL, UNI BLENDED và công nghệ UNI DRY. Brief có cơ sở hơn khi doanh nghiệp cần cân bằng hình ảnh, cảm giác mặc và chi phí sử dụng.'],
   ['Định vị B2B và giải pháp hệ thống', 'Univi định vị B2B và phát triển giải pháp đồng phục theo hệ thống, trong đó có giải pháp 2S Uniform. Doanh nghiệp có thể tham khảo tư duy phân vai, lưu chuẩn và đặt bổ sung khi xây dựng bộ sơ mi công sở.'],
   ['Kinh nghiệm triển khai', 'Với hơn 9 năm hoạt động trong ngành, Univi có kinh nghiệm làm việc với nhiều loại brief khác nhau, từ đơn hàng nhỏ theo phòng ban đến triển khai đồng loạt cho toàn doanh nghiệp.'],
@@ -151,7 +151,7 @@ const faqs = [
   ],
   [
     'UNIVI có nhận may sơ mi doanh nghiệp số lượng lớn không?',
-    'Có. Năng lực thương mại được xác nhận gồm xưởng sản xuất 2.000 m² tại Đan Phượng và công suất khoảng 100.000 sản phẩm mỗi tháng. Số lượng, tiến độ và cấu hình thực tế cần được xác nhận theo từng dự án và báo giá.'
+    'Có. Năng lực thương mại được xác nhận gồm xưởng sản xuất 2.000 m² tại phường Chương Mỹ, Hà Nội và công suất khoảng 100.000 sản phẩm mỗi tháng. Số lượng, tiến độ và cấu hình thực tế cần được xác nhận theo từng dự án và báo giá.'
   ],
   [
     'Có thể đặt lại cùng mẫu sơ mi doanh nghiệp trong những lần sau không?',
@@ -679,7 +679,7 @@ export default function ShirtUniviPage() {
 
               <div className="bg-white/10 rounded-lg p-4">
                 <div className="font-semibold text-yellow-300 mb-1">Địa chỉ</div>
-                <div className="text-white">D14, 180 Thanh Bình, Hà Đông</div>
+                <div className="text-white">Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</div>
               </div>
             </div>
 

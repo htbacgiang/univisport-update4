@@ -21,10 +21,17 @@ export const EMBEDDABLE_COMPONENTS = [
   },
 
   {
-    name: "FabricCardComponent",
+    name: "FabricCatalogView",
     label: "Thẻ chất liệu vải",
     description: "Hiển thị thông tin các loại vải",
     icon: "🧵",
+    category: "Nội dung",
+  },
+  {
+    name: "BangMauHero",
+    label: "Bảng màu vải",
+    description: "Hero giới thiệu bảng màu vải & chất liệu Univi",
+    icon: "🎨",
     category: "Nội dung",
   },
 

@@ -207,7 +207,7 @@ export default function EventUniformsUniviPage() {
                 </a>
               </Link>
             </li>
-            <li className={`${styles.eventListItem}`}><span className={`${styles.eventHighlight}`}>Địa chỉ:</span> D4, 180 Thanh Bình, Mộ Lao, Hà Đông, Hà Nội</li>
+            <li className={`${styles.eventListItem}`}><span className={`${styles.eventHighlight}`}>Địa chỉ:</span> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</li>
           </ul>
 
           <p className={`${styles.eventText}`}>

@@ -26,7 +26,7 @@ const PROCESS_STEPS = [
     step: "04",
     title: "Sản xuất & Cập nhật tiến độ",
     time: "7–10 ngày làm việc",
-    desc: "Toàn bộ sản xuất tại xưởng Đan Phượng. Univi cập nhật tiến độ chủ động từng giai đoạn. 100% sản phẩm qua kiểm tra QC trước khi xuất xưởng.",
+    desc: "Toàn bộ sản xuất tại xưởng phường Chương Mỹ, Hà Nội. Univi cập nhật tiến độ chủ động từng giai đoạn. 100% sản phẩm qua kiểm tra QC trước khi xuất xưởng.",
   },
   {
     step: "05",

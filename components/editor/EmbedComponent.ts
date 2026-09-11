@@ -1,4 +1,6 @@
 import { Node, mergeAttributes } from '@tiptap/core'
+import { ReactNodeViewRenderer } from '@tiptap/react'
+import EmbedComponentView from './EmbedComponentView'
 
 export interface EmbedComponentOptions {
   HTMLAttributes: Record<string, any>
@@ -52,21 +54,18 @@ export const EmbedComponent = Node.create<EmbedComponentOptions>({
   },
 
   renderHTML({ HTMLAttributes, node }) {
-    const label = node.attrs.name || 'Component'
-    // Lưu ý: data-component và data-props được TipTap inject tự động từ addAttributes
-    // Nhưng ta explicit set thêm để đảm bảo luôn có trong HTML output
     return [
       'div',
       mergeAttributes(HTMLAttributes, {
         'data-component': node.attrs.name,
         'data-props': node.attrs.props || '{}',
         class: 'embed-component-block',
-        style:
-          'display:flex; align-items:center; justify-content:center; gap:8px; border:2px dashed #105d97; border-radius:8px; padding:16px 24px; margin:20px 0; background:#f0f7ff; color:#105d97; font-weight:600; font-size:14px; cursor:default; user-select:none;',
       }),
-      ['span', { style: 'font-size:20px;' }, '🧩'],
-      ['span', {}, `Component: ${label}`],
     ]
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(EmbedComponentView)
   },
 
   addCommands() {

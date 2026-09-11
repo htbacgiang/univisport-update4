@@ -171,7 +171,7 @@ const UniformStylesPoloComponent = () => {
           </div>
           <div className="flex items-center gap-2 text-center sm:text-right">
             <span>📍</span>
-            <span>D14 ngõ 180 đường Thanh Bình, phường Hà Đông, Hà Nội</span>
+            <span>Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</span>
           </div>
         </div>
       </div>

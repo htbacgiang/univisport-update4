@@ -1235,7 +1235,7 @@ export default function DoanhNghiepPillarPage() {
           </Prose>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {[
-              { title: "Xưởng sản xuất", text: "2.000m² tại Đan Phượng, Hà Nội. Công suất công bố 100.000 sản phẩm/tháng." },
+              { title: "Xưởng sản xuất", text: "2.000m² tại phường Chương Mỹ, Hà Nội. Công suất công bố 100.000 sản phẩm/tháng." },
               { title: "Kinh nghiệm & khách hàng", text: "Hơn 9 năm kinh nghiệm. Phục vụ toàn quốc, 500+ doanh nghiệp, phòng tập và câu lạc bộ thể thao." },
               { title: "Chất liệu & kiểm định", text: "R&D về chất liệu và hiệu suất vận động" },
             ].map(({ title, text }) => (

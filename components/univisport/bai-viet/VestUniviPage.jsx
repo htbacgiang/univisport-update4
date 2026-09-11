@@ -112,7 +112,7 @@ const saiLamThuongGap = [
 ];
 
 const nangLucB2B = [
-  ['Năng lực sản xuất', 'Univi công bố xưởng 2.000 m² tại Đan Phượng và công suất 100.000 sản phẩm/tháng — nền tảng sản xuất trực tiếp cho các dự án cần điều phối nhiều hạng mục. Doanh nghiệp có thể trao đổi bài toán triển khai theo hệ thống thay vì chỉ mua từng sản phẩm rời.'],
+  ['Năng lực sản xuất', 'Univi công bố xưởng 2.000 m² tại phường Chương Mỹ, Hà Nội và công suất 100.000 sản phẩm/tháng — nền tảng sản xuất trực tiếp cho các dự án cần điều phối nhiều hạng mục. Doanh nghiệp có thể trao đổi bài toán triển khai theo hệ thống thay vì chỉ mua từng sản phẩm rời.'],
   ['R&D chất liệu', 'Univi có hoạt động R&D về chất liệu, form dáng, hiệu suất và trải nghiệm người dùng; các dòng UNI DRY, UNI SUPER COOL, UNI QUICK DRY và UNI BLENDED. Brief có cơ sở hơn khi doanh nghiệp cần cân bằng hình ảnh, cảm giác mặc và chi phí sử dụng.'],
   ['Định vị B2B và giải pháp hệ thống', 'Univi định vị B2B và phát triển giải pháp đồng phục, trong đó có 2S Uniform cho hệ thống phòng tập. Doanh nghiệp có thể dùng tư duy phân vai, lưu chuẩn và đặt bổ sung khi xây corporate outfit.'],
 ];
@@ -172,7 +172,7 @@ const faqs = [
   ],
   [
     'UNIVI có nhận may vest doanh nghiệp số lượng lớn không?',
-    'Univi công bố năng lực sản xuất gồm xưởng 2.000 m² tại Đan Phượng và công suất khoảng 100.000 sản phẩm mỗi tháng. Với vest công sở, cấu hình, số lượng, tiến độ và phạm vi sản xuất thực tế cần được xác nhận riêng theo từng dự án.'
+    'Univi công bố năng lực sản xuất gồm xưởng 2.000 m² tại phường Chương Mỹ, Hà Nội và công suất khoảng 100.000 sản phẩm mỗi tháng. Với vest công sở, cấu hình, số lượng, tiến độ và phạm vi sản xuất thực tế cần được xác nhận riêng theo từng dự án.'
   ],
   [
     'Chi phí may vest doanh nghiệp phụ thuộc vào yếu tố nào?',
@@ -592,7 +592,7 @@ export default function VestUniviPage() {
 
               <div className="bg-white/10 rounded-lg p-4">
                 <div className="font-semibold text-yellow-300 mb-1">Địa chỉ</div>
-                <div className="text-white">D14, 180 Thanh Bình, Hà Đông</div>
+                <div className="text-white">Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</div>
               </div>
             </div>
 

@@ -42,7 +42,7 @@ export async function getServerSideProps({ params }) {
 
     const product = JSON.parse(JSON.stringify(productDoc));
 
-    // Fetch related products (cùng productLine nếu có, đặc biệt là các danh mục con của Đồng phục doanh nghiệp)
+    // Fetch related products (lấy ngẫu nhiên sản phẩm trong danh mục / productLine)
     const relatedFilter = {
       category: product.category,
       slug: { $ne: slug },
@@ -52,10 +52,25 @@ export async function getServerSideProps({ params }) {
       relatedFilter.productLine = product.productLine;
     }
 
-    const relatedProductsDocs = await Product.find(relatedFilter)
-      .sort({ displayOrder: 1, createdAt: -1 })
-      .limit(6)
-      .lean();
+    let relatedProductsDocs = [];
+    try {
+      relatedProductsDocs = await Product.aggregate([
+        { $match: relatedFilter },
+        { $sample: { size: 8 } },
+      ]);
+
+      if ((!relatedProductsDocs || relatedProductsDocs.length === 0) && product.productLine) {
+        relatedProductsDocs = await Product.aggregate([
+          { $match: { category: product.category, slug: { $ne: slug }, visibleOnArticle: { $ne: false } } },
+          { $sample: { size: 8 } },
+        ]);
+      }
+    } catch (_) {
+      relatedProductsDocs = await Product.find(relatedFilter)
+        .sort({ displayOrder: 1, createdAt: -1 })
+        .limit(8)
+        .lean();
+    }
 
     const relatedProducts = relatedProductsDocs.map((p) => ({
       id: p._id.toString(),
@@ -91,7 +106,33 @@ export async function getServerSideProps({ params }) {
       { '@type': 'ListItem', 'position': 2, 'name': displayCategoryName, 'item': `https://dongphucunivi.com/${displayCategorySlug}` },
       { '@type': 'ListItem', 'position': 3, 'name': product.name, 'item': canonicalUrl },
     ];
-    const productImage = product.colors?.[0]?.image || product.image || 'https://dongphucunivi.com/images/banner-1.webp';
+    const normalizeImgUrl = (url) => {
+      if (!url || typeof url !== 'string') return '';
+      const trimmed = url.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+      return `https://dongphucunivi.com${trimmed.startsWith('/') ? '' : '/'}${trimmed}`;
+    };
+
+    const rawCandidateImages = [
+      product.image,
+      ...(Array.isArray(product.colors) ? product.colors.map((c) => c?.image) : []),
+      ...(Array.isArray(product.gallery) ? product.gallery.map((g) => g?.src) : []),
+    ];
+
+    const cleanProductImages = Array.from(
+      new Set(
+        rawCandidateImages
+          .map(normalizeImgUrl)
+          .filter(Boolean)
+      )
+    );
+
+    const finalImages = cleanProductImages.length > 0
+      ? cleanProductImages
+      : ['https://dongphucunivi.com/images/banner-1.webp'];
+
+    const productImage = finalImages[0];
     const validFaqs = Array.isArray(product.faqs)
       ? product.faqs
         .map((faq) => ({
@@ -101,6 +142,52 @@ export async function getServerSideProps({ params }) {
         .filter((faq) => faq.question && faq.answer)
       : [];
     product.faqs = validFaqs;
+
+    const numericPrice = typeof product.price === 'number' ? product.price : parseFloat(product.price);
+    const hasValidPrice = Number.isFinite(numericPrice) && numericPrice > 0;
+    const numericOriginalPrice = typeof product.originalPrice === 'number' ? product.originalPrice : parseFloat(product.originalPrice);
+    const hasOriginalPrice = Number.isFinite(numericOriginalPrice) && numericOriginalPrice > numericPrice;
+
+    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0
+      ? product.sizes
+      : ['S', 'M', 'L', 'XL', '2XL', '3XL'];
+
+    const colorNames = Array.isArray(product.colors)
+      ? product.colors.map((c) => c.name?.trim()).filter(Boolean)
+      : [];
+
+    const materialValue = product.material?.trim() || 'Vải thể thao UNI DRY cao cấp (thoáng khí, co giãn 4 chiều, chống UV)';
+
+    const productVariants = Array.isArray(product.colors) && product.colors.length > 0
+      ? product.colors.map((colorObj, idx) => {
+          const colorImg = normalizeImgUrl(colorObj.image) || productImage;
+          const variantSku = `${product.maSanPham || `SP${product._id}`}-${colorObj.name ? colorObj.name.replace(/\s+/g, '-').toUpperCase() : `V${idx + 1}`}`;
+          return {
+            '@type': 'Product',
+            '@id': `${canonicalUrl}#variant-${idx + 1}`,
+            'name': `${product.name} - Màu ${colorObj.name || `Mẫu ${idx + 1}`}`,
+            'sku': variantSku,
+            'image': colorImg,
+            'color': colorObj.name || '',
+            'size': productSizes,
+            'material': materialValue,
+            ...(hasValidPrice ? {
+              'offers': {
+                '@type': 'Offer',
+                'url': canonicalUrl,
+                'priceCurrency': 'VND',
+                'price': numericPrice,
+                'availability': 'https://schema.org/InStock',
+                'priceValidUntil': `${new Date().getFullYear()}-12-31`,
+                'seller': {
+                  '@type': 'Organization',
+                  '@id': 'https://dongphucunivi.com/#organization',
+                },
+              },
+            } : {}),
+          };
+        })
+      : [];
 
     const meta = {
       title: `${product.name} - Đồng Phục Univi`,
@@ -138,28 +225,31 @@ export async function getServerSideProps({ params }) {
           '@type': 'Product',
           '@id': `${canonicalUrl}#product`,
           'name': product.name,
-          'image': [
-            productImage,
-            ...(product.colors?.map((c) => c.image).filter(Boolean) || []),
-          ],
+          'image': finalImages,
           'description': product.description,
           'sku': product.maSanPham || `SP${product._id}`,
           'brand': { '@type': 'Brand', 'name': 'Đồng Phục Univi' },
-          'offers': {
-            '@type': 'Offer',
-            'url': canonicalUrl,
-            'priceCurrency': 'VND',
-            'price': product.price,
-            ...(product.originalPrice && product.originalPrice > product.price
-              ? { 'highPrice': product.originalPrice }
-              : {}),
-            'availability': 'https://schema.org/InStock',
-            'priceValidUntil': `${new Date().getFullYear()}-12-31`,
-            'seller': {
-              '@type': 'Organization',
-              '@id': 'https://dongphucunivi.com/#organization',
+          'material': materialValue,
+          ...(colorNames.length > 0 ? { 'color': colorNames.length === 1 ? colorNames[0] : colorNames } : {}),
+          'size': productSizes,
+          ...(productVariants.length > 0 ? { 'hasVariant': productVariants } : {}),
+          ...(hasValidPrice ? {
+            'offers': {
+              '@type': 'Offer',
+              'url': canonicalUrl,
+              'priceCurrency': 'VND',
+              'price': numericPrice,
+              ...(hasOriginalPrice
+                ? { 'highPrice': numericOriginalPrice }
+                : {}),
+              'availability': 'https://schema.org/InStock',
+              'priceValidUntil': `${new Date().getFullYear()}-12-31`,
+              'seller': {
+                '@type': 'Organization',
+                '@id': 'https://dongphucunivi.com/#organization',
+              },
             },
-          },
+          } : {}),
         },
         ...(validFaqs.length > 0 ? [{
           '@context': 'https://schema.org',

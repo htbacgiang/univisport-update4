@@ -13,7 +13,7 @@ export const processSteps = [
   },
   {
     title: "Sản xuất khép kín tại nhà xưởng",
-    text: "Quy trình cắt may, thêu logo công nghệ vi tính mật độ cao, hoàn thiện bo cổ nẹp tại xưởng 2.000m² Đan Phượng.",
+    text: "Quy trình cắt may, thêu logo công nghệ vi tính mật độ cao, hoàn thiện bo cổ nẹp tại xưởng 2.000m² phường Chương Mỹ, Hà Nội.",
     icon: Factory,
   },
   {

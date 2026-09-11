@@ -88,7 +88,7 @@ export default function VideoHero() {
                 <div>
                   <span className="text-red-500 font-semibold">* </span>
                   <i className="font-bold">
-                    Phân xưởng sản xuất số 03 tại Hải Dương
+                    Xưởng sản xuất tại phường Chương Mỹ, Hà Nội
                   </i>
                 </div>
               </p>
@@ -99,7 +99,7 @@ export default function VideoHero() {
                   <>
                     <Image
                       src={fallbackImage}
-                      alt="Xưởng sản xuất đồng phục Univi tại Hải Dương"
+                      alt="Xưởng sản xuất đồng phục Univi tại phường Chương Mỹ, Hà Nội"
                       fill
                       style={{ objectFit: "cover" }}
                       quality={75}

@@ -13,6 +13,7 @@ import CategoryGrid from "../components/univisport/CategoryGrid";
 import HeroSection1 from "../components/univisport/HeroSection1";
 import PartnersSection from "../components/univisport/PartnersSection";
 import FabricCardComponent from "../components/univisport/FabricCardComponent";
+import FabricCatalogView from "../components/univisport/chat-lieu-vai/FabricCatalogView";
 import Mockup3DSection from "../components/univisport/Mockup3DSection";
 import VideoFeedback from "../components/univisport/VideoFeedback";
 import db from "../utils/db";
@@ -41,7 +42,7 @@ const CTABannerSection = dynamic(
 const DEFAULT_META = {
   title: "Đồng Phục Univi: Xưởng May Đồng Phục Thể Thao Tại Hà Nội",
   description:
-    "Đồng Phục Univi - xưởng 2.000m² tại Đan Phượng, Hà Nội, công suất 100.000 sp/tháng. Chuyên đồng phục thể thao, giải pháp đồng phục cho các câu lạc bộ, phòng tập & doanh nghiệp B2B. Vải UNI DRY kiểm định QCVN. Thiết kế miễn phí — gọi ngay: 0834.204.999",
+    "Đồng Phục Univi - xưởng 2.000m² tại phường Chương Mỹ, Hà Nội, công suất 100.000 sp/tháng. Chuyên đồng phục thể thao, giải pháp đồng phục cho các câu lạc bộ, phòng tập & doanh nghiệp B2B. Vải UNI DRY kiểm định QCVN. Thiết kế miễn phí — gọi ngay: 0834.204.999",
   keywords:
     "đồng phục thể thao, đồng phục Gym, đồng phục Yoga, đồng phục Pilates, đồng phục Pickleball, đồng phục Áo Gió, đồng phục Áo Polo, đồng phục phòng tập, xưởng may đồng phục Hà Nội, công nghệ UNI DRY, đồng phục doanh nghiệp B2B, may đồng phục theo yêu cầu, Đồng Phục Univi",
   robots: "index, follow",
@@ -56,7 +57,7 @@ const DEFAULT_META = {
     imageWidth: "1200",
     imageHeight: "630",
     imageAlt:
-      "Xưởng sản xuất đồng phục thể thao Univi tại Đan Phượng, Hà Nội — công suất 100.000 sản phẩm/tháng",
+      "Xưởng sản xuất đồng phục thể thao Univi tại phường Chương Mỹ, Hà Nội — công suất 100.000 sản phẩm/tháng",
     url: "https://dongphucunivi.com/",
     site_name: "Đồng Phục Univi",
   },
@@ -74,7 +75,7 @@ const DEFAULT_META = {
       "@id": "https://dongphucunivi.com/#webpage",
       "url": "https://dongphucunivi.com/",
       "name": "Đồng Phục Univi: Xưởng May Đồng Phục Thể Thao Tại Hà Nội",
-      "description": "Đồng Phục Univi - xưởng 2.000m² tại Đan Phượng, Hà Nội, công suất 100.000 sp/tháng. Chuyên đồng phục thể thao, giải pháp đồng phục cho các câu lạc bộ, phòng tập & doanh nghiệp B2B. Vải UNI DRY kiểm định QCVN. Thiết kế miễn phí — gọi ngay: 0834.204.999",
+      "description": "Đồng Phục Univi - xưởng 2.000m² tại phường Chương Mỹ, Hà Nội, công suất 100.000 sp/tháng. Chuyên đồng phục thể thao, giải pháp đồng phục cho các câu lạc bộ, phòng tập & doanh nghiệp B2B. Vải UNI DRY kiểm định QCVN. Thiết kế miễn phí — gọi ngay: 0834.204.999",
       "isPartOf": { "@id": "https://dongphucunivi.com/#website" },
       "about": { "@id": "https://dongphucunivi.com/#organization" },
       "inLanguage": "vi-VN",
@@ -120,8 +121,9 @@ export default function Home({
       <FeedbackSection initialFeedbacks={initialFeedbacks} />
       <PartnersSection />
       <HeroSection1 />
-      <FabricCardComponent />
-      <Mockup3DSection />
+      <div className="container mx-auto px-2 sm:px-4 mb-6 sm:mb-10 mt-3">
+        <FabricCatalogView />
+      </div>
       <VideoFeedback />
       <FAQComponent items={homepageFaqs} />
       <BlogHero />

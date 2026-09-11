@@ -41,9 +41,9 @@ const sportMenuData = [
       {
         name: "Mẫu Mockup 3D",
         children: [
-          { name: "Áo gym cổ có khóa", link: "/mau-ao-gym-co-co-khoa" },
-          { name: "Áo gym cổ polo", link: "/mau-ao-gym-co-polo" },
-          { name: "Áo gym cổ tròn không khóa", link: "/mau-ao-gym-co-tron-khong-khoa" },
+          { name: "Áo gym cổ có khóa", href: "/mau-ao-gym-co-co-khoa" },
+          { name: "Áo gym cổ polo", href: "/mau-ao-gym-co-polo" },
+          { name: "Áo gym cổ tròn không khóa", href: "/mau-ao-gym-co-tron-khong-khoa" },
         ],
       },
     ],
@@ -418,6 +418,8 @@ const GioiThieuDropdown = ({ isTransparent = false, activePath = "" }) => {
     { name: "Về chúng tôi", href: "/gioi-thieu" },
     { name: "Hồ sơ năng lực", href: "/ho-so-nang-luc" },
     { name: "Bộ sưu tập Univi", href: "/bo-suu-tap" },
+    { name: "Chất liệu vải", href: "/chat-lieu-vai" },
+    { name: "Bảng màu UNIVI", href: "/bang-mau" }
   ];
   const isActive = gioiThieuLinks.some(
     (item) => activePath === item.href || activePath.startsWith(`${item.href}/`)

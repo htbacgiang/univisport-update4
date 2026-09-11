@@ -8,10 +8,10 @@ import { fabricColors, getFeaturedColors } from "../../data/fabric-colors";
 
 const META_TITLE = "Bảng Màu Vải Univi | Mã Màu Vải Đồng Phục";
 const META_DESCRIPTION =
-  "Khám phá bảng màu vải Univi với hàng trăm mã màu cho vải Polo Cá Sấu, QuickDry, SuperCool và UniAir. Lựa chọn màu phù hợp cho đồng phục thể thao và đồng phục doanh nghiệp.";
+  "Khám phá bảng màu vải Univi với hàng trăm mã màu cho vải UNI COOL PIQUÉ, UNI QUICKDRY, UNI SUPERCOOL và UNI AIR. Lựa chọn màu phù hợp cho đồng phục thể thao và đồng phục doanh nghiệp.";
 const CANONICAL = "https://dongphucunivi.com/bang-mau";
 const OG_IMAGE = "https://dongphucunivi.com/thumbnail/bang-mau-univi.jpg";
-const OG_IMAGE_ALT = "Bảng màu vải Univi - Polo Cá Sấu, QuickDry, SuperCool, UniAir";
+const OG_IMAGE_ALT = "Bảng màu vải Univi - UNI COOL PIQUÉ, UNI QUICKDRY, UNI SUPERCOOL, UNI AIR";
 
 export default function BangMauPage() {
   const featuredColors = getFeaturedColors();

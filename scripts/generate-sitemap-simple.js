@@ -58,25 +58,10 @@ async function generateSitemap() {
     const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
     fs.writeFileSync(sitemapPath, sitemapXml);
 
-    // Cập nhật robots.txt
-    const robotsContent = `# *
-User-agent: *
-Allow: /
-
-# Host
-Host: ${baseUrl}/
-
-# Sitemaps
-Sitemap: ${baseUrl}/sitemap.xml`;
-
-    const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
-    fs.writeFileSync(robotsPath, robotsContent);
-
     console.log('✅ Sitemap generated successfully!');
     console.log(`📊 Stats: ${staticRoutes.length} static + ${productCategoryRoutes.length} product categories = ${staticRoutes.length + productCategoryRoutes.length} total routes`);
     console.log(`📁 Files created:`);
     console.log(`   - public/sitemap.xml`);
-    console.log(`   - public/robots.txt`);
 
   } catch (error) {
     console.error('❌ Error generating sitemap:', error);

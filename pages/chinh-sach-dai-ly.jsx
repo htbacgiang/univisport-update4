@@ -50,7 +50,7 @@ export default function DealerPolicy() {
     {
       id: "03",
       title: "Nguồn hàng ổn định — xưởng 2.000m²",
-      desc: "Xưởng sản xuất 2.000m² tại Đan Phượng, Hà Nội với ~100 công nhân. Không lo thiếu hàng, không lo giao chậm.",
+      desc: "Xưởng sản xuất 2.000m² tại phường Chương Mỹ, Hà Nội với ~100 công nhân. Không lo thiếu hàng, không lo giao chậm.",
       img: "https://live.staticflickr.com/65535/55238265665_1be5d2dc7b_b.jpg"
     },
     {
@@ -68,7 +68,7 @@ export default function DealerPolicy() {
   ];
   const meta = {
     title: "Chính Sách Đại Lý Univi – Nguồn Hàng Thể Thao Uy Tín, Hỗ Trợ Toàn Diện",
-    description: "Trở thành đại lý Univi – nhận nguồn hàng đồng phục thể thao chất lượng cao từ xưởng 2.000m² tại Đan Phượng. Có hóa đơn, hỗ trợ marketing, từ 10 sản phẩm. Liên hệ ngay!",
+    description: "Trở thành đại lý Univi – nhận nguồn hàng đồng phục thể thao chất lượng cao từ xưởng 2.000m² tại phường Chương Mỹ, Hà Nội. Có hóa đơn, hỗ trợ marketing, từ 10 sản phẩm. Liên hệ ngay!",
     keywords: "chính sách đại lý, đại lý univi, xưởng may đồng phục, đồng phục thể thao, nguồn hàng sỉ",
     robots: "index, follow",
     author: "Đồng Phục Univi",

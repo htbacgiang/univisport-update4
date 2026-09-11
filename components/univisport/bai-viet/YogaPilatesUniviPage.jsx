@@ -6,14 +6,14 @@ import FabricCardComponent from '../FabricCardComponent';
 import ProcessSteps from '../ProcessSteps';
 
 const heroStats = [
-  'Xưởng 2.000m2 tại Đan Phượng',
+  'Xưởng 2.000m2 tại phường Chương Mỹ, Hà Nội',
   'Công suất 100.000 sản phẩm/tháng',
   'Nhận đơn từ 10 chiếc theo dòng phù hợp',
   'Thiết kế theo nhận diện studio',
 ];
 
 const trustBadges = [
-  ['Xưởng sản xuất 2.000m2 tại Đan Phượng', 'Chủ động sản xuất, kiểm soát chất liệu, size, đường may và tiến độ cho đơn studio.'],
+  ['Xưởng sản xuất 2.000m2 tại phường Chương Mỹ, Hà Nội', 'Chủ động sản xuất, kiểm soát chất liệu, size, đường may và tiến độ cho đơn studio.'],
   ['Công suất 100.000 sản phẩm/tháng', 'Phù hợp studio nhỏ, chuỗi Pilates, Wellness Center, workshop và retreat quy mô lớn.'],
   ['Phòng R&D riêng', 'Nghiên cứu cảm giác mặc, độ co giãn, form dáng và trải nghiệm chuyển động.'],
   ['Công nghệ UNI DRY', 'Hỗ trợ đưa hơi ẩm ra ngoài để giảm cảm giác bết dính trong lớp học.'],
@@ -711,10 +711,10 @@ export default function YogaPilatesUniviPage() {
             </h2>
 
             <div className="mt-3 grid gap-1 text-sm text-blue-50">
-              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, đường Thanh Bình, phường Hà Đông, Hà Nội</p>
-              <p><span className="font-semibold">Xưởng sản xuất:</span> Xã Thọ An, Huyện Đan Phượng, Hà Nội</p>
+              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</p>
+              <p><span className="font-semibold">Xưởng sản xuất:</span> Phường Chương Mỹ, Thành phố Hà Nội</p>
               <p><span className="font-semibold">Hotline:</span> 0834.204.999 / 096.156.7997</p>
-              <p><span className="font-semibold">Email:</span> dongphucUnivi@gmail.com</p>
+              <p><span className="font-semibold">Email:</span> dongphucunivi@gmail.com</p>
             </div>
           </div>
           <button

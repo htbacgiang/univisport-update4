@@ -18,6 +18,8 @@ const menuItems = [
       { name: "Giới thiệu", link: "/gioi-thieu" },
       { name: "Hồ sơ năng lực", link: "/ho-so-nang-luc" },
       { name: "Bộ sưu tập Univi", link: "/bo-suu-tap" },
+      { name: "Chất liệu vải", link: "/chat-lieu-vai" },
+      { name: "Bảng màu UNIVI", link: "/bang-mau" }
     ],
   },
   {
@@ -167,7 +169,7 @@ const ResponsiveMenu = ({ isOpen, toggleMenu }) => {
                               return (
                                 <Link
                                   key={sIdx}
-                                  href={sub.link}
+                                  href={sub.link || sub.href || "#"}
                                   onClick={toggleMenu}
                                   className="block px-3 py-2 ml-3 text-sm font-semibold text-gray-700 hover:text-[#105d97] hover:bg-gray-50 rounded-xl transition-all border-l-2 border-gray-200 whitespace-nowrap"
                                 >
@@ -179,7 +181,7 @@ const ResponsiveMenu = ({ isOpen, toggleMenu }) => {
                             return (
                               <div key={sIdx} className="space-y-1">
                                 <Link
-                                  href={sub.link}
+                                  href={sub.link || sub.href || "#"}
                                   onClick={toggleMenu}
                                   className="block px-3 py-2 ml-3 text-sm font-bold text-[#105d97] bg-blue-50/70 rounded-xl transition-all border-l-2 border-[#105d97] whitespace-nowrap"
                                 >

@@ -17,6 +17,8 @@ const pages = [
   { path: "/ho-so-nang-luc", priority: 0.8, changefreq: "monthly" },
   { path: "/tuyen-dung", priority: 0.6, changefreq: "weekly" },
   { path: "/giai-phap-2s", priority: 0.8, changefreq: "monthly" },
+  { path: "/chat-lieu-vai", priority: 0.9, changefreq: "weekly" },
+  { path: "/bang-mau", priority: 0.9, changefreq: "weekly" },
 ];
 
 function generate() {

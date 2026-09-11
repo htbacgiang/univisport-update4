@@ -135,7 +135,7 @@ const faqs = [
   ],
   [
     'UNIVI có nhận may áo polo doanh nghiệp số lượng lớn không?',
-    'Có. Năng lực thương mại được xác nhận gồm xưởng sản xuất 2.000 m² tại Đan Phượng và công suất khoảng 100.000 sản phẩm mỗi tháng. Số lượng tối thiểu, tiến độ và cấu hình sản phẩm thực tế cần được xác nhận theo từng báo giá và yêu cầu của dự án.'
+    'Có. Năng lực thương mại được xác nhận gồm xưởng sản xuất 2.000 m² tại phường Chương Mỹ, Hà Nội và công suất khoảng 100.000 sản phẩm mỗi tháng. Số lượng tối thiểu, tiến độ và cấu hình sản phẩm thực tế cần được xác nhận theo từng báo giá và yêu cầu của dự án.'
   ],
   [
     'Có được xem mẫu trước khi sản xuất hàng loạt không?',
@@ -447,7 +447,7 @@ export default function PoloUniformsUniviPage() {
             Mockup trả lời "áo sẽ trông như thế nào?", còn mẫu thật trả lời "áo mặc có ổn không?". HR kiểm tra size; Brand kiểm tra nhận diện; Procurement kiểm tra thông số, số lượng và khả năng tái đặt.
           </p>
           <p className="text-base mt-3">
-            Năng lực thương mại của Univi xác nhận xưởng sản xuất 2.000 m² tại Đan Phượng, công suất 100.000 sản phẩm/tháng và kinh nghiệm 9+ năm - nền tảng để triển khai các dự án B2B cần quy trình rõ và sản lượng, không phải cam kết tiến độ cho mọi đơn hàng. Xem thêm <Link href="/gioi-thieu" className="font-semibold text-[#105d97]">giới thiệu Univi</Link> và <Link href="/xuong-may-dong-phuc-univi" className="font-semibold text-[#105d97]">xưởng sản xuất đồng phục Univi</Link> để đánh giá năng lực theo hồ sơ hiện có.
+            Năng lực thương mại của Univi xác nhận xưởng sản xuất 2.000 m² tại phường Chương Mỹ, Hà Nội, công suất 100.000 sản phẩm/tháng và kinh nghiệm 9+ năm - nền tảng để triển khai các dự án B2B cần quy trình rõ và sản lượng, không phải cam kết tiến độ cho mọi đơn hàng. Xem thêm <Link href="/gioi-thieu" className="font-semibold text-[#105d97]">giới thiệu Univi</Link> và <Link href="/xuong-may-dong-phuc-univi" className="font-semibold text-[#105d97]">xưởng sản xuất đồng phục Univi</Link> để đánh giá năng lực theo hồ sơ hiện có.
           </p>
           <div className="mt-4 overflow-hidden border border-gray-200">
             <iframe
@@ -573,7 +573,7 @@ export default function PoloUniformsUniviPage() {
 
               <div className="bg-white/10 rounded-lg p-4">
                 <div className="font-semibold text-yellow-300 mb-1">Địa chỉ</div>
-                <div className="text-white">D14, 180 Thanh Bình, Hà Đông</div>
+                <div className="text-white">Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</div>
               </div>
             </div>
 

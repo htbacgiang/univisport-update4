@@ -7,7 +7,7 @@ import UniformStylesComponent from '../UniformStylesComponent';
 import ProcessSteps from '../ProcessSteps';
 
 const heroStats = [
-  'Xưởng 2.000m2 tại Đan Phượng',
+  'Xưởng 2.000m2 tại phường Chương Mỹ, Hà Nội',
   'Công suất 100.000 sản phẩm/tháng',
   'Công nghệ UNI DRY',
   'Phòng R&D riêng',
@@ -16,7 +16,7 @@ const heroStats = [
 ];
 
 const trustBadges = [
-  ['Xưởng sản xuất 2.000m2 tại Đan Phượng', 'Chủ động sản xuất, kiểm soát chất lượng và tiến độ cho phòng Gym, PT Studio và chuỗi Fitness Center.'],
+  ['Xưởng sản xuất 2.000m2 tại phường Chương Mỹ, Hà Nội', 'Chủ động sản xuất, kiểm soát chất lượng và tiến độ cho phòng Gym, PT Studio và chuỗi Fitness Center.'],
   ['Công suất 100.000 sản phẩm/tháng', 'Phù hợp đơn B2B, chuỗi phòng tập, sự kiện hội viên và nhu cầu đặt bổ sung theo từng cơ sở.'],
   ['Công nghệ UNI DRY', 'Hỗ trợ thoát ẩm một chiều, giảm cảm giác bí bách ở vùng lưng, vai, nách và cổ áo.'],
   ['Phòng R&D riêng', 'Nghiên cứu chất liệu, form dáng, trải nghiệm vận động và khả năng tái sản xuất đồng bộ.'],
@@ -884,8 +884,8 @@ export default function GymUniviPage() {
               và ngày cần hàng để được tư vấn chất liệu, mockup và giải pháp 2S Uniform phù hợp.
             </p>
             <div className="mt-3 grid gap-1 text-sm text-blue-50">
-              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, đường Thanh Bình, phường Hà Đông, Hà Nội</p>
-              <p><span className="font-semibold">Xưởng sản xuất:</span> Xã Thọ An, Huyện Đan Phượng, Hà Nội</p>
+              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</p>
+              <p><span className="font-semibold">Xưởng sản xuất:</span> Phường Chương Mỹ, Thành phố Hà Nội</p>
               <p><span className="font-semibold">Hotline:</span> 0834.204.999 / 096.156.7997</p>
               <p><span className="font-semibold">Email:</span> dongphucunivi@gmail.com</p>
             </div>

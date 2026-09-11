@@ -639,6 +639,16 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
   const router = useRouter();
   const currentPath = router?.asPath || '';
 
+  const randomizedRelatedProducts = useMemo(() => {
+    if (!relatedProducts || relatedProducts.length === 0) return [];
+    const list = [...relatedProducts];
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [list[i], list[j]] = [list[j], list[i]];
+    }
+    return list;
+  }, [relatedProducts]);
+
   const hideStandardSize = useMemo(() => {
     const categorySlug = (product?.category || '').toLowerCase().replace(/\s+/g, '-');
     const flatSlug = ENTERPRISE_FLAT_SLUGS[product?.productLine];
@@ -1326,8 +1336,8 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
           initialReviewCount={product.reviewCount}
         />
 
-        {relatedProducts && relatedProducts.length > 0 && (
-          <ProductSlider title="Sản phẩm liên quan" products={relatedProducts} />
+        {randomizedRelatedProducts && randomizedRelatedProducts.length > 0 && (
+          <ProductSlider title="Sản phẩm liên quan" products={randomizedRelatedProducts} />
         )}
       </div>
 

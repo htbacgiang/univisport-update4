@@ -20,6 +20,8 @@ import PartnersSection from "../../components/univisport/PartnersSection";
 import FAQComponentBlock from "../../components/univisport/FAQComponent";
 import InternalLinks from "../../components/univisport/InternalLinks";
 import FabricCardComponent from "../../components/univisport/FabricCardComponent";
+import FabricCatalogView from "../../components/univisport/chat-lieu-vai/FabricCatalogView";
+import BangMauHero from "../../components/univisport/bang-mau/BangMauHero";
 import CountdownTimer from "../../components/univisport/CountdownTimer";
 import ProcessSteps from "../../components/univisport/ProcessSteps";
 import ProductSlider from "../../components/univisport/ProductSlider";
@@ -37,6 +39,8 @@ const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
   FAQComponent: FAQComponentBlock,
   InternalLinks,
   FabricCardComponent,
+  FabricCatalogView,
+  BangMauHero,
   CountdownTimer,
   ProcessSteps,
   ProductSlider,
@@ -165,6 +169,14 @@ const SinglePost: NextPage<Props> = ({ post, meta }) => {
         try {
           props = JSON.parse(domNode.attribs["data-props"] || "{}");
         } catch (_) { }
+
+        if (name === "FabricCatalogView") {
+          return (
+            <div className="container mx-auto px-2 sm:px-4 mb-6 sm:mb-10 mt-3">
+              <Component {...props} />
+            </div>
+          );
+        }
 
         return <Component {...props} />;
       }
@@ -399,11 +411,21 @@ export const getServerSideProps: GetServerSideProps<
         "url": canonicalUrl,
         "isPartOf": { "@id": "https://dongphucunivi.com/#website" },
         "publisher": { "@id": "https://dongphucunivi.com/#organization" },
-        "author": {
-          "@type": "Person",
-          "name": authorName,
-          ...(authorSlug && { "url": `https://dongphucunivi.com/tac-gia/${authorSlug}` }),
-        },
+        "author": authorName === "Trần Hiền" || authorSlug === "dong-sang-lap-univi-sport-tran-hien" || authorSlug === "tran-hien"
+          ? {
+              "@type": "Person",
+              "@id": "https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien#person",
+              "name": "Trần Hiền",
+              "url": "https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien",
+            }
+          : {
+              "@type": "Person",
+              ...(authorSlug ? {
+                "@id": `https://dongphucunivi.com/tac-gia/${authorSlug}#person`,
+                "url": `https://dongphucunivi.com/tac-gia/${authorSlug}`,
+              } : {}),
+              "name": authorName,
+            },
         "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl },
         // speakable: đánh dấu vùng AI Overview ưu tiên trích dẫn
         "speakable": {

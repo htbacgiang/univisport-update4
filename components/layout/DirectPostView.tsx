@@ -16,6 +16,8 @@ import PartnersSection from "../univisport/PartnersSection";
 import FAQComponentBlock from "../univisport/FAQComponent";
 import InternalLinks from "../univisport/InternalLinks";
 import FabricCardComponent from "../univisport/FabricCardComponent";
+import FabricCatalogView from "../univisport/chat-lieu-vai/FabricCatalogView";
+import BangMauHero from "../univisport/bang-mau/BangMauHero";
 import CountdownTimer from "../univisport/CountdownTimer";
 import ProcessSteps from "../univisport/ProcessSteps";
 import ProductSlider from "../univisport/ProductSlider";
@@ -33,6 +35,8 @@ const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
   FAQComponent: FAQComponentBlock,
   InternalLinks,
   FabricCardComponent,
+  FabricCatalogView,
+  BangMauHero,
   CountdownTimer,
   ProcessSteps,
   ProductSlider,
@@ -130,6 +134,14 @@ const DirectPostView: React.FC<Props> = ({ post, randomFeedbacks = [] }) => {
         try {
           props = JSON.parse(domNode.attribs["data-props"] || "{}");
         } catch (_) { }
+
+        if (name === "FabricCatalogView") {
+          return (
+            <div className="container mx-auto px-2 sm:px-4 mb-6 sm:mb-10 mt-3">
+              <Component {...props} />
+            </div>
+          );
+        }
 
         return <Component {...props} />;
       }

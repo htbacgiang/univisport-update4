@@ -10,6 +10,7 @@ import {
   FaTiktok,
   FaLinkedin,
 } from "react-icons/fa";
+import { COMPANY_INFO } from "../../lib/companyInfo";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -186,26 +187,29 @@ export default function Footer() {
                 <div className="space-y-4 mb-8">
                   <div className="flex items-start space-x-3">
                     <FaMapMarkerAlt className="text-gray-400 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">Nhà D14, 180 Thanh Bình, Hà Nội</p>
+                    <div>
+                      <p className="text-xs text-gray-400 font-semibold uppercase">{COMPANY_INFO.office.label}</p>
+                      <p className="text-gray-300">{COMPANY_INFO.office.address}</p>
+                    </div>
                   </div>
 
                   <div className="flex items-center space-x-3">
                     <FaPhone className="text-gray-400 flex-shrink-0" />
                     <a
-                      href="tel:0834204999"
+                      href={COMPANY_INFO.hotlineTel}
                       className="text-gray-300 hover:text-gray-100 transition-colors"
                     >
-                      0834.204.999
+                      {COMPANY_INFO.hotlineFormatted}
                     </a>
                   </div>
 
                   <div className="flex items-center space-x-3">
                     <FaEnvelope className="text-gray-400 flex-shrink-0" />
                     <a
-                      href="mailto:dongphucunivi@gmail.com"
+                      href={COMPANY_INFO.emailMailto}
                       className="text-gray-300 hover:text-gray-100 transition-colors"
                     >
-                      dongphucunivi@gmail.com
+                      {COMPANY_INFO.email}
                     </a>
                   </div>
 
@@ -213,9 +217,9 @@ export default function Footer() {
                     <FaClock className="text-gray-400 flex-shrink-0" />
                     <div>
                       <p className="text-gray-300">
-                        08:00 - 18:00
+                        {COMPANY_INFO.workingHours.text}
                         <br />
-                        T2 - CN
+                        {COMPANY_INFO.workingHours.days}
                       </p>
                     </div>
                   </div>

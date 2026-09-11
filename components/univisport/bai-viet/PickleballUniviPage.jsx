@@ -8,14 +8,14 @@ import ProcessSteps from '../ProcessSteps';
 const contactHref = '/lien-he';
 
 const heroStats = [
-  'Xưởng 2.000m2 tại Đan Phượng',
+  'Xưởng 2.000m2 tại phường Chương Mỹ, Hà Nội',
   'Công suất 100.000 sản phẩm/tháng',
   'Phòng R&D riêng',
   'Đặt từ 10 áo ở dòng phù hợp',
 ];
 
 const trustBadges = [
-  ['Xưởng sản xuất 2.000m2 tại Đan Phượng', 'Chủ động sản xuất, QC và tiến độ cho đơn B2B.'],
+  ['Xưởng sản xuất 2.000m2 tại phường Chương Mỹ, Hà Nội', 'Chủ động sản xuất, QC và tiến độ cho đơn B2B.'],
   ['Công suất 100.000 sản phẩm/tháng', 'Phù hợp CLB, học viện, giải đấu và đội nhóm lớn.'],
   ['Phòng R&D riêng', 'Nghiên cứu chất liệu, form dáng và trải nghiệm vận động.'],
   ['Công nghệ UNI DRY', 'Hỗ trợ thoát ẩm một chiều, giảm cảm giác bí bách.'],
@@ -470,7 +470,7 @@ export default function PickleballUniviPage() {
           </div>
           <ul className="space-y-2">
             {[
-              'Xưởng sản xuất 2.000m² tại Đan Phượng.',
+              'Xưởng sản xuất 2.000m² tại phường Chương Mỹ, Hà Nội.',
               'Công suất 100.000 sản phẩm/tháng.',
               'Phòng R&D nghiên cứu chất liệu, form, độ co giãn, thoáng khí, thoát ẩm, chống xù và độ bền màu.',
               'Công nghệ UNI DRY hỗ trợ thoát ẩm.',
@@ -764,7 +764,7 @@ export default function PickleballUniviPage() {
             <h3 className="mb-2 text-base font-medium text-gray-900">15.1 Đồng phục Pickleball Hà Nội</h3>
             <p>
               Khách hàng đặt đồng phục Pickleball tại Hà Nội có lợi thế tiếp cận văn phòng ở Hà
-              Đông và xưởng tại Đan Phượng để xem mẫu, trao đổi brief hoặc đối chiếu màu khi cần.
+              Đông và xưởng tại phường Chương Mỹ, Hà Nội để xem mẫu, trao đổi brief hoặc đối chiếu màu khi cần.
               Với dự án có nhiều vai trò, buổi duyệt mẫu trực tiếp giúp chốt form và chất liệu
               nhanh hơn.
             </p>
@@ -814,7 +814,7 @@ export default function PickleballUniviPage() {
             nhóm và khả năng đặt may theo nhận diện riêng.
           </p>
           <p>
-            UNIVI sở hữu xưởng sản xuất 2.000m2 tại Đan Phượng, công suất 100.000 sản phẩm/tháng,
+            UNIVI sở hữu xưởng sản xuất 2.000m2 tại phường Chương Mỹ, Hà Nội, công suất 100.000 sản phẩm/tháng,
             phòng R&D nghiên cứu chất liệu và quy trình tư vấn từ brief đến giao hàng.
           </p>
           <p>
@@ -861,7 +861,8 @@ export default function PickleballUniviPage() {
               và yêu cầu cá nhân hóa.
             </p>
             <div className="mt-3 grid gap-1 text-sm text-blue-50">
-              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, đường Thanh Bình, phường Hà Đông, Hà Nội</p>
+              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</p>
+              <p><span className="font-semibold">Xưởng sản xuất:</span> Phường Chương Mỹ, Thành phố Hà Nội</p>
               <p><span className="font-semibold">Hotline:</span> 0834.204.999 / 096.156.7997</p>
               <p><span className="font-semibold">Email:</span> dongphucunivi@gmail.com</p>
             </div>

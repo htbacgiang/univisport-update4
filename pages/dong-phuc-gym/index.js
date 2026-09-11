@@ -74,15 +74,6 @@ function buildMeta(products = []) {
       },
       {
         '@context': 'https://schema.org',
-        '@type': 'Person',
-        '@id': AUTHOR_ID,
-        'name': 'Trần Hiền',
-        'url': AUTHOR_URL,
-        'jobTitle': 'Chuyên gia tư vấn đồng phục Gym và Fitness Center',
-        'worksFor': { '@id': 'https://dongphucunivi.com/#organization' },
-      },
-      {
-        '@context': 'https://schema.org',
         '@type': 'Service',
         '@id': `${canonical}#service`,
         'name': 'May đồng phục Gym thiết kế theo yêu cầu',

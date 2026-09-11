@@ -9,14 +9,14 @@ import ProcessSteps from '../ProcessSteps';
 const contactHref = '/lien-he';
 
 const heroStats = [
-  'Xưởng 2.000m² tại Đan Phượng',
+  'Xưởng 2.000m² tại phường Chương Mỹ, Hà Nội',
   'Công suất 100.000 sản phẩm/tháng',
   'Lưu chuẩn tái sản xuất',
   'Thiết kế miễn phí',
 ];
 
 const trustBadges = [
-  ['Xưởng sản xuất 2.000m² tại Đan Phượng', 'Chủ động sản xuất, QC và tiến độ cho đơn B2B.'],
+  ['Xưởng sản xuất 2.000m² tại phường Chương Mỹ, Hà Nội', 'Chủ động sản xuất, QC và tiến độ cho đơn B2B.'],
   ['Công suất 100.000 sản phẩm/tháng', 'Phù hợp CLB, phòng tập, giải đấu và doanh nghiệp lớn.'],
   ['Quy trình lưu chuẩn', 'Hỗ trợ đối tác xây dựng hệ áo khoác thống nhất từ lần đặt đầu đến các đợt bổ sung sau.'],
   ['Đặt từ 10 áo ở dòng phù hợp', 'Đội nhóm nhỏ có thể bắt đầu gọn, dễ kiểm chứng mẫu.'],
@@ -422,7 +422,7 @@ export default function AoGioUniviPage() {
       <Section id="nang-luc" title="6. Năng Lực Sản Xuất Đồng Phục Áo Gió Của Univi">
         <div className="space-y-4 leading-6 text-sm md:text-base text-gray-700">
           <p>
-            Đơn hàng đồng phục áo gió B2B cần năng lực duy trì chất lượng và tái sản xuất, không chỉ khả năng hoàn thành một lô hàng. Univi có <Link href="/xuong-may-dong-phuc-univi" className="text-[#105d97] font-semibold hover:underline">xưởng sản xuất 2.000m² tại Đan Phượng</Link>, công suất 100.000 sản phẩm/tháng và hơn 9 năm kinh nghiệm trong nhóm đồng phục thể thao.
+            Đơn hàng đồng phục áo gió B2B cần năng lực duy trì chất lượng và tái sản xuất, không chỉ khả năng hoàn thành một lô hàng. Univi có <Link href="/xuong-may-dong-phuc-univi" className="text-[#105d97] font-semibold hover:underline">xưởng sản xuất 2.000m² tại phường Chương Mỹ, Hà Nội</Link>, công suất 100.000 sản phẩm/tháng và hơn 9 năm kinh nghiệm trong nhóm đồng phục thể thao.
           </p>
           <ImageBlock
             src="https://live.staticflickr.com/65535/55260155236_1052c9e90c_b.jpg"
@@ -573,8 +573,8 @@ export default function AoGioUniviPage() {
               và ngày cần hàng để được tư vấn chất liệu, mockup và giải pháp 2S Uniform phù hợp.
             </p>
             <div className="mt-3 grid gap-1 text-sm text-blue-50">
-              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, đường Thanh Bình, phường Hà Đông, Hà Nội</p>
-              <p><span className="font-semibold">Xưởng sản xuất:</span> Xã Thọ An, Huyện Đan Phượng, Hà Nội</p>
+              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</p>
+              <p><span className="font-semibold">Xưởng sản xuất:</span> Phường Chương Mỹ, Thành phố Hà Nội</p>
               <p><span className="font-semibold">Hotline:</span> 0834.204.999 / 096.156.7997</p>
               <p><span className="font-semibold">Email:</span> dongphucunivi@gmail.com</p>
             </div>

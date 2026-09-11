@@ -13,7 +13,7 @@ export default function AddJobPage() {
   const [formData, setFormData] = useState({
     title: '',
     department: '',
-    location: '180 Thanh Bình, Mộ Lao, Hà Đông, Hà Nội',
+    location: 'Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội',
     type: 'Full-time',
     salary: '',
     experience: '',

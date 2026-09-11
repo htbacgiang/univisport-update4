@@ -127,7 +127,7 @@ const faqs = [
   ],
   [
     'UNIVI có nhận đơn hàng số lượng lớn không?',
-    'Univi công bố năng lực sản xuất gồm xưởng 2.000 m² tại Đan Phượng và công suất khoảng 100.000 sản phẩm mỗi tháng. Khả năng triển khai thực tế đối với từng nhóm phụ kiện hoặc quà tặng cần được xác nhận theo sản phẩm, số lượng và thời gian yêu cầu.'
+    'Univi công bố năng lực sản xuất gồm xưởng 2.000 m² tại phường Chương Mỹ, Hà Nội và công suất khoảng 100.000 sản phẩm mỗi tháng. Khả năng triển khai thực tế đối với từng nhóm phụ kiện hoặc quà tặng cần được xác nhận theo sản phẩm, số lượng và thời gian yêu cầu.'
   ],
   [
     'Có thể đặt lại cùng mẫu quà tặng cho những chương trình sau không?',
@@ -463,7 +463,7 @@ export default function GiftAccessoriesUniviPage() {
 
               <div className="bg-white/10 rounded-lg p-4">
                 <div className="font-semibold text-yellow-300 mb-1">Địa chỉ</div>
-                <div className="text-white">D14, 180 Thanh Bình, Hà Đông</div>
+                <div className="text-white">Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</div>
               </div>
             </div>
 

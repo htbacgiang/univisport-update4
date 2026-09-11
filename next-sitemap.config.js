@@ -1,6 +1,6 @@
 module.exports = {
   siteUrl: "https://dongphucunivi.com",
-  generateRobotsTxt: true,
+  generateRobotsTxt: false,
   sitemapSize: 7000,
   exclude: [
     '/admin/**',

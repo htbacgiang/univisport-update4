@@ -292,7 +292,7 @@ export default function GolfTennisUniviPage() {
 
                             <div className="bg-white/10 rounded-lg p-4">
                                 <div className="font-semibold text-yellow-300 mb-1">Địa chỉ</div>
-                                <div className="text-white">D4, 180 Thanh Bình, Hà Đông</div>
+                                <div className="text-white">Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</div>
                             </div>
                         </div>
 

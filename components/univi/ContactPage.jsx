@@ -20,6 +20,7 @@ import {
   trackPhoneClick,
   trackZaloClick,
 } from "../../lib/meta-pixel";
+import { COMPANY_INFO } from "../../lib/companyInfo";
 
 export default function ContactPage() {
   const [activeTab, setActiveTab] = useState("contact");
@@ -41,12 +42,13 @@ export default function ContactPage() {
   const [errors, setErrors] = useState({});
 
   const contactInfo = {
-    address: "Nhà D14, Ngõ 180 đường Thanh Bình, Hà Đông, Hà Nội",
-    phone: "0834.204.999",
-    email: "dongphucunivi@gmail.com",
+    address: COMPANY_INFO.office.address,
+    factoryAddress: `${COMPANY_INFO.factory.address}`,
+    phone: COMPANY_INFO.hotlineFormatted,
+    email: COMPANY_INFO.email,
     workingHours: {
-      weekdays: "Thứ 2 - Thứ 7: 8:00 - 18:00",
-      weekend: "Chủ nhật: 9:00 - 17:00"
+      weekdays: COMPANY_INFO.workingHours.weekdays,
+      weekend: COMPANY_INFO.workingHours.weekend
     }
   };
 
@@ -228,8 +230,18 @@ Yêu cầu chi tiết: ${formData.message || 'Không có yêu cầu cụ thể'}
                     <FaMapMarkerAlt className="text-blue-600 text-xl" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Địa chỉ văn phòng</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Văn phòng giao dịch</h3>
                     <p className="text-gray-700 leading-6">{contactInfo.address}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <FaMapMarkerAlt className="text-blue-600 text-xl" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Xưởng sản xuất</h3>
+                    <p className="text-gray-700 leading-6">{contactInfo.factoryAddress}</p>
                   </div>
                 </div>
 

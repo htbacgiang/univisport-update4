@@ -324,7 +324,7 @@ export default function GiaiPhap2S({ meta }) {
 
               {/* Desc */}
               <p className="text-[0.96rem] text-[#6b7280] leading-[1.75] mb-8 max-w-[520px]">
-                Hệ thống xưởng may 2.000m² tại Đan Phượng, Hà Nội với đội ngũ 100+ thợ lành nghề. Cam kết giao hàng đúng hạn và kiểm soát chất lượng 100% đầu ra trước khi bàn giao.
+                Hệ thống xưởng may 2.000m² tại phường Chương Mỹ, Hà Nội với đội ngũ 100+ thợ lành nghề. Cam kết giao hàng đúng hạn và kiểm soát chất lượng 100% đầu ra trước khi bàn giao.
               </p>
 
               {/* 2×2 Feature Pills */}

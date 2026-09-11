@@ -209,7 +209,7 @@ export default function TShirtUniformsUniviPage() {
                 </a>
               </Link>
             </li>
-            <li className={`${styles.tshirtListItem}`}><span className={`${styles.tshirtHighlight}`}>Địa chỉ:</span> D4, 180 Thanh Bình, Mộ Lao, Hà Đông, Hà Nội</li>
+            <li className={`${styles.tshirtListItem}`}><span className={`${styles.tshirtHighlight}`}>Địa chỉ:</span> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</li>
           </ul>
           <p className={`${styles.tshirtText}`}>
             <span className={`${styles.tshirtHighlight}`}>Đồng Phục Univi – Your Uniform, Your Brand!</span> Áo Thun Đồng Phục Chất Lượng, Khẳng Định Phong Cách, Lan Tỏa Thông Điệp.

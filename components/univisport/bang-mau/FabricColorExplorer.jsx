@@ -116,7 +116,7 @@ export default function FabricColorExplorer({ fabrics, colors, featuredColors })
     <section className="bg-gray-50 pb-14 md:pb-20">
       <div className="container mx-auto px-4">
         {/* ── Filter panel ─────────────────────────────────────── */}
-        <div className="relative z-10 -mt-10 rounded-3xl border border-gray-100 bg-white p-5 shadow-lg md:-mt-16 md:p-7">
+        <div className="relative z-10 -mt-10 rounded-3xl border border-gray-100 bg-white p-5 shadow-lg md:-mt-10 md:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="min-w-0 flex-1">
               <p id="fabric-filter-label" className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">

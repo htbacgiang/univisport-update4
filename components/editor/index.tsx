@@ -79,6 +79,7 @@ const Editor: FC<Props> = ({
   const [isDraft, setIsDraft] = useState(true); // Mặc định là nháp khi tạo mới
   const [isFeatured, setIsFeatured] = useState(false);
   const [isDirectPost, setIsDirectPost] = useState(false); // Mặc định hiển thị 3 cấp
+  const [showSidebar, setShowSidebar] = useState(true);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [postAuthorId, setPostAuthorId] = useState("");
   const [images, setImages] = useState<{ src: string; altText?: string; id?: string }[]>([]);
@@ -489,9 +490,9 @@ const Editor: FC<Props> = ({
 
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-6">
-        {/* Content - Left 70% */}
-        <div className="flex flex-col gap-6 pr-1">
+      <div className="flex flex-col lg:flex-row gap-6 transition-all duration-300 relative">
+        {/* Content - Left Main */}
+        <div className={`flex flex-col gap-6 min-w-0 transition-all duration-300 ${showSidebar ? "w-full lg:w-[70%]" : "w-full lg:w-[calc(100%-3.5rem)]"}`}>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col">
             <div className="flex items-center justify-between mb-2 flex-shrink-0">
               <h2 className="text-xl font-bold text-gray-900">Nội dung bài viết *</h2>
@@ -628,103 +629,155 @@ const Editor: FC<Props> = ({
           </div>
         </div>
 
-        {/* Basic Info - Right 30% */}
-        <div className="sticky top-0 z-10 h-fit pr-1 pb-2">
-          {/* Basic Info & SEO Combine */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-3">
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold text-gray-900">Thông tin cơ bản</h2>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tiêu đề bài viết *
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#105d97] focus:border-transparent outline-none"
-                  placeholder="Tiêu đề bài viết..."
-                  onChange={updateTitle}
-                  value={post.title}
-                />
+        {/* Combined Section Right Sidebar - Horizontally Collapsible */}
+        <div className={`transition-all duration-300 min-w-0 ${showSidebar ? "w-full lg:w-[30%]" : "w-full lg:w-[3.5rem] flex-shrink-0"}`}>
+          {showSidebar ? (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden sticky top-4 z-10 flex flex-col max-h-[calc(100vh-2rem)]">
+              {/* Sidebar Header with Collapse Button */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-200 flex-shrink-0">
+                <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#105d97]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                  </svg>
+                  Thông tin & Cấu hình
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setShowSidebar(false)}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-[#105d97] bg-white border border-gray-300 hover:border-[#105d97] px-2.5 py-1.5 rounded-lg shadow-sm transition-all cursor-pointer"
+                  title="Thu gọn cột thông tin"
+                >
+                  <span>Thu gọn</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                  </svg>
+                </button>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Chọn tác giả bài viết
-                </label>
-                <AuthorSelector value={postAuthorId} onChange={setPostAuthorId} />
-              </div>
+              {/* Scrollable Container with 3 Subsections */}
+              <div className="p-5 overflow-y-auto custom-scrollbar space-y-6 flex-1">
+                {/* 1. THÔNG TIN CƠ BẢN & SEO */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-bold text-gray-900 pb-2 border-b border-gray-200 flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#105d97]"></span>
+                    Thông tin cơ bản
+                  </h3>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Tiêu đề bài viết *
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3.5 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#105d97] focus:border-transparent outline-none text-sm"
+                      placeholder="Tiêu đề bài viết..."
+                      onChange={updateTitle}
+                      value={post.title}
+                    />
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Từ khóa SEO (Keywords)
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#105d97] focus:border-transparent outline-none"
-                  placeholder="Từ khóa 1, từ khóa 2, ..."
-                  onChange={updateKeywords}
-                  value={post.keywords || ""}
-                />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Chọn tác giả bài viết
+                    </label>
+                    <AuthorSelector value={postAuthorId} onChange={setPostAuthorId} />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Từ khóa SEO (Keywords)
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3.5 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#105d97] focus:border-transparent outline-none text-sm"
+                      placeholder="Từ khóa 1, từ khóa 2, ..."
+                      onChange={updateKeywords}
+                      value={post.keywords || ""}
+                    />
+                  </div>
+
+                  <div className="pt-2">
+                    <SEOForm
+                      onChange={updateSeoValue}
+                      title={post.title}
+                      editor={editor}
+                      initialValue={seoInitialValue}
+                    />
+                  </div>
+                </div>
+
+                {/* 2. HÌNH ẢNH ĐẠI DIỆN */}
+                <div className="space-y-3 pt-4 border-t border-gray-200">
+                  <h3 className="text-sm font-bold text-gray-900 pb-2 border-b border-gray-200 flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#105d97]"></span>
+                    Hình ảnh đại diện
+                  </h3>
+                  <ThumbnailSelector
+                    initialValue={post.thumbnail as string}
+                    onChange={updateThumbnail}
+                    images={images}
+                    uploading={uploading}
+                    onFileSelect={handleImageUpload}
+                    onImageFromGallery={(imageUrl) => {
+                      setPost(prev => ({ ...prev, thumbnail: imageUrl }));
+                    }}
+                  />
+                </div>
+
+                {/* 3. BÀI VIẾT NỔI BẬT */}
+                <div className="space-y-3 pt-4 border-t border-gray-200">
+                  <h3 className="text-sm font-bold text-gray-900 pb-2 border-b border-gray-200 flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#105d97]"></span>
+                    Bài viết nổi bật
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    Tối đa 4 bài viết nổi bật được hiển thị ở đầu trang /bai-viet.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsFeatured((prev) => !prev)}
+                    className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 font-medium text-sm ${isFeatured
+                      ? "border-amber-400 bg-amber-50 text-amber-700"
+                      : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300"
+                      }`}
+                  >
+                    <svg
+                      className={`w-5 h-5 flex-shrink-0 ${isFeatured ? "text-amber-500" : "text-gray-400"}`}
+                      fill={isFeatured ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                      />
+                    </svg>
+                    {isFeatured ? "Đang là bài viết nổi bật" : "Đánh dấu là nổi bật"}
+                  </button>
+                </div>
               </div>
             </div>
-
-            <div className="">
-              <SEOForm
-                onChange={updateSeoValue}
-                title={post.title}
-                editor={editor}
-                initialValue={seoInitialValue}
-              />
-            </div>
-          </div>
-
-          {/* Thumbnail */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Hình ảnh đại diện</h2>
-            <ThumbnailSelector
-              initialValue={post.thumbnail as string}
-              onChange={updateThumbnail}
-              images={images}
-              uploading={uploading}
-              onFileSelect={handleImageUpload}
-              onImageFromGallery={(imageUrl) => {
-                setPost(prev => ({ ...prev, thumbnail: imageUrl }));
-              }}
-            />
-          </div>
-
-          {/* Bài viết nổi bật */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Bài viết nổi bật</h2>
-            <p className="text-sm text-gray-500 mb-4">
-              Tối đa 4 bài viết nổi bật được hiển thị ở đầu trang /bai-viet.
-            </p>
-            <button
-              type="button"
-              onClick={() => setIsFeatured((prev) => !prev)}
-              className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 font-medium text-sm ${isFeatured
-                ? "border-amber-400 bg-amber-50 text-amber-700"
-                : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300"
-                }`}
+          ) : (
+            /* Collapsed Vertical Bar */
+            <div
+              onClick={() => setShowSidebar(true)}
+              className="sticky top-4 z-10 bg-white rounded-xl shadow-sm border border-gray-200 p-2 flex flex-col items-center py-5 gap-5 cursor-pointer hover:border-[#105d97] hover:shadow-md transition-all group"
+              title="Mở rộng thông tin bài viết & SEO"
             >
-              <svg
-                className={`w-5 h-5 flex-shrink-0 ${isFeatured ? "text-amber-500" : "text-gray-400"}`}
-                fill={isFeatured ? "currentColor" : "none"}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <button
+                type="button"
+                className="p-2 text-gray-600 group-hover:text-[#105d97] bg-gray-100 group-hover:bg-blue-50 rounded-lg transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                />
-              </svg>
-              {isFeatured ? "Đang là bài viết nổi bật" : "Đánh dấu là nổi bật"}
-            </button>
-          </div>
-
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="py-2 flex items-center justify-center [writing-mode:vertical-lr] rotate-180 text-xs font-bold text-gray-600 group-hover:text-[#105d97] tracking-widest uppercase transition-colors whitespace-nowrap">
+                Thông tin & Cấu hình
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

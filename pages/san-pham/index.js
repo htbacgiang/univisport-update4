@@ -29,7 +29,7 @@ const DEFAULT_META = {
     image: "https://dongphucunivi.com/images/banner-home-1.jpg",
     imageWidth: "1200",
     imageHeight: "630",
-    imageAlt: "Xưởng sản xuất đồng phục thể thao Univi tại Đan Phượng, Hà Nội — công suất 100.000 sản phẩm/tháng",
+    imageAlt: "Xưởng sản xuất đồng phục thể thao Univi tại phường Chương Mỹ, Hà Nội — công suất 100.000 sản phẩm/tháng",
     url: "https://dongphucunivi.com/san-pham",
     site_name: "Đồng Phục Univi",
   },
@@ -55,7 +55,7 @@ const COLLECTION_SCHEMA = [
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": "https://dongphucunivi.com/#webpage",
+    "@id": "https://dongphucunivi.com/san-pham#webpage",
     "name": "Danh Mục Đồng Phục Thể Thao | Đồng Phục Univi",
     "description": "Khám phá các dòng đồng phục thể thao chuyên dụng từ Đồng Phục Univi: Gym, Yoga, Pickleball, Running, Golf, Team Building và doanh nghiệp.",
     "url": "https://dongphucunivi.com/san-pham",
@@ -155,7 +155,7 @@ const ProductsPage = ({ relatedPosts }) => {
           </nav>
           <p className="text-2xl md:text-4xl font-bold text-white">Đồng phục Univi</p>
           <p className="text-sm md:text-lg mt-2 max-w-5xl text-gray-200">
-            Xưởng sản xuất 2.000m² tại Đan Phượng, Hà Nội — Đồng phục Gym, Yoga, Pickleball, Áo Gió chuyên dụng
+            Xưởng sản xuất 2.000m² tại phường Chương Mỹ, Hà Nội — Đồng phục Gym, Yoga, Pickleball, Áo Gió chuyên dụng
           </p>
         </div>
       </div>

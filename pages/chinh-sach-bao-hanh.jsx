@@ -348,7 +348,7 @@ export default function WarrantyPolicy() {
                     <MapPin className="w-5 h-5 text-sky-400 flex-shrink-0 mt-0.5" />
                     <div>
                       <span className="text-slate-300">Địa chỉ: </span>
-                      <span className="font-medium text-white">Nhà D14, ngõ 180 Thanh Bình, Hà Đông, Hà Nội</span>
+                      <span className="font-medium text-white">Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</span>
                     </div>
                   </div>
                 </div>

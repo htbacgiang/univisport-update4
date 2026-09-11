@@ -183,7 +183,7 @@ const SeoArticleSection = () => {
               <div className="p-3 bg-gray-50 border">
                 <div>
                   <span className="font-semibold">Năng lực Sản xuất:</span>
-                  <span className="ml-2">Xưởng của Univi tọa lạc tại Hải Dương, có diện tích gần <span className="font-semibold">1000m²</span>, sẵn sàng đáp ứng các đơn hàng lớn với công suất lên đến <span className="font-semibold">50.000 sản phẩm mỗi tháng</span>.</span>
+                  <span className="ml-2">Xưởng của Univi tọa lạc tại Phường Chương Mỹ, Thành phố Hà Nội, có diện tích <span className="font-semibold">2.000m²</span>, sẵn sàng đáp ứng các đơn hàng lớn với công suất lên đến <span className="font-semibold">100.000 sản phẩm mỗi tháng</span>.</span>
                 </div>
               </div>
             </div>
@@ -194,7 +194,7 @@ const SeoArticleSection = () => {
             <figure className="inline-block border">
               <Image
                 src="/images/gioi-thieu/xuong-san-xuat.jpg"
-                alt="Quy trình sản xuất đồng phục thể thao khép kín tại xưởng Univi Hải Dương"
+                alt="Quy trình sản xuất đồng phục thể thao khép kín tại xưởng Univi phường Chương Mỹ, Hà Nội"
                 width={800}
                 height={400}
                 layout="responsive"

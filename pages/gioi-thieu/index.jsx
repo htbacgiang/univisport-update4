@@ -161,7 +161,7 @@ export default function AboutUs({ meta }) {
             <div className="overflow-hidden rounded-2xl shadow-lg group">
               <Image
                 src="/images/gioi-thieu/xuong-san-xuat.jpg"
-                alt="Xưởng sản xuất đồng phục thể thao Đồng Phục Univi tại Đan Phượng, Hà Nội — diện tích 2.000m²"
+                alt="Xưởng sản xuất đồng phục thể thao Đồng Phục Univi tại phường Chương Mỹ, Hà Nội — diện tích 2.000m²"
                 width={800}
                 height={600}
                 className="object-cover w-full transition-transform duration-700 group-hover:scale-105"
@@ -319,7 +319,7 @@ export async function getServerSideProps() {
       "@type": "AboutPage",
       "@id": "https://dongphucunivi.com/gioi-thieu#webpage",
       "name": "Giới Thiệu Đồng Phục Univi — Xưởng May Đồng Phục Thể Thao Chuyên Dụng",
-      "description": `Đồng Phục Univi thành lập năm 2017, xưởng 2.000m² tại Đan Phượng, Hà Nội. Chuyên đồng phục Gym, Yoga, Pickleball cho phòng tập & doanh nghiệp B2B. Hơn ${yearsExperience} năm kinh nghiệm, 500+ khách hàng tin tưởng, công suất 100.000 sản phẩm/tháng.`,
+      "description": `Đồng Phục Univi thành lập năm 2017, xưởng 2.000m² tại phường Chương Mỹ, Hà Nội. Chuyên đồng phục Gym, Yoga, Pickleball cho phòng tập & doanh nghiệp B2B. Hơn ${yearsExperience} năm kinh nghiệm, 500+ khách hàng tin tưởng, công suất 100.000 sản phẩm/tháng.`,
       "url": "https://dongphucunivi.com/gioi-thieu",
       "inLanguage": "vi-VN",
       "isPartOf": { "@id": "https://dongphucunivi.com/#website" },
@@ -356,7 +356,7 @@ export async function getServerSideProps() {
       image: "https://dongphucunivi.com/images/gioi-thieu/xuong-san-xuat.jpg",
       imageWidth: "1200",
       imageHeight: "630",
-      imageAlt: "Xưởng sản xuất đồng phục thể thao Đồng Phục Univi tại Đan Phượng, Hà Nội — diện tích 2.000m²",
+      imageAlt: "Xưởng sản xuất đồng phục thể thao Đồng Phục Univi tại phường Chương Mỹ, Hà Nội — diện tích 2.000m²",
       url: "https://dongphucunivi.com/gioi-thieu",
       site_name: "Đồng Phục Univi",
     },

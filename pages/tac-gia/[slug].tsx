@@ -244,8 +244,10 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
         {
           "@context": "https://schema.org",
           "@type": "Person",
-          // @id giống với URL được dùng trong Article schema toàn site
-          "@id": `${pageUrl}#person`,
+          // @id chuẩn hóa 1 entity duy nhất cho tác giả
+          "@id": author.name === "Trần Hiền" || author.slug === "dong-sang-lap-univi-sport-tran-hien" || author.slug === "tran-hien"
+            ? "https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien#person"
+            : `${pageUrl}#person`,
           "name": author.name,
           "jobTitle": author.role || "",
           "description": author.bio?.replace(/\n/g, " ") || "",
@@ -253,7 +255,9 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
             "@type": "ImageObject",
             "url": author.avatar || "",
           },
-          "url": pageUrl,
+          "url": author.name === "Trần Hiền" || author.slug === "dong-sang-lap-univi-sport-tran-hien" || author.slug === "tran-hien"
+            ? "https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien"
+            : pageUrl,
           // liên kết Person với Organization Univi — E-E-A-T signal
           "worksFor": { "@id": "https://dongphucunivi.com/#organization" },
           // liên kết với bài viết đã đăng — Author entity được củng cố

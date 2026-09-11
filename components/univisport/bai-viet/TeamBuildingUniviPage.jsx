@@ -136,7 +136,7 @@ const checklistGroups = [
 ];
 
 const viSaoUnivi = [
-  ['Nền tảng sản xuất và R&D', 'Univi công bố xưởng sản xuất 2.000 m² tại Đan Phượng và công suất 100.000 sản phẩm/tháng. Website cũng giới thiệu hoạt động R&D liên quan đến chất liệu, form dáng, hiệu suất vận động và trải nghiệm người dùng.'],
+  ['Nền tảng sản xuất và R&D', 'Univi công bố xưởng sản xuất 2.000 m² tại phường Chương Mỹ, Hà Nội và công suất 100.000 sản phẩm/tháng. Website cũng giới thiệu hoạt động R&D liên quan đến chất liệu, form dáng, hiệu suất vận động và trải nghiệm người dùng.'],
   ['Tư vấn theo bối cảnh sử dụng', 'Một đơn hàng teambuilding nên bắt đầu bằng brief về địa điểm, hoạt động, thời tiết, số lượng và nhận diện. Từ đó mới chọn kiểu áo, chất liệu và thiết kế. Cách tiếp cận này giúp doanh nghiệp hạn chế quyết định chỉ dựa trên hình ảnh.'],
   ['Kiểm soát đơn hàng theo từng điểm duyệt', 'Website Univi mô tả quy trình từ lên ý tưởng, thiết kế mockup, chọn nguyên phụ liệu, sản xuất đến kiểm tra và duyệt mẫu. Với đơn hàng doanh nghiệp, việc có các điểm duyệt rõ giúp HR/Event kiểm soát logo, màu, size và thời điểm bàn giao.'],
 ];
@@ -200,7 +200,7 @@ const faqs = [
   ],
   [
     'UNIVI có nhận đơn hàng Teambuilding số lượng lớn không?',
-    'Univi công bố năng lực sản xuất gồm xưởng 2.000 m² tại Đan Phượng và công suất khoảng 100.000 sản phẩm mỗi tháng. Số lượng, tiến độ và cấu hình thực tế của đơn hàng Teambuilding cần được xác nhận theo từng dự án.'
+    'Univi công bố năng lực sản xuất gồm xưởng 2.000 m² tại phường Chương Mỹ, Hà Nội và công suất khoảng 100.000 sản phẩm mỗi tháng. Số lượng, tiến độ và cấu hình thực tế của đơn hàng Teambuilding cần được xác nhận theo từng dự án.'
   ],
   [
     'Có thể đặt lại cùng mẫu đồng phục Teambuilding cho chương trình sau không?',
@@ -685,7 +685,7 @@ export default function TeamBuildingUniviPage() {
 
               <div className="bg-white/10 rounded-lg p-4">
                 <div className="font-semibold text-yellow-300 mb-1">Địa chỉ</div>
-                <div className="text-white">D14, 180 Thanh Bình, Hà Đông</div>
+                <div className="text-white">Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</div>
               </div>
             </div>
 

@@ -288,14 +288,14 @@ export default function RegisterDealer() {
                     <FaBuilding className="text-[#105d97] mt-1" />
                     <div>
                       <p className="text-sm font-semibold text-gray-900">Văn phòng</p>
-                      <p className="text-sm text-gray-600">Nhà D14, đường Thanh Bình, phường Hà Đông, Hà Nội</p>
+                      <p className="text-sm text-gray-600">Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <FaMapMarkerAlt className="text-[#105d97] mt-1" />
                     <div>
                       <p className="text-sm font-semibold text-gray-900">Xưởng sản xuất</p>
-                      <p className="text-sm text-gray-600"><Link href="/xuong-may-dong-phuc-univi" className="hover:text-[#105d97] transition-colors">Xã Thọ An, Huyện Đan Phượng, Hà Nội</Link></p>
+                      <p className="text-sm text-gray-600"><Link href="/xuong-may-dong-phuc-univi" className="hover:text-[#105d97] transition-colors">Phường Chương Mỹ, Thành phố Hà Nội</Link></p>
                     </div>
                   </div>
                 </div>

@@ -12,6 +12,8 @@ import CookieConsent from "../components/tracking/CookieConsent";
 import MetaPixel from "../components/tracking/MetaPixel";
 import GoogleAnalytics from "../components/common/GoogleAnalytics";
 
+import { COMPANY_INFO } from "../lib/companyInfo";
+
 // Global polyfill for Promise.withResolvers if not available
 if (typeof Promise !== "undefined" && !Promise.withResolvers) {
   Promise.withResolvers = function () {
@@ -46,41 +48,81 @@ function getImageMimeType(url = "") {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": ["Organization", "LocalBusiness"],
-  "@id": "https://dongphucunivi.com/#organization",
+  "@id": `${COMPANY_INFO.website}/#organization`,
 
   // Danh tính thương hiệu
-  "name": "Đồng Phục Univi",
-  "legalName": "Công ty Cổ phần Tập đoàn Unicore Holdings",
-  "alternateName": "Univi Uniform",
-  "foundingDate": "2017",
-  "slogan": "YOUR UNIFORM, YOUR BRAND!",
+  "name": COMPANY_INFO.name,
+  "legalName": COMPANY_INFO.legalName,
+  "alternateName": COMPANY_INFO.brandName,
+  "foundingDate": COMPANY_INFO.foundingYear,
+  "slogan": COMPANY_INFO.slogan,
+  "founder": {
+    "@type": "Person",
+    "@id": COMPANY_INFO.founder.id,
+    "name": COMPANY_INFO.founder.name,
+    "jobTitle": COMPANY_INFO.founder.jobTitle,
+    "url": COMPANY_INFO.founder.url,
+  },
   "description": "Đồng Phục Univi là xưởng sản xuất đồng phục thể thao chuyên dụng tại Hà Nội, cung cấp giải pháp đồng phục cho phòng Gym, Fitness Center, Yoga Studio, Pilates Studio, CLB Pickleball, đội nhóm thể thao và doanh nghiệp.",
 
   // Liên hệ trực tiếp (cấp ngoài)
-  "url": "https://dongphucunivi.com/",
-  "telephone": "+84-83-420-4999",
-  "email": "dongphucunivi@gmail.com",
-  "taxID": "0111401705",
+  "url": `${COMPANY_INFO.website}/`,
+  "telephone": `+84-${COMPANY_INFO.hotline.replace(/^0/, '').replace(/\./g, '-')}`,
+  "email": COMPANY_INFO.email,
+  "taxID": COMPANY_INFO.taxCode,
   "priceRange": "Theo báo giá",
 
   // Hình ảnh & logo
   "logo": {
     "@type": "ImageObject",
-    "url": "https://dongphucunivi.com/images/logo-univi.png",
+    "url": `${COMPANY_INFO.website}/images/logo-univi.png`,
     "width": 200,
     "height": 60,
   },
-  "image": "https://dongphucunivi.com/images/banner-home-1.jpg",
+  "image": `${COMPANY_INFO.website}/images/banner-home-1.jpg`,
 
-  // Địa chỉ văn phòng chính
+  // Địa chỉ văn phòng chính thức (NAP)
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Nhà D14, Ngõ 180 Đường Thanh Bình",
-    "addressLocality": "Hà Đông",
-    "addressRegion": "Hà Nội",
-    "postalCode": "100000",
-    "addressCountry": "VN",
+    "streetAddress": COMPANY_INFO.office.address,
+    "addressLocality": COMPANY_INFO.office.addressLocality,
+    "addressRegion": COMPANY_INFO.office.addressRegion,
+    "postalCode": COMPANY_INFO.office.postalCode,
+    "addressCountry": COMPANY_INFO.office.addressCountry,
   },
+
+  // Địa điểm cơ sở (Văn phòng giao dịch & Xưởng sản xuất)
+  "location": [
+    {
+      "@type": "Place",
+      "name": "Văn phòng giao dịch Univi",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": COMPANY_INFO.office.address,
+        "addressLocality": COMPANY_INFO.office.addressLocality,
+        "addressRegion": COMPANY_INFO.office.addressRegion,
+        "postalCode": COMPANY_INFO.office.postalCode,
+        "addressCountry": COMPANY_INFO.office.addressCountry,
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": COMPANY_INFO.office.geo.latitude,
+        "longitude": COMPANY_INFO.office.geo.longitude,
+      },
+    },
+    {
+      "@type": "Place",
+      "name": "Xưởng sản xuất Univi",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": COMPANY_INFO.factory.address,
+        "addressLocality": COMPANY_INFO.factory.addressLocality,
+        "addressRegion": COMPANY_INFO.factory.addressRegion,
+        "postalCode": COMPANY_INFO.factory.postalCode,
+        "addressCountry": COMPANY_INFO.factory.addressCountry,
+      },
+    },
+  ],
 
   // Tọa độ văn phòng Hà Đông
   "geo": {
@@ -140,13 +182,18 @@ const organizationSchema = {
     },
     {
       "@type": "PropertyValue",
+      "name": "Văn phòng giao dịch",
+      "value": COMPANY_INFO.office.address,
+    },
+    {
+      "@type": "PropertyValue",
       "name": "Xưởng sản xuất",
-      "value": "Xã Thọ An, Huyện Đan Phượng, Hà Nội — diện tích 2.000m²",
+      "value": `${COMPANY_INFO.factory.address} — diện tích ${COMPANY_INFO.factory.area}`,
     },
     {
       "@type": "PropertyValue",
       "name": "Công suất sản xuất",
-      "value": "Khoảng 100.000 sản phẩm/tháng",
+      "value": `Khoảng ${COMPANY_INFO.factory.capacity}`,
     },
     {
       "@type": "PropertyValue",
