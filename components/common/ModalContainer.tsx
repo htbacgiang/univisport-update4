@@ -35,6 +35,38 @@ const ModalContainer: FC<Props> = ({
     return () => document.removeEventListener("keydown", closeModal);
   }, [handleClose]);
 
+  useEffect(() => {
+    if (!visible) return;
+
+    const html = document.documentElement;
+    const editorScrollContainers = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-editor-scroll-container]")
+    );
+    const previousHtmlOverflow = html.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousEditorOverflow = editorScrollContainers.map((element) => ({
+      element,
+      overflow: element.style.overflow,
+      overflowY: element.style.overflowY,
+    }));
+
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    editorScrollContainers.forEach((element) => {
+      element.style.overflow = "hidden";
+      element.style.overflowY = "hidden";
+    });
+
+    return () => {
+      html.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+      previousEditorOverflow.forEach(({ element, overflow, overflowY }) => {
+        element.style.overflow = overflow;
+        element.style.overflowY = overflowY;
+      });
+    };
+  }, [visible]);
+
   if (!visible) return null;
   return (
     <div

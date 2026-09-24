@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Editor } from "@tiptap/react";
 import { AiFillCaretDown } from "react-icons/ai";
 import { RiDoubleQuotesL } from "react-icons/ri";
@@ -28,6 +28,7 @@ import EmbedYoutube from "./EmbedYoutube";
 import EmbedImage from "./EmbedImage";
 import InsertTable from "./InsertTable";
 import EmbedFacebookReels from "./EmbedFacebookReels";
+import EmbedCloudinaryVideo from "./EmbedCloudinaryVideo";
 import InsertAdBanner from "./InsertAdBanner";
 import InsertComponent from "./InsertComponent";
 import FindReplace from "./FindReplace";
@@ -46,6 +47,72 @@ const ToolBar: FC<Props> = ({
   onDropdownToggle,
 }): JSX.Element | null => {
   const [textColor, setTextColor] = useState<string>("#000000");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedCloudinaryVideo, setSelectedCloudinaryVideo] = useState<{
+    src?: string;
+    aspectRatio?: "square" | "vertical" | "horizontal";
+  } | null>(null);
+
+  useEffect(() => {
+    if (!editor) {
+      setSelectedCloudinaryVideo(null);
+      return;
+    }
+
+    const syncSelectedVideo = () => {
+      setSelectedCloudinaryVideo(
+        editor.isActive("cloudinaryVideo")
+          ? (editor.getAttributes("cloudinaryVideo") as { src?: string; aspectRatio?: "square" | "vertical" | "horizontal" })
+          : null
+      );
+    };
+
+    editor.on("selectionUpdate", syncSelectedVideo);
+    syncSelectedVideo();
+    return () => {
+      editor.off("selectionUpdate", syncSelectedVideo);
+    };
+  }, [editor]);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+
+    const html = document.documentElement;
+    const containers = Array.from(document.querySelectorAll<HTMLElement>(".custom-scrollbar, [data-editor-scroll-container]"));
+    const previous = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: document.body.style.overflow,
+      containers: containers.map((element) => ({
+        element,
+        overflow: element.style.overflow,
+        overflowY: element.style.overflowY,
+        overscrollBehavior: element.style.overscrollBehavior,
+      })),
+    };
+
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    containers.forEach((element) => {
+      element.style.overflow = "hidden";
+      element.style.overflowY = "hidden";
+      element.style.overscrollBehavior = "none";
+    });
+
+    return () => {
+      html.style.overflow = previous.htmlOverflow;
+      document.body.style.overflow = previous.bodyOverflow;
+      previous.containers.forEach(({ element, overflow, overflowY, overscrollBehavior }) => {
+        element.style.overflow = overflow;
+        element.style.overflowY = overflowY;
+        element.style.overscrollBehavior = overscrollBehavior;
+      });
+    };
+  }, [dropdownOpen]);
+
+  const handleDropdownToggle = (isOpen: boolean) => {
+    setDropdownOpen(isOpen);
+    onDropdownToggle?.(isOpen);
+  };
 
   const handleTextColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!editor) return;
@@ -123,6 +190,27 @@ const ToolBar: FC<Props> = ({
     const embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=500&height=281`;
 
     editor.chain().focus().setFacebookReel({ src: embedUrl }).run();
+  };
+
+  const handleEmbedCloudinaryVideo = (video: {
+    src: string;
+    name?: string;
+    aspectRatio?: "square" | "vertical" | "horizontal";
+  }) => {
+    if (!editor) return;
+
+    const options = {
+      src: video.src,
+      title: video.name || "Video Univi",
+      aspectRatio: video.aspectRatio || "horizontal",
+    };
+
+    if (selectedCloudinaryVideo) {
+      (editor.chain().focus() as any).updateAttributes("cloudinaryVideo", options).run();
+      return;
+    }
+
+    (editor.chain().focus() as any).setCloudinaryVideo(options).run();
   };
 
   const handleEmbedImage = (url: string, altText?: string, caption?: string) => {
@@ -262,8 +350,8 @@ const ToolBar: FC<Props> = ({
           <BsBraces />
         </Button>
 
-        <InsertLink onSubmit={handleLinkSubmit} onToggle={onDropdownToggle} />
-        <FindReplace editor={editor} onToggle={onDropdownToggle} />
+        <InsertLink onSubmit={handleLinkSubmit} onToggle={handleDropdownToggle} />
+        <FindReplace editor={editor} onToggle={handleDropdownToggle} />
 
         <Button
           active={editor.isActive("orderedList")}
@@ -284,11 +372,17 @@ const ToolBar: FC<Props> = ({
       <div className="flex items-center gap-1 flex-shrink-0">
         <div className="h-4 w-[1px] bg-gray-300 dark:bg-gray-600 mx-1" />
         
-        <EmbedYoutube onSubmit={handleEmbedYoutube} onToggle={onDropdownToggle} />
-        <EmbedFacebookReels onSubmit={handleEmbedFacebookReels} onToggle={onDropdownToggle} />
-        <EmbedImage onSubmit={handleEmbedImage} onToggle={onDropdownToggle} />
-        <InsertAdBanner onSubmit={handleInsertAdBanner} onToggle={onDropdownToggle} />
-        <InsertComponent onSubmit={handleInsertComponent} onToggle={onDropdownToggle} />
+        <EmbedYoutube onSubmit={handleEmbedYoutube} onToggle={handleDropdownToggle} />
+        <EmbedFacebookReels onSubmit={handleEmbedFacebookReels} onToggle={handleDropdownToggle} />
+        <EmbedCloudinaryVideo
+          onSubmit={handleEmbedCloudinaryVideo}
+          onToggle={handleDropdownToggle}
+          selectedVideo={selectedCloudinaryVideo}
+          centered
+        />
+        <EmbedImage onSubmit={handleEmbedImage} onToggle={handleDropdownToggle} />
+        <InsertAdBanner onSubmit={handleInsertAdBanner} onToggle={handleDropdownToggle} />
+        <InsertComponent onSubmit={handleInsertComponent} onToggle={handleDropdownToggle} />
 
         <Button onClick={onOpenImageClick}>
           <BsImageFill title="Chèn một ảnh" />
@@ -306,7 +400,7 @@ const ToolBar: FC<Props> = ({
         <div className="h-4 w-[1px] bg-gray-300 dark:bg-gray-600 mx-1" />
 
         {/* Insert table với form chọn số hàng/cột */}
-        <InsertTable onSubmit={handleInsertTable} onToggle={onDropdownToggle} />
+        <InsertTable onSubmit={handleInsertTable} onToggle={handleDropdownToggle} />
 
         {/* Thêm hàng */}
         <Button

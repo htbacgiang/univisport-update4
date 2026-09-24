@@ -17,6 +17,7 @@ import TableCell from "@tiptap/extension-table-cell";
 import ToolBar from "./ToolBar";
 import EditLink from "./Link/EditLink";
 import EditImage from "./EditImage";
+import EditCloudinaryVideo from "./EditCloudinaryVideo";
 import GalleryModal, { ImageSelectionResult } from "./GalleryModal";
 import MultiImageGalleryModal from "./GalleryModal/MultiImageGalleryModal";
 import axios from "axios";
@@ -27,6 +28,7 @@ import { toast } from "react-toastify";
 import FAQEditor, { FAQ } from "./FAQEditor";
 import AuthorSelector from "./AuthorSelector";
 import { FacebookReel } from "./FacebookReel";
+import { CloudinaryVideo } from "./CloudinaryVideo";
 import { AdBanner } from "./AdBanner";
 import { EmbedComponent } from "./EmbedComponent";
 import { GalleryImage, ImageGallery } from "./ImageGallery";
@@ -201,6 +203,7 @@ const Editor: FC<Props> = ({
       TableHeader,
       TableCell,
       FacebookReel,
+      CloudinaryVideo,
       AdBanner,
       EmbedComponent,
       ImageGallery.configure({
@@ -468,6 +471,45 @@ const Editor: FC<Props> = ({
   }, [editor, selectionRange]);
 
   useEffect(() => {
+    if (!editor) return;
+
+    const refreshVideoRatios = () => {
+      const videos = Array.from(editor.view.dom.querySelectorAll("video[data-cloudinary-video]"));
+      videos.forEach((video) => {
+        const element = video as HTMLVideoElement;
+        if (element.dataset.ratioListener !== "true") {
+          element.addEventListener("loadedmetadata", handleMetadata);
+          element.dataset.ratioListener = "true";
+        }
+        const wrapper = element.closest(".cloudinary-video-embed") as HTMLElement | null;
+        if (!wrapper || !element.videoWidth || !element.videoHeight) return;
+
+        const isSquare = Math.abs(element.videoWidth - element.videoHeight) / Math.max(element.videoWidth, element.videoHeight) < 0.12;
+        const aspectRatio = isSquare ? "square" : element.videoHeight > element.videoWidth ? "vertical" : "horizontal";
+        const aspectValue = aspectRatio === "square" ? "1 / 1" : aspectRatio === "vertical" ? "9 / 16" : "16 / 9";
+        const maxWidth = aspectRatio === "vertical" ? "420px" : aspectRatio === "square" ? "640px" : "100%";
+
+        wrapper.dataset.aspectRatio = aspectRatio;
+        wrapper.style.aspectRatio = aspectValue;
+        wrapper.style.maxWidth = maxWidth;
+      });
+    };
+
+    const handleMetadata = () => refreshVideoRatios();
+    const videos = Array.from(editor.view.dom.querySelectorAll("video[data-cloudinary-video]"));
+    videos.forEach((video) => {
+      if ((video as HTMLVideoElement).readyState >= 1) handleMetadata();
+    });
+    editor.on("update", refreshVideoRatios);
+    refreshVideoRatios();
+
+    return () => {
+      videos.forEach((video) => video.removeEventListener("loadedmetadata", handleMetadata));
+      editor.off("update", refreshVideoRatios);
+    };
+  }, [editor, initialValue?.content]);
+
+  useEffect(() => {
     fetchImages();
   }, []);
 
@@ -557,7 +599,7 @@ const Editor: FC<Props> = ({
               </div>
             </div>
             <div className="border border-gray-200 rounded-lg flex flex-col bg-white h-[calc(100vh-220px)]">
-              <div className="bg-gray-50 border-b border-gray-200 p-2 flex-shrink-0 z-10 sticky top-0">
+              <div className="relative z-[60] bg-gray-50 border-b border-gray-200 p-2 flex-shrink-0 sticky top-0">
                 <ToolBar
                   editor={editor}
                   onOpenImageClick={() => setShowGallery(true)}
@@ -565,9 +607,10 @@ const Editor: FC<Props> = ({
                 />
               </div>
 
-              <div className="p-4 w-full flex-1 overflow-y-auto custom-scrollbar">
+              <div data-editor-scroll-container="true" className="p-4 w-full flex-1 overflow-y-auto custom-scrollbar">
                 {editor ? <EditLink editor={editor} /> : null}
                 {editor ? <EditImage editor={editor} /> : null}
+                {editor ? <EditCloudinaryVideo editor={editor} /> : null}
                 <div className="editor-content">
                   <EditorContent editor={editor} className="min-h-[700px]" />
                 </div>
@@ -821,6 +864,47 @@ const Editor: FC<Props> = ({
         .blog figure img {
           display: block;
           margin: 0 auto;
+        }
+        .blog .cloudinary-video-embed[data-aspect-ratio="vertical"] {
+          width: 100% !important;
+          max-width: 420px !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
+        }
+        .blog .cloudinary-video-embed[data-aspect-ratio="square"] {
+          width: 100% !important;
+          max-width: 640px !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
+        }
+        .blog .cloudinary-video-embed video {
+          display: block;
+          width: 100%;
+          height: auto;
+          margin: 0 !important;
+          padding: 0 !important;
+          max-width: none !important;
+        }
+        @media (max-width: 767px) {
+          .blog .cloudinary-video-embed[data-aspect-ratio="vertical"],
+          .blog .cloudinary-video-embed[data-aspect-ratio="square"] {
+            max-width: 100% !important;
+          }
+        }
+        @media (min-width: 768px) {
+          .blog .cloudinary-video-embed {
+            width: 100% !important;
+            max-width: 100% !important;
+            aspect-ratio: 16 / 9 !important;
+            background: #000 !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+          }
+          .blog .cloudinary-video-embed video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+          }
         }
         .blog figcaption {
           margin-top: 0.5em;

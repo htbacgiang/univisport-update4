@@ -129,7 +129,7 @@ export default function FabricCatalogView({ syncHash = false }) {
 
             {/* Ribbon Header Tiêu Đề */}
             <div className="inline-block bg-gradient-to-r from-[#0d3b66] to-[#105d97] text-white px-3.5 sm:px-5 py-1.5 rounded-lg sm:rounded-xl shadow-sm self-start">
-              <h2 className="text-xs sm:text-sm md:text-base lg:text-[18px] font-black uppercase tracking-wider font-sans leading-tight">
+              <h2 className="text-xs sm:text-sm md:text-base lg:text-[18px] font-black uppercase tracking-wider font-sans leading-tight text-white ">
                 {currentFabric.leftTitle}
               </h2>
             </div>

@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import parse from "html-react-parser";
 import DefaultLayout from "../../components/layout/DefaultLayout";
 import db from "../../utils/db";
@@ -109,6 +109,63 @@ type Props = {
 const host = "https://dongphucunivi.com/bai-viet";
 export const APP_NAME = "Đồng phục Univi";
 
+type VideoAspectRatio = "square" | "vertical" | "horizontal";
+
+const detectVideoAspectRatio = (width: number, height: number): VideoAspectRatio => {
+  if (Math.abs(width - height) / Math.max(width, height) < 0.12) return "square";
+  return height > width ? "vertical" : "horizontal";
+};
+
+const ArticleCloudinaryVideo = ({ src, title, initialRatio = "horizontal" }: {
+  src: string;
+  title?: string;
+  initialRatio?: VideoAspectRatio;
+}) => {
+  const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>(initialRatio);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const aspectValue = aspectRatio === "square" ? "1 / 1" : aspectRatio === "vertical" ? "9 / 16" : "16 / 9";
+  const maxWidth = aspectRatio === "vertical" ? "420px" : aspectRatio === "square" ? "640px" : "100%";
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const updateRatio = () => {
+      if (video.videoWidth && video.videoHeight) {
+        setAspectRatio(detectVideoAspectRatio(video.videoWidth, video.videoHeight));
+      }
+    };
+
+    updateRatio();
+    video.addEventListener("loadedmetadata", updateRatio);
+    video.addEventListener("loadeddata", updateRatio);
+    video.addEventListener("canplay", updateRatio);
+    return () => {
+      video.removeEventListener("loadedmetadata", updateRatio);
+      video.removeEventListener("loadeddata", updateRatio);
+      video.removeEventListener("canplay", updateRatio);
+    };
+  }, [src]);
+
+  return (
+    <div className="cloudinary-video-embed" data-aspect-ratio={aspectRatio} style={{ display: "block", width: "100%", maxWidth, aspectRatio: aspectValue, margin: "0 auto", background: "#000", overflow: "hidden" }}>
+      <video
+        ref={videoRef}
+        src={src}
+        title={title || "Video Univi"}
+        controls
+        playsInline
+        preload="metadata"
+        onLoadedMetadata={() => {
+          const video = videoRef.current;
+          if (video?.videoWidth && video.videoHeight) setAspectRatio(detectVideoAspectRatio(video.videoWidth, video.videoHeight));
+        }}
+        style={{ display: "block", width: "100%", height: "100%", objectFit: "contain" }}
+      />
+    </div>
+  );
+};
+
 const SinglePost: NextPage<Props> = ({ post, meta }) => {
   if (!post) {
     return (
@@ -137,6 +194,32 @@ const SinglePost: NextPage<Props> = ({ post, meta }) => {
     replace(domNode: any) {
       if (domNode.type === "tag" && domNode.name === "a") {
         normalizeInternalLinkAttributes(domNode.attribs);
+      }
+
+      if (
+        domNode.type === "tag" &&
+        domNode.name === "div" &&
+        domNode.attribs?.class?.includes("cloudinary-video-embed")
+      ) {
+        const videoNode = domNode.children?.find((child: any) => child.type === "tag" && child.name === "video");
+        if (videoNode?.attribs?.src) {
+          return (
+            <ArticleCloudinaryVideo
+              src={videoNode.attribs.src}
+              title={videoNode.attribs.title}
+              initialRatio={domNode.attribs?.["data-aspect-ratio"] as VideoAspectRatio || "horizontal"}
+            />
+          );
+        }
+      }
+
+      if (
+        domNode.type === "tag" &&
+        domNode.name === "video" &&
+        domNode.attribs?.src?.includes("res.cloudinary.com") &&
+        !domNode.parent?.attribs?.class?.includes("cloudinary-video-embed")
+      ) {
+        return <ArticleCloudinaryVideo src={domNode.attribs.src} title={domNode.attribs.title} />;
       }
 
       if (
@@ -248,6 +331,21 @@ const SinglePost: NextPage<Props> = ({ post, meta }) => {
                     .blog :global(th) { background-color: #f3f4f6; font-weight: 600; color: #111827; }
                     .blog :global(td p), .blog :global(th p) { text-align: left !important; margin: 0; }
                     .blog :global(h1), .blog :global(h2), .blog :global(h3), .blog :global(h4), .blog :global(h5), .blog :global(h6) { scroll-margin-top: 100px; }
+                    .blog :global(.cloudinary-video-embed[data-aspect-ratio="vertical"]) { width: 100% !important; max-width: 420px !important; margin-left: auto !important; margin-right: auto !important; }
+                    .blog :global(.cloudinary-video-embed[data-aspect-ratio="square"]) { width: 100% !important; max-width: 640px !important; margin-left: auto !important; margin-right: auto !important; }
+                    .blog :global(.cloudinary-video-embed[data-aspect-ratio="horizontal"]) { width: 100% !important; max-width: 100% !important; }
+                    .blog :global(.cloudinary-video-embed video) { display: block; width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; max-width: none !important; }
+                    @media (max-width: 767px) {
+                      .blog :global(.cloudinary-video-embed[data-aspect-ratio="vertical"]), .blog :global(.cloudinary-video-embed[data-aspect-ratio="square"]) { max-width: 100% !important; }
+                    }
+                    @media (min-width: 768px) {
+                      .blog :global(.cloudinary-video-embed) { display: block !important; width: 100% !important; min-width: 100% !important; max-width: none !important; box-sizing: border-box; aspect-ratio: 16 / 9 !important; margin-top: 10px !important; margin-bottom: 0 !important; padding: 0 !important; background: #000; }
+                      .blog :global(.cloudinary-video-embed video) { width: 100% !important; height: 100% !important; object-fit: contain; margin: 0 !important; }
+                    }
+                    @media (max-width: 767px) {
+                      .blog :global(.cloudinary-video-embed) { max-width: 100% !important; aspect-ratio: auto !important; padding: 0 !important; }
+                      .blog :global(.cloudinary-video-embed video) { height: auto !important; }
+                    }
                   `}</style>
                   {parse(processedContent, parseOptions)}
                 </div>
@@ -413,19 +511,19 @@ export const getServerSideProps: GetServerSideProps<
         "publisher": { "@id": "https://dongphucunivi.com/#organization" },
         "author": authorName === "Trần Hiền" || authorSlug === "dong-sang-lap-univi-sport-tran-hien" || authorSlug === "tran-hien"
           ? {
-              "@type": "Person",
-              "@id": "https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien#person",
-              "name": "Trần Hiền",
-              "url": "https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien",
-            }
+            "@type": "Person",
+            "@id": "https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien#person",
+            "name": "Trần Hiền",
+            "url": "https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien",
+          }
           : {
-              "@type": "Person",
-              ...(authorSlug ? {
-                "@id": `https://dongphucunivi.com/tac-gia/${authorSlug}#person`,
-                "url": `https://dongphucunivi.com/tac-gia/${authorSlug}`,
-              } : {}),
-              "name": authorName,
-            },
+            "@type": "Person",
+            ...(authorSlug ? {
+              "@id": `https://dongphucunivi.com/tac-gia/${authorSlug}#person`,
+              "url": `https://dongphucunivi.com/tac-gia/${authorSlug}`,
+            } : {}),
+            "name": authorName,
+          },
         "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl },
         // speakable: đánh dấu vùng AI Overview ưu tiên trích dẫn
         "speakable": {

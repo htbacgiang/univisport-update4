@@ -2274,6 +2274,45 @@ video[paused] {
   opacity: 0.8;
 }
 
+/* Cloudinary article videos: constrain portrait/square videos on desktop,
+   while allowing them to use the full content width on mobile. */
+.blog .cloudinary-video-embed[data-aspect-ratio="vertical"] {
+  width: 100% !important;
+  max-width: 420px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.blog .cloudinary-video-embed[data-aspect-ratio="square"] {
+  width: 100% !important;
+  max-width: 640px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.blog .cloudinary-video-embed[data-aspect-ratio="horizontal"] {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.blog .cloudinary-video-embed video {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: auto !important;
+  object-fit: contain;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: none !important;
+}
+
+@media (max-width: 767px) {
+  .blog .cloudinary-video-embed[data-aspect-ratio="vertical"],
+  .blog .cloudinary-video-embed[data-aspect-ratio="square"] {
+    max-width: 100% !important;
+  }
+}
+
 /* ===== PRODUCT FORM STYLES ===== */
 .product-form-container {
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);

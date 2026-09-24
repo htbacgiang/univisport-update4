@@ -18,6 +18,7 @@ import EditImage from "./EditImage";
 import GalleryModal, { ImageSelectionResult } from "./GalleryModal";
 import axios from "axios";
 import { FacebookReel } from "./FacebookReel";
+import { CloudinaryVideo } from "./CloudinaryVideo";
 import { AdBanner } from "./AdBanner";
 import { InternalLink } from "./InternalLink";
 
@@ -104,6 +105,7 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
       TableHeader,
       TableCell,
       FacebookReel,
+      CloudinaryVideo,
       AdBanner,
     ],
     editorProps: {
