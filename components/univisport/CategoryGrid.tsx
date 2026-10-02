@@ -19,10 +19,16 @@ const categories: Category[] = [
     count: 7,
   },
   {
-    name: "Yoga - Pilates",
+    name: "Đồng phục Yoga",
     slug: "/dong-phuc-yoga-pilates",
     image: "/product/dong-phuc-yoga-pillates.jpg",
     count: 5,
+  },
+  {
+    name: "Đồng phục Pilates",
+    slug: "/dong-phuc-pilates",
+    image: "/product/dong-phuc-pillates.jpg",
+    count: 6,
   },
   {
     name: "Đồng phục Áo gió",

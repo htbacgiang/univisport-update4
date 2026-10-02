@@ -42,7 +42,7 @@ const ProductDropdown = () => {
               </li>
               <li>
                 <Link href="/dong-phuc-yoga-pilates" className="hover:text-[#105d97] py-2">
-                  Đồng phục Yoga - Pilates
+                  Đồng phục Yoga
                 </Link>
               </li>
               <li>

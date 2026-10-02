@@ -606,7 +606,7 @@ const FALLBACK_SECTIONS = [
   },
   {
     _id: "yoga",
-    title: "Đồng Phục Yoga - Pilates",
+    title: "Đồng Phục Yoga",
     category: "dong-phuc-yoga-pilates",
     viewAllLink: "/dong-phuc-yoga-pilates",
     productLimit: 12,

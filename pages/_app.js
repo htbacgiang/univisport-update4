@@ -226,7 +226,8 @@ const organizationSchema = {
   "knowsAbout": [
     "Đồng phục thể thao chuyên nghiệp",
     "May đồng phục Gym theo yêu cầu",
-    "Đồng phục Yoga Pilates",
+    "Đồng phục Yoga",
+    "Đồng phục Pilates",
     "Đồng phục Pickleball",
     "Đồng phục huấn luyện viên",
     "Vải thể thao UNI DRY",

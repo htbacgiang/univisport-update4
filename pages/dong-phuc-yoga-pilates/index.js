@@ -4,13 +4,13 @@ import { getProductsByCategory, getSidebarNavCounts } from '../../lib/getProduct
 import { getCategoryArticleSetting } from '../../lib/categoryArticleSettings';
 
 const SLUG = 'dong-phuc-yoga-pilates';
-const META_TITLE = 'May Đồng Phục Yoga Pilates Theo Yêu Cầu Cho Studio & Wellness Center | Univi';
+const META_TITLE = 'May Đồng Phục Yoga Theo Yêu Cầu Cho Studio & Wellness Center | Univi';
 const META_DESCRIPTION =
-  'Đồng phục Univi tiên phong cung cấp giải pháp đồng phục Yoga Pilates theo yêu cầu cho Studio, Wellness Center và HLV Yoga. Thiết kế miễn phí, xưởng 2.000m2 tại Hà Nội, giao hàng toàn quốc.';
+  'Đồng phục Univi tiên phong cung cấp giải pháp đồng phục Yoga theo yêu cầu cho Studio, Wellness Center và HLV Yoga. Thiết kế miễn phí, xưởng 2.000m2 tại Hà Nội, giao hàng toàn quốc.';
 const META_KEYWORDS =
-  'đồng phục Yoga Pilates, đồng phục Yoga Studio, đồng phục Pilates Studio, đồng phục giáo viên Yoga, đồng phục giáo viên Pilates, đồng phục HLV Yoga, đồng phục Wellness Center, may đồng phục Yoga, vải Super Cool, công nghệ UNI DRY, giải pháp 2S Uniform, áo bra Yoga đồng phục, legging Yoga đồng phục';
+  'đồng phục Yoga, đồng phục Yoga Studio, đồng phục giáo viên Yoga, đồng phục HLV Yoga, đồng phục Wellness Center, may đồng phục Yoga, vải Super Cool, công nghệ UNI DRY, giải pháp 2S Uniform, áo bra Yoga đồng phục, legging Yoga đồng phục';
 const OG_IMAGE = 'https://dongphucunivi.com/images/banner-yoga.jpg';
-const OG_IMAGE_ALT = 'Đồng phục Yoga Pilates thiết kế theo yêu cầu cho studio và cộng đồng Wellness';
+const OG_IMAGE_ALT = 'Đồng phục Yoga thiết kế theo yêu cầu cho studio và cộng đồng Wellness';
 
 function buildFaqSchema() {
   return {
@@ -71,11 +71,11 @@ function buildMeta(products = []) {
         '@context': 'https://schema.org',
         '@type': 'Service',
         '@id': `${canonical}#service`,
-        'name': 'May đồng phục Yoga Pilates thiết kế theo yêu cầu',
+        'name': 'May đồng phục Yoga thiết kế theo yêu cầu',
         'description': META_DESCRIPTION,
         'provider': { '@id': 'https://dongphucunivi.com/#organization' },
         'serviceType': 'May đồng phục thể thao theo yêu cầu',
-        'category': 'Đồng phục Yoga - Pilates',
+        'category': 'Đồng phục Yoga',
         'areaServed': { '@type': 'Country', 'name': 'Việt Nam' },
         'url': canonical,
       },
@@ -85,7 +85,7 @@ function buildMeta(products = []) {
         '@id': `${canonical}#breadcrumb`,
         'itemListElement': [
           { '@type': 'ListItem', 'position': 1, 'name': 'Trang chủ', 'item': 'https://dongphucunivi.com/' },
-          { '@type': 'ListItem', 'position': 2, 'name': 'Đồng Phục Yoga - Pilates', 'item': canonical },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Đồng Phục Yoga', 'item': canonical },
         ],
       },
       ...(products.length > 0 ? [{

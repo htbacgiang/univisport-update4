@@ -8,7 +8,8 @@ import { ENTERPRISE_FLAT_SLUGS } from "../../../lib/enterpriseFlatSlugs";
 // ─── CATEGORY NAMES MAP ──────────────────────────────────────────────────────
 const CATEGORY_NAMES = {
   'dong-phuc-gym': 'Đồng Phục Gym',
-  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga - Pilates',
+  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga',
+  'dong-phuc-pilates': 'Đồng Phục Pilates',
   'dong-phuc-pickleball': 'Đồng Phục Pickleball',
   'dong-phuc-ao-gio': 'Đồng Phục Áo Gió',
   'dong-phuc-ao-polo': 'Đồng Phục Áo Polo',

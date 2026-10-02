@@ -103,7 +103,8 @@ function Lightbox({ photos, currentIndex, onClose, onNext, onPrev }) {
 // ─── Helper: map category slug → tên tiếng Việt ───────────────
 const CATEGORY_NAMES = {
   'dong-phuc-gym': 'Đồng Phục Gym',
-  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga - Pilates',
+  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga',
+  'dong-phuc-pilates': 'Đồng Phục Pilates',
   'dong-phuc-pickleball': 'Đồng Phục Pickleball',
   'dong-phuc-ao-gio': 'Đồng Phục Áo Gió',
   'dong-phuc-ao-polo': 'Đồng Phục Áo Polo',
@@ -639,15 +640,6 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
   const router = useRouter();
   const currentPath = router?.asPath || '';
 
-  const randomizedRelatedProducts = useMemo(() => {
-    if (!relatedProducts || relatedProducts.length === 0) return [];
-    const list = [...relatedProducts];
-    for (let i = list.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [list[i], list[j]] = [list[j], list[i]];
-    }
-    return list;
-  }, [relatedProducts]);
 
   const hideStandardSize = useMemo(() => {
     const categorySlug = (product?.category || '').toLowerCase().replace(/\s+/g, '-');
@@ -1336,8 +1328,8 @@ export default function ProductDetailView({ product, relatedProducts = [] }) {
           initialReviewCount={product.reviewCount}
         />
 
-        {randomizedRelatedProducts && randomizedRelatedProducts.length > 0 && (
-          <ProductSlider title="Sản phẩm liên quan" products={randomizedRelatedProducts} />
+        {relatedProducts && relatedProducts.length > 0 && (
+          <ProductSlider title="Sản phẩm liên quan" products={relatedProducts} />
         )}
       </div>
 

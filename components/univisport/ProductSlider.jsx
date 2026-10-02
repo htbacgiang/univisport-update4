@@ -46,11 +46,11 @@ const ProductSlider = ({ title, products, viewAllLink }) => {
           )}
         </div>
 
-        <div className="relative group">
+        <div className="relative group/slider">
           {showLeftArrow && (
             <button
               onClick={() => scroll('left')}
-              className="absolute left-[-8px] top-1/2 -translate-y-1/2 z-20 bg-black/60 hover:bg-black text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100"
+              className="absolute left-[-8px] top-1/2 -translate-y-1/2 z-20 bg-black/60 hover:bg-black text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover/slider:opacity-100"
               aria-label="Scroll left"
             >
               <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@ const ProductSlider = ({ title, products, viewAllLink }) => {
           {showRightArrow && (
             <button
               onClick={() => scroll('right')}
-              className="absolute right-[-8px] top-1/2 -translate-y-1/2 z-20 bg-black/60 hover:bg-black text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100"
+              className="absolute right-[-8px] top-1/2 -translate-y-1/2 z-20 bg-black/60 hover:bg-black text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover/slider:opacity-100"
               aria-label="Scroll right"
             >
               <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

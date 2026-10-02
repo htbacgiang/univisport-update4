@@ -16,7 +16,7 @@ const categories: Category[] = [
     count: 7,
   },
   {
-    name: "Yoga - Pilates",
+    name: "Đồng phục Yoga",
     slug: "/dong-phuc-yoga-pilates",
     image: "/product/dong-phuc-yoga-pillates.jpg",
     count: 5,

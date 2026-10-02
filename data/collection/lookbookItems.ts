@@ -108,7 +108,7 @@ export const lookbookItems: LookbookItem[] = [
   {
     id: "yoga-4",
     image: "/bo-suu-tap/yoga-2.jpg",
-    alt: "Đồng phục Yoga - Pilates Univi",
+    alt: "Đồng phục Yoga Univi",
     filterIds: ["yoga-pilates"],
     size: "tall",
   },
@@ -261,7 +261,7 @@ export const lookbookItems: LookbookItem[] = [
   {
     id: "yoga-5",
     image: "/images/yoga-5.webp",
-    alt: "Bộ đồng phục Yoga Pilates cao cấp Univi",
+    alt: "Bộ đồng phục Yoga cao cấp Univi",
     filterIds: ["yoga-pilates"],
     size: "md",
   },
@@ -270,7 +270,7 @@ export const lookbookItems: LookbookItem[] = [
   {
     id: "yoga-fabric",
     image: "/images/vai-yoga.jpg",
-    alt: "Vải may đồng phục Yoga Pilates thấm hút mồ hôi",
+    alt: "Vải may đồng phục Yoga thấm hút mồ hôi",
     filterIds: ["yoga-pilates"],
     size: "md",
   },

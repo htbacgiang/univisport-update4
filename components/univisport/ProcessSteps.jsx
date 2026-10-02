@@ -6,33 +6,51 @@ import ContactForm from "../header/ContactForm";
 const PROCESS_STEPS = [
   {
     step: "01",
-    title: "Tư vấn & Xác định nhu cầu",
-    time: "Ngày 1",
-    desc: "Gọi hotline hoặc nhắn Zalo. Trao đổi loại sản phẩm, số lượng, màu sắc thương hiệu, deadline. Đội ngũ xác nhận tính khả thi ngay trong buổi đầu tiên.",
+    title: "Tư vấn nhu cầu",
+    time: "Bước 1",
+    desc: "Ai mặc, lớp mat hay lớp máy, bao nhiêu cơ sở, mặc thường xuyên đến đâu và vai trò của từng nhóm.",
   },
   {
     step: "02",
-    title: "Thiết kế mockup miễn phí",
-    time: "Trong 1 giờ làm việc",
-    desc: "Gửi logo + màu thương hiệu - Univi hoàn thiện mockup đầy đủ. Chỉnh sửa không giới hạn lần qua Zalo/email đến khi hài lòng.",
+    title: "Thiết kế, mockup",
+    time: "Bước 2",
+    desc: "Đưa logo, màu chủ đạo và vị trí nhận diện vào phương án; duyệt trước khi sản xuất.",
   },
   {
     step: "03",
-    title: "Chọn vải & Duyệt mẫu thực tế",
-    time: "2–5 ngày",
-    desc: "Univi gửi mẫu vải thực tế để cầm tay, kiểm tra chất cảm và màu sắc. Sau đó sản xuất 1 mẫu thực tế để mặc thử trước khi chốt toàn đơn.",
+    title: "Chọn chất liệu, xem mẫu vải",
+    time: "Bước 3",
+    desc: "Ưu tiên cảm giác mặc, độ che phủ, co giãn, hồi form và thoát ẩm.",
   },
   {
     step: "04",
-    title: "Sản xuất & Cập nhật tiến độ",
-    time: "7–10 ngày làm việc",
-    desc: "Toàn bộ sản xuất tại xưởng phường Chương Mỹ, Hà Nội. Univi cập nhật tiến độ chủ động từng giai đoạn. 100% sản phẩm qua kiểm tra QC trước khi xuất xưởng.",
+    title: "May mẫu",
+    time: "Bước 4",
+    desc: "May mẫu thật theo cấu hình đã thống nhất.",
   },
   {
     step: "05",
-    title: "Giao hàng & Hỗ trợ sau bán",
-    time: "Đúng cam kết",
-    desc: "Giao toàn quốc. Với đơn lớn tại Hà Nội: giao tận nơi. Hỗ trợ tái đặt theo chu kỳ và xử lý nhanh yêu cầu bổ sung giữa chu kỳ.",
+    title: "HLV mặc thử và vận động",
+    time: "Bước 5",
+    desc: "Cúi, xoay, nằm, giơ tay, đổi tư thế; nếu có Reformer thì thử luôn trên máy.",
+  },
+  {
+    step: "06",
+    title: "Điều chỉnh và chốt mẫu chuẩn",
+    time: "Bước 6",
+    desc: "Ghi rõ form, màu, logo, bảng size và quy cách may.",
+  },
+  {
+    step: "07",
+    title: "Sản xuất và kiểm tra chất lượng",
+    time: "Bước 7",
+    desc: "Kiểm form, đường may, màu và logo qua từng công đoạn.",
+  },
+  {
+    step: "08",
+    title: "Giao hàng toàn quốc và lưu thông số",
+    time: "Bước 8",
+    desc: "Lưu mẫu chuẩn để đặt lại khi tuyển thêm HLV hoặc mở cơ sở.",
   },
 ];
 
@@ -86,73 +104,31 @@ export default function ProcessSteps({ variant = "default" }) {
         <div className="text-center mb-16">
           <h2 className="text-2xl md:text-4xl uppercase font-bold text-gray-900 mb-1 max-w-6xl mx-auto leading-6">
             Từ yêu cầu đến sản phẩm{" "}
-            <span className="text-[#105d97]">5 bước minh bạch</span>
+            <span className="text-[#105d97]">{PROCESS_STEPS.length} bước chuẩn hóa</span>
           </h2>
           <p className="text-gray-500 max-w-4xl mx-auto text-base leading-6">
             Quy trình được thiết kế để tiết kiệm tối đa thời gian của doanh nghiệp — rõ ràng, không phát sinh, đúng tiến độ.
           </p>
         </div>
 
-        {/* Staggered step cards — desktop: alternating high/low, mobile: stack */}
-        <div className="hidden lg:flex items-end gap-8 max-w-8xl mx-auto">
-          {PROCESS_STEPS.map((s, i) => {
-            const isEven = i % 2 === 1;
-            return (
-              <div key={i} className="flex flex-col items-center flex-1 relative">
-                {/* Card pushed up for odd, down for even */}
-                <div
-                  className={`bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full flex flex-col gap-3 hover:shadow-lg transition-all duration-300 ${isEven ? "mt-16" : "mb-16"}`}
-                >
-                  {/* Step icon placeholder */}
-                  <div className="w-10 h-10 rounded-xl bg-[#105d97]/10 flex items-center justify-center mb-1">
-                    <span className="text-[#105d97] font-bold text-sm">{s.step}</span>
-                  </div>
-                  <h3 className="font-bold text-gray-900 text-sm leading-6">{s.title}</h3>
-                  <p className="text-xs text-gray-500 leading-6 flex-1">{s.desc}</p>
-                  <span className="text-xs bg-[#105d97]/8 text-[#105d97] rounded-full px-2.5 py-1 self-start font-medium">
+        {/* Step cards grid — 4 columns on desktop, 2 on tablet, 1 on mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-7xl mx-auto">
+          {PROCESS_STEPS.map((s, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between gap-3 hover:shadow-md transition-all duration-300 border-l-4 border-l-[#105d97]"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#105d97] text-sm font-bold text-white shadow-sm">
+                    {s.step}
+                  </span>
+                  <span className="text-xs bg-[#105d97]/10 text-[#105d97] rounded-full px-2.5 py-1 font-medium">
                     {s.time}
                   </span>
-
-                  {/* Step number badge at bottom */}
-                  <div className="absolute -bottom-5 left-6 w-10 h-10 rounded-full bg-[#105d97] text-white flex items-center justify-center font-bold text-sm shadow-md z-10">
-                    {String(i + 1).padStart(2, "0")}
-                  </div>
                 </div>
-
-                {/* Dashed arrow to next step */}
-                {i < PROCESS_STEPS.length - 1 && (
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 pointer-events-none">
-                    <svg width="48" height="24" viewBox="0 0 48 24" fill="none">
-                      <path
-                        d="M2 12 C12 4, 36 4, 46 12"
-                        stroke="#105d97"
-                        strokeWidth="1.8"
-                        strokeDasharray="4 3"
-                        strokeLinecap="round"
-                        fill="none"
-                      />
-                      <path d="M40 8 L46 12 L40 16" stroke="#105d97" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Mobile: simple vertical stack */}
-        <div className="lg:hidden space-y-4 max-w-lg mx-auto">
-          {PROCESS_STEPS.map((s, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex gap-4">
-              <div className="flex-shrink-0 w-11 h-11 rounded-full bg-[#105d97] text-white flex items-center justify-center font-bold text-sm">
-                {String(i + 1).padStart(2, "0")}
-              </div>
-              <div>
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h3 className="font-bold text-gray-900 text-sm">{s.title}</h3>
-                  <span className="text-xs bg-[#105d97]/10 text-[#105d97] rounded-full px-2 py-0.5">{s.time}</span>
-                </div>
-                <p className="text-xs text-gray-500 leading-6">{s.desc}</p>
+                <h3 className="font-bold text-gray-900 text-base mb-2">{s.title}</h3>
+                <p className="text-xs text-gray-600 leading-5">{s.desc}</p>
               </div>
             </div>
           ))}

@@ -20,7 +20,8 @@ const GYM_CATEGORY_SLUG = 'dong-phuc-gym';
 
 const CATEGORY_H1 = {
   'dong-phuc-gym': 'Đồng Phục Gym Thiết Kế Theo Yêu Cầu Cho Phòng Tập Và Chuỗi Fitness Center',
-  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga Pilates Thiết Kế Theo Yêu Cầu Cho Studio Và Cộng Đồng Wellness',
+  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga Thiết Kế Theo Yêu Cầu Cho Studio Và Cộng Đồng Wellness',
+  'dong-phuc-pilates': 'Đồng Phục Pilates: Giải Pháp Đồng Phục Chuyên Nghiệp Cho Studio Và HLV',
   'dong-phuc-pickleball': 'Đồng Phục Pickleball Thiết Kế Theo Yêu Cầu Cho CLB, Học Viện Và Giải Đấu',
   'dong-phuc-chay-bo': 'Đồng Phục Chạy Bộ Thiết Kế Riêng Cho CLB Và Giải Chạy',
   'dong-phuc-mma': 'Đồng Phục MMA Thiết Kế Riêng Cho CLB Võ Thuật',
@@ -32,7 +33,9 @@ const CATEGORY_DESCRIPTION = {
   'dong-phuc-gym':
     'Đồng phục Gym thiết kế theo yêu cầu cho phòng tập, PT Studio và chuỗi Fitness Center. Tư vấn chất liệu UNI DRY, phân vai đội ngũ, 2S Uniform, xưởng 2.000m2.',
   'dong-phuc-yoga-pilates':
-    'Đồng Phục Univi tiên phong cung cấp giải pháp đồng phục Yoga Pilates theo yêu cầu cho Yoga Studio, Pilates Studio và Wellness Center trên toàn quốc. Hệ đồng phục được phát triển dựa trên đặc thù vận động, trải nghiệm người mặc và yêu cầu nhận diện thương hiệu của từng studio.',
+    'Đồng Phục Univi tiên phong cung cấp giải pháp đồng phục Yoga theo yêu cầu cho Yoga Studio và Wellness Center trên toàn quốc. Hệ đồng phục được phát triển dựa trên đặc thù vận động, trải nghiệm người mặc và yêu cầu nhận diện thương hiệu của từng studio.',
+  'dong-phuc-pilates':
+    'Cách chọn đồng phục Pilates cho studio và HLV: chất liệu, form, màu, các mẫu Yoga – Pilates, quy trình đặt may và giải pháp từ Univi.',
 
   'dong-phuc-pickleball':
     'Đồng Phục Univi tiên phong cung cấp giải pháp đồng phục Pickleball theo yêu cầu cho câu lạc bộ, học viện, giải đấu và cộng đồng Pickleball tại Việt Nam. Sản phẩm được tối ưu về độ thoáng khí, khả năng vận động và hình ảnh thương hiệu trong thi đấu cũng như tập luyện.',

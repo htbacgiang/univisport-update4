@@ -6,6 +6,7 @@ const categories = [
   { slug: "dong-phuc-the-thao" },
   { slug: "dong-phuc-gym" },
   { slug: "dong-phuc-yoga-pilates" },
+  { slug: "dong-phuc-pilates" },
   { slug: "dong-phuc-pickleball" },
   { slug: "dong-phuc-ao-gio" },
   { slug: "dong-phuc-chay-bo" },

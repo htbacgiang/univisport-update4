@@ -5,16 +5,16 @@ import { ArrowRight, ShoppingBag, FileText, Phone, Info, HelpCircle } from 'luci
  * Component hiển thị các internal links hợp lý cho SEO
  * Giúp tăng cường internal linking và cải thiện UX
  */
-export default function InternalLinks({ 
-  currentCategory, 
-  relatedCategories = [], 
+export default function InternalLinks({
+  currentCategory,
+  relatedCategories = [],
   showMainPages = true,
-  productName = null 
+  productName = null
 }) {
   // Danh sách các danh mục chính
   const mainCategories = [
     { name: 'Đồng phục Gym', slug: '/dong-phuc-gym' },
-    { name: 'Đồng phục Yoga - Pilates', slug: '/dong-phuc-yoga-pilates' },
+    { name: 'Đồng phục Yoga', slug: '/dong-phuc-yoga-pilates' },
     { name: 'Đồng phục Chạy bộ', slug: '/dong-phuc-chay-bo' },
     { name: 'Đồng phục Pickleball', slug: '/dong-phuc-pickleball' },
     { name: 'Đồng phục MMA', slug: '/dong-phuc-mma' },
@@ -40,12 +40,12 @@ export default function InternalLinks({
   });
 
   // Chọn 3-4 danh mục để hiển thị (ưu tiên relatedCategories nếu có)
-  const displayCategories = relatedCategories.length > 0 
+  const displayCategories = relatedCategories.length > 0
     ? [...relatedCategories.filter(cat => {
-        // Chỉ thêm nếu không phải danh mục hiện tại
-        const catSlug = cat.slug.replace('/', '');
-        return !currentCategorySlug || catSlug !== currentCategorySlug;
-      }), ...availableCategories].slice(0, 4)
+      // Chỉ thêm nếu không phải danh mục hiện tại
+      const catSlug = cat.slug.replace('/', '');
+      return !currentCategorySlug || catSlug !== currentCategorySlug;
+    }), ...availableCategories].slice(0, 4)
     : availableCategories.slice(0, 4);
 
   // Các trang quan trọng
@@ -139,18 +139,18 @@ export default function InternalLinks({
         <p className="text-sm text-gray-600 leading-6">
           {productName ? (
             <>
-              Tìm hiểu thêm về <Link href="/san-pham" className="text-[#105d97] hover:underline font-medium">sản phẩm đồng phục</Link> của chúng tôi, 
-              hoặc xem <Link href="/gioi-thieu" className="text-[#105d97] hover:underline font-medium">giới thiệu về Đồng phục Univi</Link> để biết thêm chi tiết. 
-              Nếu bạn cần hỗ trợ, vui lòng <Link href="/lien-he" className="text-[#105d97] hover:underline font-medium">liên hệ với chúng tôi</Link> hoặc 
+              Tìm hiểu thêm về <Link href="/san-pham" className="text-[#105d97] hover:underline font-medium">sản phẩm đồng phục</Link> của chúng tôi,
+              hoặc xem <Link href="/gioi-thieu" className="text-[#105d97] hover:underline font-medium">giới thiệu về Đồng phục Univi</Link> để biết thêm chi tiết.
+              Nếu bạn cần hỗ trợ, vui lòng <Link href="/lien-he" className="text-[#105d97] hover:underline font-medium">liên hệ với chúng tôi</Link> hoặc
               xem <Link href="/huong-dan-dat-hang" className="text-[#105d97] hover:underline font-medium">hướng dẫn đặt hàng</Link>.
             </>
           ) : (
             <>
-              Khám phá <Link href="/san-pham" className="text-[#105d97] hover:underline font-medium">bộ sưu tập đồng phục</Link> đa dạng của Đồng phục Univi, 
-              từ <Link href="/dong-phuc-gym" className="text-[#105d97] hover:underline font-medium">đồng phục gym</Link>, 
-              <Link href="/dong-phuc-chay-bo" className="text-[#105d97] hover:underline font-medium">đồng phục chạy bộ</Link> đến 
-              <Link href="/dong-phuc-cong-so" className="text-[#105d97] hover:underline font-medium">đồng phục công sở</Link>. 
-              Tìm hiểu thêm về <Link href="/gioi-thieu" className="text-[#105d97] hover:underline font-medium">chúng tôi</Link> hoặc 
+              Khám phá <Link href="/san-pham" className="text-[#105d97] hover:underline font-medium">bộ sưu tập đồng phục</Link> đa dạng của Đồng phục Univi,
+              từ <Link href="/dong-phuc-gym" className="text-[#105d97] hover:underline font-medium">đồng phục gym</Link>,
+              <Link href="/dong-phuc-chay-bo" className="text-[#105d97] hover:underline font-medium">đồng phục chạy bộ</Link> đến
+              <Link href="/dong-phuc-cong-so" className="text-[#105d97] hover:underline font-medium">đồng phục công sở</Link>.
+              Tìm hiểu thêm về <Link href="/gioi-thieu" className="text-[#105d97] hover:underline font-medium">chúng tôi</Link> hoặc
               <Link href="/lien-he" className="text-[#105d97] hover:underline font-medium">liên hệ</Link> để được tư vấn.
             </>
           )}

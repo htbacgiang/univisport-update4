@@ -17,7 +17,7 @@ const FABRIC_ACCENTS = {
 };
 
 const STATS = [
-  { icon: Layers, label: "4 dòng chất liệu", sub: "Cao cấp" },
+  { icon: Layers, label: "5 dòng chất liệu", sub: "Cao cấp" },
   { icon: Palette, label: "100+ màu vải", sub: "Đa dạng" },
   { icon: CheckCircle2, label: "Màu thực tế", sub: "Theo từng chất liệu" },
   { icon: MessageCircleHeart, label: "Tư vấn màu", sub: "Miễn phí" },
