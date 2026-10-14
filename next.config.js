@@ -62,6 +62,14 @@
           protocol: "https",
           hostname: "scontent.fhan18-1.fna.fbcdn.net",
         },
+        {
+          protocol: "https",
+          hostname: "**.r2.dev",
+        },
+        {
+          protocol: "https",
+          hostname: "**.r2.cloudflarestorage.com",
+        },
       ],
     },
   };

@@ -390,7 +390,7 @@ export default function SeoDashboardPage({ payload }: SeoDashboardPageProps) {
                         <Cell key={entry.topic} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => `${value}%`} />
+                    <Tooltip formatter={(value: any) => `${value}%`} />
                   </PieChart>
                 </ResponsiveContainer>
               </CardContent>

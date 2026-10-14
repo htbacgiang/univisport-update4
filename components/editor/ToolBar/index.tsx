@@ -37,6 +37,7 @@ interface Props {
   editor: Editor | null;
   onOpenImageClick?(): void;
   onOpenGalleryClick?(): void;
+  onOpenR2ModalClick?(): void;
   onDropdownToggle?(isOpen: boolean): void;
 }
 
@@ -44,6 +45,7 @@ const ToolBar: FC<Props> = ({
   editor,
   onOpenImageClick,
   onOpenGalleryClick,
+  onOpenR2ModalClick,
   onDropdownToggle,
 }): JSX.Element | null => {
   const [textColor, setTextColor] = useState<string>("#000000");
@@ -385,8 +387,19 @@ const ToolBar: FC<Props> = ({
         <InsertComponent onSubmit={handleInsertComponent} onToggle={handleDropdownToggle} />
 
         <Button onClick={onOpenImageClick}>
-          <BsImageFill title="Chèn một ảnh" />
+          <BsImageFill title="Chèn một ảnh (Cloudinary)" />
         </Button>
+
+        {onOpenR2ModalClick && (
+          <Button onClick={onOpenR2ModalClick}>
+            <div className="flex items-center gap-0.5 text-orange-600 dark:text-orange-400 font-semibold" title="Kho ảnh Cloudflare R2">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+              </svg>
+              <span className="text-[10px] font-bold tracking-tight">R2</span>
+            </div>
+          </Button>
+        )}
 
         {onOpenGalleryClick && (
           <Button onClick={onOpenGalleryClick}>

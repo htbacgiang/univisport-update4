@@ -1,5 +1,4 @@
-import React, { FC, MouseEventHandler, ReactNode, useCallback } from "react";
-import classnames from "classnames";
+import { FC, MouseEventHandler, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -8,6 +7,7 @@ interface Props {
   onMouseDown?: MouseEventHandler<HTMLButtonElement>;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   onBlur?: () => void;
+  className?: string;
 }
 
 const Button: FC<Props> = ({
@@ -17,14 +17,10 @@ const Button: FC<Props> = ({
   onMouseDown,
   onClick,
   onBlur,
-}): JSX.Element => {
-  const getActiveStyle = useCallback((): string => {
-    if (active)
-      return "toolbar-button active";
-    else return "toolbar-button";
-  }, [active]);
-
-  const commonClasses = "toolbar-button";
+  className = "",
+}) => {
+  const activeClass = active ? "active" : "";
+  const combinedClasses = `toolbar-button ${activeClass} ${className}`.trim();
 
   return (
     <button
@@ -32,7 +28,7 @@ const Button: FC<Props> = ({
       onMouseDown={onMouseDown}
       onClick={onClick}
       onBlur={onBlur}
-      className={classnames(commonClasses, getActiveStyle())}
+      className={combinedClasses}
       disabled={disabled}
     >
       {children}

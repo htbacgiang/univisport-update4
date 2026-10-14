@@ -41,6 +41,12 @@ const NAV_GROUPS = [
     ],
   },
   {
+    label: "Đơn hàng",
+    items: [
+      { title: "Đơn hàng đồng phục", icon: ClipboardList, href: "/dashboard/don-hang" },
+    ],
+  },
+  {
     label: "Nội dung",
     items: [
       { title: "Bài viết", icon: Notebook, href: "/dashboard/bai-viet" },

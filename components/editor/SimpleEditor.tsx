@@ -16,6 +16,7 @@ import ToolBar from "./ToolBar";
 import EditLink from "./Link/EditLink";
 import EditImage from "./EditImage";
 import GalleryModal, { ImageSelectionResult } from "./GalleryModal";
+import R2ImageModal, { R2ImageSelectionResult } from "./R2ImageModal";
 import axios from "axios";
 import { FacebookReel } from "./FacebookReel";
 import { CloudinaryVideo } from "./CloudinaryVideo";
@@ -30,6 +31,7 @@ interface Props {
 const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
   const [selectionRange, setSelectionRange] = useState<Range>();
   const [showGallery, setShowGallery] = useState(false);
+  const [showR2Modal, setShowR2Modal] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<{ src: string; altText?: string; id?: string }[]>([]);
   const isInternalUpdateRef = useRef(false);
@@ -139,6 +141,11 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
     (editor.chain().focus() as any).setImage({ src: result.src, alt: result.altText, caption: result.caption }).run();
   };
 
+  const handleR2ImageSelection = (result: R2ImageSelectionResult) => {
+    if (!editor) return;
+    (editor.chain().focus() as any).setImage({ src: result.src, alt: result.altText || "", caption: result.caption || "" }).run();
+  };
+
   useEffect(() => {
     if (editor && selectionRange) {
       editor.commands.setTextSelection(selectionRange);
@@ -168,6 +175,7 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
         <ToolBar
           editor={editor}
           onOpenImageClick={() => setShowGallery(true)}
+          onOpenR2ModalClick={() => setShowR2Modal(true)}
         />
       </div>
       <div className="relative">
@@ -182,6 +190,11 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
         onFileSelect={handleImageUpload}
         uploading={uploading}
         images={images}
+      />
+      <R2ImageModal
+        visible={showR2Modal}
+        onClose={() => setShowR2Modal(false)}
+        onSelect={handleR2ImageSelection}
       />
       <style jsx global>{`
         .tiptap-table {

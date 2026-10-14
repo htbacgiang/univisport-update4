@@ -20,6 +20,7 @@ import EditImage from "./EditImage";
 import EditCloudinaryVideo from "./EditCloudinaryVideo";
 import GalleryModal, { ImageSelectionResult } from "./GalleryModal";
 import MultiImageGalleryModal from "./GalleryModal/MultiImageGalleryModal";
+import R2ImageModal, { R2ImageSelectionResult } from "./R2ImageModal";
 import axios from "axios";
 import SEOForm, { SeoResult } from "./SeoForm";
 import ThumbnailSelector from "./ThumbnailSelector";
@@ -63,6 +64,7 @@ const Editor: FC<Props> = ({
 }): JSX.Element => {
   const [selectionRange, setSelectionRange] = useState<Range>();
   const [showGallery, setShowGallery] = useState(false);
+  const [showR2Modal, setShowR2Modal] = useState(false);
   const [showImageGallery, setShowImageGallery] = useState(false);
   const [editingGallery, setEditingGallery] = useState<{
     images: GalleryImage[];
@@ -231,6 +233,13 @@ const Editor: FC<Props> = ({
     if (!editor) return;
     (editor.chain().focus() as any)
       .setImage({ src: result.src, alt: result.altText, caption: result.caption })
+      .run();
+  };
+
+  const handleR2ImageSelection = (result: R2ImageSelectionResult) => {
+    if (!editor) return;
+    (editor.chain().focus() as any)
+      .setImage({ src: result.src, alt: result.altText || "", caption: result.caption || "" })
       .run();
   };
 
@@ -603,6 +612,7 @@ const Editor: FC<Props> = ({
                 <ToolBar
                   editor={editor}
                   onOpenImageClick={() => setShowGallery(true)}
+                  onOpenR2ModalClick={() => setShowR2Modal(true)}
                   onOpenGalleryClick={() => setShowImageGallery(true)}
                 />
               </div>
@@ -831,6 +841,11 @@ const Editor: FC<Props> = ({
         images={images}
         onFileSelect={handleImageUpload}
         uploading={uploading}
+      />
+      <R2ImageModal
+        visible={showR2Modal}
+        onClose={() => setShowR2Modal(false)}
+        onSelect={handleR2ImageSelection}
       />
       <MultiImageGalleryModal
         visible={showImageGallery}

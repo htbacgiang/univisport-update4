@@ -1,5 +1,5 @@
 import nc from "next-connect";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { validateEmail } from "../../../utils/validation";
 import db from "../../../utils/db";
 import User from "../../../models/User";

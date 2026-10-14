@@ -20,7 +20,7 @@ const ModalContainer: FC<Props> = ({
   visible,
   children,
   onClose,
-}): JSX.Element | null => {
+}) => {
   const containerId = useId();
   const handleClose = useCallback(() => onClose && onClose(), [onClose]);
 

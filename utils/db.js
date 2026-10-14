@@ -1,36 +1,57 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+
 const connection = {};
 
+let cached = global.mongoose;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
 async function connectDb() {
-  if (connection.isConnected) {
-    console.log("Already connected to the database.");
-    return;
+  if (cached.conn) {
+    connection.isConnected = cached.conn.connections[0].readyState;
+    return cached.conn;
   }
-  if (mongoose.connections.length > 0) {
-    connection.isConnected = mongoose.connections[0].readyState;
-    if (connection.isConnected === 1) {
-      console.log("Use previous connection to the database.");
-      return;
-    }
-    await mongoose.disconnect();
+
+  if (mongoose.connection.readyState === 1) {
+    cached.conn = mongoose;
+    connection.isConnected = 1;
+    return mongoose;
   }
-  const db = await mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  console.log("New connection to the database.");
-  connection.isConnected = db.connections[0].readyState;
+
+  if (!cached.promise) {
+    const opts = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    };
+
+    cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((m) => {
+      console.log("New connection to the database.");
+      return m;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+    connection.isConnected = cached.conn.connections[0].readyState;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
+  return cached.conn;
 }
 
 async function disconnectDb() {
-  if (connection.isConnected) {
-    if (process.env.NODE_END === "production") {
+  if (process.env.NODE_ENV === "production") {
+    if (cached.conn) {
       await mongoose.disconnect();
-      connection.isConnected = false;
-    } else {
-      console.log("not diconnecting from the database.");
+      cached.conn = null;
+      cached.promise = null;
+      connection.isConnected = 0;
     }
   }
 }
+
 const db = { connectDb, disconnectDb };
 export default db;
