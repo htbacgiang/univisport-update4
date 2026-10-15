@@ -5,6 +5,7 @@ import {
   NextPage,
 } from "next";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import Editor, { FinalPost } from "../../../../components/editor";
 import AdminLayout from "../../../../components/layout/AdminLayout";
 import db from "../../../../utils/db";
@@ -29,9 +30,12 @@ const Update: NextPage<Props> = ({ post }) => {
 
       // submit our post
       const { data } = await axios.patch("/api/posts/" + post.id, formData);
+      toast.success("Cập nhật bài viết thành công!");
       console.log(data);
     } catch (error: any) {
-      console.log(error.response.data);
+      console.error("Lỗi khi cập nhật bài viết:", error.response?.data);
+      const errMsg = error.response?.data?.error || "Có lỗi xảy ra khi cập nhật bài viết!";
+      toast.error(errMsg);
     }
     setUpdating(false);
   };
@@ -51,6 +55,7 @@ const Update: NextPage<Props> = ({ post }) => {
             onSubmit={handleSubmit}
             busy={updating}
             btnTitle="Cập nhật"
+            defaultFolder="thumbnail"
           />
         </div>
       </div>

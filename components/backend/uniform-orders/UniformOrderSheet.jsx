@@ -9,14 +9,14 @@ export default function UniformOrderSheet({ order, printableRef }) {
   const designCodes = Array.isArray(order.designCodes)
     ? order.designCodes.filter(Boolean)
     : order.designCodes
-    ? [order.designCodes]
-    : [];
+      ? [order.designCodes]
+      : [];
 
   const sewingDetails = Array.isArray(order.sewingDetails)
     ? order.sewingDetails.filter(Boolean)
     : order.sewingDetails
-    ? [order.sewingDetails]
-    : [];
+      ? [order.sewingDetails]
+      : [];
 
   const craftPositions = order.craftPositions || {};
   const frontCraft = craftPositions.front || {};
@@ -170,7 +170,7 @@ export default function UniformOrderSheet({ order, printableRef }) {
         {/* ── LEFT COLUMN (Mockup + Specs) ── */}
         <div className="md:col-span-5 flex flex-col gap-4">
           {/* Mockup Container */}
-          <div className="border-2 border-slate-200 rounded-2xl p-3 bg-gradient-to-b from-gray-50 to-white flex items-center justify-center min-h-[290px] relative shadow-inner overflow-hidden">
+          <div className="border-2 border-slate-200 rounded-2xl p-3  flex items-center justify-center min-h-[290px] relative shadow-inner overflow-hidden">
             {order.mockupFull ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
@@ -520,8 +520,8 @@ export default function UniformOrderSheet({ order, printableRef }) {
 
       {/* Footer stamp line for factory and signoff */}
       <div className="mt-6 pt-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-gray-400 font-medium">
-        <span>Biên bản sản xuất nội bộ — UNIVI SPORT & UNIFORM</span>
-        <span>Hotline: 0979 288 880 — www.univisport.com</span>
+        <span>Biên bản sản xuất nội bộ - UNIVI SPORT & UNIFORM</span>
+        <span>Hotline: 0834.204.999 - www.dongphucunivi.com</span>
       </div>
     </div>
   );

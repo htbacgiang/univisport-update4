@@ -37,8 +37,8 @@ export const EMBEDDABLE_COMPONENTS = [
 
   {
     name: "ProcessSteps",
-    label: "Quy trình 5 bước",
-    description: "Hiển thị quy trình đặt hàng 5 bước dạng stagger cards",
+    label: "Quy trình đặt may (ProcessSteps)",
+    description: "Quy trình 8 bước chuẩn hóa từ tư vấn đến giao hàng (<ProcessSteps />)",
     icon: "🔢",
     category: "Nội dung",
   },
@@ -91,17 +91,22 @@ const PARTNERS_CATEGORY_OPTIONS = [
   { value: "yoga-studio", label: "🌸 Studio Yoga", desc: "Chỉ hiện logo studio Yoga" },
 ];
 
+const PROCESS_STEPS_VARIANT_OPTIONS = [
+  { value: "", label: "📐 Dạng thẻ lưới (Mặc định)", desc: "Hiển thị lưới 8 bước chuẩn hóa kèm nút đăng ký tư vấn (<ProcessSteps />)" },
+  { value: "vertical", label: "📏 Dạng timeline dọc", desc: "Hiển thị danh sách 8 bước dọc nhỏ gọn theo từng bước (<ProcessSteps variant=\"vertical\" />)" },
+];
+
 const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [search, setSearch] = useState("");
-  const [pickingCategory, setPickingCategory] = useState(false);
+  const [pickingSubOption, setPickingSubOption] = useState<"partners" | "processSteps" | null>(null);
   const [pendingName, setPendingName] = useState<EmbeddableComponentName | null>(null);
 
   const hideForm = useCallback(() => {
     setVisible(false);
     setSearch("");
-    setPickingCategory(false);
+    setPickingSubOption(null);
     setPendingName(null);
     onToggle?.(false);
   }, [onToggle]);
@@ -116,17 +121,27 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
   const handleSelect = (name: EmbeddableComponentName) => {
     if (name === "PartnersSection") {
       setPendingName(name);
-      setPickingCategory(true);
+      setPickingSubOption("partners");
+      return;
+    }
+    if (name === "ProcessSteps") {
+      setPendingName(name);
+      setPickingSubOption("processSteps");
       return;
     }
     onSubmit(name);
     hideForm();
   };
 
-  const handleCategoryPick = (category: string) => {
+  const handleSubOptionPick = (val: string) => {
     if (!pendingName) return;
-    const props: Record<string, string> = category ? { category } : {};
-    onSubmit(pendingName, props);
+    let props: Record<string, string> = {};
+    if (pendingName === "PartnersSection" && val) {
+      props = { category: val };
+    } else if (pendingName === "ProcessSteps" && val) {
+      props = { variant: val };
+    }
+    onSubmit(pendingName, Object.keys(props).length > 0 ? props : undefined);
     hideForm();
   };
 
@@ -134,6 +149,7 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
   const filteredComponents = EMBEDDABLE_COMPONENTS.filter(
     (c) =>
       search === "" ||
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.label.toLowerCase().includes(search.toLowerCase()) ||
       c.description.toLowerCase().includes(search.toLowerCase()) ||
       c.category.toLowerCase().includes(search.toLowerCase())
@@ -175,10 +191,10 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
             </div>
           </div>
 
-          {pickingCategory ? (
+          {pickingSubOption === "partners" ? (
             <>
               <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-700">
-                <button onClick={() => setPickingCategory(false)} className="text-[#105d97] hover:text-[#0d4a7a] text-xs flex items-center gap-1">← Quay lại</button>
+                <button onClick={() => setPickingSubOption(null)} className="text-[#105d97] hover:text-[#0d4a7a] text-xs flex items-center gap-1 cursor-pointer">← Quay lại</button>
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Chọn nhóm đối tác</h3>
                   <p className="text-xs text-gray-400 mt-0.5">Tối đa 7 logo mỗi nhóm</p>
@@ -186,8 +202,30 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
               </div>
               <div className="overflow-y-auto" style={{ maxHeight: "280px" }}>
                 {PARTNERS_CATEGORY_OPTIONS.map((opt) => (
-                  <button key={opt.value} type="button" onClick={() => handleCategoryPick(opt.value)}
-                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#105d97]/5 transition-colors text-left border-b border-gray-50 dark:border-gray-700/50 last:border-0">
+                  <button key={opt.value} type="button" onClick={() => handleSubOptionPick(opt.value)}
+                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#105d97]/5 transition-colors text-left border-b border-gray-50 dark:border-gray-700/50 last:border-0 cursor-pointer">
+                    <span className="text-xl flex-shrink-0 mt-0.5">{opt.label.split(" ")[0]}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm text-gray-800 dark:text-gray-100">{opt.label.split(" ").slice(1).join(" ")}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.desc}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : pickingSubOption === "processSteps" ? (
+            <>
+              <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-700">
+                <button onClick={() => setPickingSubOption(null)} className="text-[#105d97] hover:text-[#0d4a7a] text-xs flex items-center gap-1 cursor-pointer">← Quay lại</button>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Chọn kiểu hiển thị ProcessSteps</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">Quy trình 8 bước chuẩn hóa Univi</p>
+                </div>
+              </div>
+              <div className="overflow-y-auto" style={{ maxHeight: "280px" }}>
+                {PROCESS_STEPS_VARIANT_OPTIONS.map((opt) => (
+                  <button key={opt.value} type="button" onClick={() => handleSubOptionPick(opt.value)}
+                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#105d97]/5 transition-colors text-left border-b border-gray-50 dark:border-gray-700/50 last:border-0 cursor-pointer">
                     <span className="text-xl flex-shrink-0 mt-0.5">{opt.label.split(" ")[0]}</span>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-sm text-gray-800 dark:text-gray-100">{opt.label.split(" ").slice(1).join(" ")}</div>
@@ -201,7 +239,7 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
             <>
               <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                 <input autoFocus type="text" value={search} onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Tìm component..."
+                  placeholder="Tìm component (ví dụ: ProcessSteps, ContactForm...)..."
                   className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#105d97]/30 focus:border-[#105d97] outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
               </div>
               <div className="overflow-y-auto" style={{ maxHeight: "360px" }}>
@@ -215,7 +253,7 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
                       </div>
                       {comps.map((comp) => (
                         <button key={comp.name} type="button" onClick={() => handleSelect(comp.name as EmbeddableComponentName)}
-                          className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#105d97]/5 dark:hover:bg-[#105d97]/10 transition-colors text-left border-b border-gray-50 dark:border-gray-700/50 last:border-0">
+                          className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#105d97]/5 dark:hover:bg-[#105d97]/10 transition-colors text-left border-b border-gray-50 dark:border-gray-700/50 last:border-0 cursor-pointer">
                           <span className="text-xl flex-shrink-0 mt-0.5">{comp.icon}</span>
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-sm text-gray-800 dark:text-gray-100">{comp.label}</div>

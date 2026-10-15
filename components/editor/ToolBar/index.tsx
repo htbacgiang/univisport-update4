@@ -32,12 +32,15 @@ import EmbedCloudinaryVideo from "./EmbedCloudinaryVideo";
 import InsertAdBanner from "./InsertAdBanner";
 import InsertComponent from "./InsertComponent";
 import FindReplace from "./FindReplace";
+import { FiPhoneCall } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 interface Props {
   editor: Editor | null;
   onOpenImageClick?(): void;
   onOpenGalleryClick?(): void;
   onOpenR2ModalClick?(): void;
+  onOpenR2GalleryClick?(): void;
   onDropdownToggle?(isOpen: boolean): void;
 }
 
@@ -46,6 +49,7 @@ const ToolBar: FC<Props> = ({
   onOpenImageClick,
   onOpenGalleryClick,
   onOpenR2ModalClick,
+  onOpenR2GalleryClick,
   onDropdownToggle,
 }): JSX.Element | null => {
   const [textColor, setTextColor] = useState<string>("#000000");
@@ -241,6 +245,26 @@ const ToolBar: FC<Props> = ({
     editor.chain().focus().setEmbedComponent({ name, props: props ? JSON.stringify(props) : "{}" }).run();
   };
 
+  const handleInsertContactCTA = () => {
+    if (!editor) return;
+
+    const ctaHtml = `<p><strong>UNIVI SPORTS UNIFORM — YOUR UNIFORM, YOUR BRAND!</strong><br /><strong>Văn phòng giao dịch:</strong> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội<br /><strong>Hotline:</strong> <a href="tel:0834204999">0834.204.999</a> · <a href="tel:0961567997">0961.567.997</a><br /><strong>Giờ làm việc:</strong> 08:00 - 18:00, Thứ 2 - Chủ nhật<br /><strong>Website:</strong> <a href="https://dongphucunivi.com" target="_blank" rel="noopener noreferrer">https://dongphucunivi.com</a><br /><strong>Email:</strong> <a href="mailto:dongphucunivi@gmail.com">dongphucunivi@gmail.com</a><br /><strong>Phạm vi phục vụ:</strong> Toàn quốc</p>`;
+
+    const doc = editor.state.doc;
+    const lastNode = doc.lastChild;
+
+    // Nếu khối cuối cùng là paragraph rỗng thì thay thế trực tiếp, tránh tạo khoảng cách/dòng trống thừa ở trên
+    if (lastNode && lastNode.isTextblock && lastNode.textContent.trim() === "") {
+      const from = Math.max(0, doc.content.size - lastNode.nodeSize);
+      const to = doc.content.size;
+      editor.chain().focus().deleteRange({ from, to }).insertContent(ctaHtml).run();
+    } else {
+      editor.chain().focus("end").insertContent(ctaHtml).run();
+    }
+
+    toast.success("Đã chèn đoạn CTA thông tin liên hệ vào cuối bài viết!");
+  };
+
   const Head = () => {
     return (
       <div className="flex items-center gap-1 text-gray-700 dark:text-gray-300">
@@ -386,6 +410,16 @@ const ToolBar: FC<Props> = ({
         <InsertAdBanner onSubmit={handleInsertAdBanner} onToggle={handleDropdownToggle} />
         <InsertComponent onSubmit={handleInsertComponent} onToggle={handleDropdownToggle} />
 
+        <Button onClick={handleInsertContactCTA}>
+          <div
+            className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors"
+            title="Chèn đoạn CTA thông tin liên hệ Univi vào cuối bài viết"
+          >
+            <FiPhoneCall className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-[11px] font-bold tracking-tight whitespace-nowrap">CTA Liên hệ</span>
+          </div>
+        </Button>
+
         <Button onClick={onOpenImageClick}>
           <BsImageFill title="Chèn một ảnh (Cloudinary)" />
         </Button>
@@ -401,9 +435,18 @@ const ToolBar: FC<Props> = ({
           </Button>
         )}
 
+        {onOpenR2GalleryClick && (
+          <Button onClick={onOpenR2GalleryClick}>
+            <div className="flex items-center gap-1 text-[#105d97] dark:text-sky-400 font-semibold" title="Kho Album Gallery từ Cloudflare R2 (Lưu & Chọn nhanh)">
+              <BsImages className="w-4 h-4" />
+              <span className="text-[9px] font-bold tracking-tight bg-sky-100 dark:bg-sky-950/60 px-1 py-0.2 rounded text-[#105d97] dark:text-sky-300">R2</span>
+            </div>
+          </Button>
+        )}
+
         {onOpenGalleryClick && (
           <Button onClick={onOpenGalleryClick}>
-            <BsImages title="Chèn Gallery ảnh" />
+            <BsImages title="Chèn Gallery ảnh (Flickr)" />
           </Button>
         )}
       </div>

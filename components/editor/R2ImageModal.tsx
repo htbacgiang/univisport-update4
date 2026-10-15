@@ -13,6 +13,8 @@ export interface R2ImageSelectionResult {
 
 interface Props extends ModalProps {
   initialFolder?: string;
+  initialTab?: "upload" | "manage";
+  initialFile?: File | null;
   onSelect(result: R2ImageSelectionResult): void;
 }
 
@@ -20,41 +22,49 @@ const R2ImageModal: FC<Props> = ({
   visible,
   onClose,
   onSelect,
-  initialFolder = "",
+  initialFolder = "thumbnail",
+  initialTab = "manage",
+  initialFile = null,
 }) => {
-  // Mặc định mở modal là Tab Quản lý thư viện ảnh
-  const [activeTab, setActiveTab] = useState<"upload" | "manage">("manage");
+  const defaultFolder = initialFolder || "thumbnail";
+  // Tab hiện tại: upload hoặc manage
+  const [activeTab, setActiveTab] = useState<"upload" | "manage">(initialTab || "manage");
   const [folders, setFolders] = useState<string[]>([]);
   
   // Mặc định thư mục lọc
-  const [manageFolder, setManageFolder] = useState<string>(initialFolder);
-  const [uploadFolder, setUploadFolder] = useState<string>(initialFolder);
+  const [manageFolder, setManageFolder] = useState<string>(defaultFolder);
+  const [uploadFolder, setUploadFolder] = useState<string>(defaultFolder);
 
   // Fetch danh sách thư mục khi mở modal
   const fetchFolders = useCallback(async () => {
     try {
       const { data } = await axios.get("/api/r2/folders");
       if (data?.folders && Array.isArray(data.folders)) {
-        setFolders(data.folders);
-        if (data.folders.length > 0) {
-          setUploadFolder((prev) => prev || data.folders[0]);
+        const fetchedFolders: string[] = [...data.folders];
+        const targetDefault = initialFolder || "thumbnail";
+        if (targetDefault && !fetchedFolders.includes(targetDefault)) {
+          fetchedFolders.push(targetDefault);
+          fetchedFolders.sort((a, b) => a.localeCompare(b));
+        }
+        setFolders(fetchedFolders);
+        if (fetchedFolders.length > 0) {
+          setUploadFolder((prev) => prev || targetDefault || fetchedFolders[0]);
         }
       }
     } catch (err) {
       console.error("Lỗi khi tải danh sách folders R2:", err);
     }
-  }, []);
+  }, [initialFolder]);
 
   useEffect(() => {
     if (visible) {
-      setActiveTab("manage");
-      setManageFolder(initialFolder || "");
-      if (initialFolder) {
-        setUploadFolder(initialFolder);
-      }
+      const targetFolder = initialFolder || "thumbnail";
+      setActiveTab(initialTab || "manage");
+      setManageFolder(targetFolder);
+      setUploadFolder(targetFolder);
       fetchFolders();
     }
-  }, [visible, fetchFolders, initialFolder]);
+  }, [visible, fetchFolders, initialFolder, initialTab]);
 
   const handleFolderCreated = (newFolder: string) => {
     setFolders((prev) => {
@@ -184,6 +194,7 @@ const R2ImageModal: FC<Props> = ({
             <R2ImageUploader
               folders={folders}
               selectedFolder={uploadFolder}
+              initialFile={initialFile}
               onFolderChange={setUploadFolder}
               onFolderCreated={handleFolderCreated}
               onSuccess={handleUploadSuccess}

@@ -4,7 +4,7 @@ import { FiEdit2, FiTrash2, FiImage } from "react-icons/fi";
 import { GalleryImage } from "./ImageGallery";
 
 interface Props extends NodeViewProps {
-  onEditRequest: (images: GalleryImage[], getPos: () => number) => void;
+  onEditRequest: (images: GalleryImage[], getPos: () => number, title?: string) => void;
 }
 
 const ImageGalleryView = ({
@@ -20,7 +20,7 @@ const ImageGalleryView = ({
   const title: string = node.attrs.title || "Thư viện hình ảnh";
 
   const handleEdit = () => {
-    onEditRequest(images, getPos as () => number);
+    onEditRequest(images, getPos as () => number, title);
   };
 
   const handleDelete = () => {

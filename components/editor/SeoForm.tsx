@@ -1,6 +1,9 @@
 import { ChangeEventHandler, FC, useEffect, useState } from "react";
 import classnames from "classnames";
 import slugify from "slugify";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { FiZap } from "react-icons/fi";
 import SeoAnalysisV2 from "./SeoAnalysisV2";
 
 // Ánh xạ ký tự tiếng Việt
@@ -179,6 +182,39 @@ const SEOForm: FC<Props> = ({
   const [isCustomCategory, setIsCustomCategory] = useState(false);
 
   const [isSlugModified, setIsSlugModified] = useState(false);
+  const [generatingDesc, setGeneratingDesc] = useState(false);
+
+  const handleGenerateAiDescription = async () => {
+    const editorContent = editor ? editor.getHTML() : "";
+    const cleanContent = editor ? editor.getText().trim() : "";
+
+    if (!title?.trim() && cleanContent.length < 30) {
+      toast.warning("Vui lòng nhập tiêu đề hoặc nội dung bài viết trước khi tạo mô tả bằng Gemini AI!");
+      return;
+    }
+
+    setGeneratingDesc(true);
+    try {
+      const { data } = await axios.post("/api/ai/generate", {
+        type: "description",
+        title: title || "",
+        content: editorContent || cleanContent,
+        focusKeyword: values.focusKeyword || "",
+      });
+
+      if (data?.description) {
+        const newValues = { ...values, meta: data.description };
+        setValues(newValues);
+        onChange(newValues);
+        toast.success("Đã tạo Meta Description bằng Gemini AI thành công!");
+      }
+    } catch (err: any) {
+      console.error("Lỗi tạo mô tả AI:", err);
+      toast.error(err.response?.data?.error || "Không thể tạo mô tả bằng Gemini AI. Vui lòng thử lại!");
+    } finally {
+      setGeneratingDesc(false);
+    }
+  };
 
   const handleChange: ChangeEventHandler<
     HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
@@ -302,9 +338,21 @@ const SEOForm: FC<Props> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Mô tả ngắn (Meta Description)
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Mô tả ngắn (Meta Description)
+          </label>
+          <button
+            type="button"
+            onClick={handleGenerateAiDescription}
+            disabled={generatingDesc}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300 dark:hover:bg-purple-900/60 border border-purple-200 dark:border-purple-800 rounded-lg transition-all shadow-2xs disabled:opacity-50 cursor-pointer"
+            title="Dùng Gemini AI tự động tạo mô tả ngắn chuẩn SEO theo nội dung bài viết"
+          >
+            <FiZap size={13} className={generatingDesc ? "animate-spin text-purple-600" : "text-purple-600"} />
+            <span>{generatingDesc ? "Đang tạo..." : "✨ Tạo với Gemini AI"}</span>
+          </button>
+        </div>
         <div>
           <textarea
             name="meta"
@@ -312,7 +360,7 @@ const SEOForm: FC<Props> = ({
             onChange={handleChange}
             rows={4}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#105d97] focus:border-transparent outline-none text-gray-800 bg-gray-50/50 focus:bg-white transition-colors resize-none leading-6 text-sm"
-            placeholder="Tóm tắt nội dung bài viết. Chiều dài hợp lý nhất là từ 160 đến 200 ký tự..."
+            placeholder="Tóm tắt nội dung bài viết. Chiều dài hợp lý nhất là từ 150 đến 180 ký tự..."
           ></textarea>
           <div className="flex justify-between items-center mt-1">
             <span className="text-xs text-gray-500">Hiển thị khi tìm kiếm trên Google</span>

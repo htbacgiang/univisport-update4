@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef, useCallback } from "react";
 import { useEditor, EditorContent, getMarkRange, Range } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -17,6 +17,8 @@ import EditLink from "./Link/EditLink";
 import EditImage from "./EditImage";
 import GalleryModal, { ImageSelectionResult } from "./GalleryModal";
 import R2ImageModal, { R2ImageSelectionResult } from "./R2ImageModal";
+import R2MultiGalleryModal from "./GalleryModal/R2MultiGalleryModal";
+import { GalleryImage, ImageGallery } from "./ImageGallery";
 import axios from "axios";
 import { FacebookReel } from "./FacebookReel";
 import { CloudinaryVideo } from "./CloudinaryVideo";
@@ -32,6 +34,20 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
   const [selectionRange, setSelectionRange] = useState<Range>();
   const [showGallery, setShowGallery] = useState(false);
   const [showR2Modal, setShowR2Modal] = useState(false);
+  const [showR2GalleryModal, setShowR2GalleryModal] = useState(false);
+  const [editingGallery, setEditingGallery] = useState<{
+    images: GalleryImage[];
+    getPos: () => number;
+    title?: string;
+  } | null>(null);
+
+  const editGalleryCallbackRef = useCallback(
+    (images: GalleryImage[], getPos: () => number, title?: string) => {
+      setEditingGallery({ images, getPos, title });
+    },
+    []
+  );
+
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<{ src: string; altText?: string; id?: string }[]>([]);
   const isInternalUpdateRef = useRef(false);
@@ -109,6 +125,9 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
       FacebookReel,
       CloudinaryVideo,
       AdBanner,
+      ImageGallery.configure({
+        onEditRequest: editGalleryCallbackRef,
+      }),
     ],
     editorProps: {
       handleClick: (view: any, pos: number) => {
@@ -146,6 +165,30 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
     (editor.chain().focus() as any).setImage({ src: result.src, alt: result.altText || "", caption: result.caption || "" }).run();
   };
 
+  const handleR2GallerySelection = (galleryImages: GalleryImage[], title?: string) => {
+    if (!editor || galleryImages.length === 0) return;
+    (editor.chain().focus() as any)
+      .setImageGallery({ images: galleryImages, title: title || "Thư viện hình ảnh" })
+      .run();
+  };
+
+  const handleUpdateGallery = (updatedImages: GalleryImage[], title?: string) => {
+    if (!editor || !editingGallery) return;
+    const pos = editingGallery.getPos();
+    editor
+      .chain()
+      .focus()
+      .command(({ tr }) => {
+        tr.setNodeMarkup(pos, undefined, {
+          images: updatedImages,
+          title: title || editingGallery.title || "Thư viện hình ảnh",
+        });
+        return true;
+      })
+      .run();
+    setEditingGallery(null);
+  };
+
   useEffect(() => {
     if (editor && selectionRange) {
       editor.commands.setTextSelection(selectionRange);
@@ -176,6 +219,7 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
           editor={editor}
           onOpenImageClick={() => setShowGallery(true)}
           onOpenR2ModalClick={() => setShowR2Modal(true)}
+          onOpenR2GalleryClick={() => setShowR2GalleryModal(true)}
         />
       </div>
       <div className="relative">
@@ -195,6 +239,20 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
         visible={showR2Modal}
         onClose={() => setShowR2Modal(false)}
         onSelect={handleR2ImageSelection}
+        initialFolder="thumbnail"
+      />
+      <R2MultiGalleryModal
+        visible={showR2GalleryModal}
+        onClose={() => setShowR2GalleryModal(false)}
+        onSelect={handleR2GallerySelection}
+      />
+      <R2MultiGalleryModal
+        visible={editingGallery !== null}
+        onClose={() => setEditingGallery(null)}
+        onSelect={handleUpdateGallery}
+        initialImages={editingGallery?.images}
+        initialTitle={editingGallery?.title}
+        initialMode="editor"
       />
       <style jsx global>{`
         .tiptap-table {

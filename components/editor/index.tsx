@@ -20,6 +20,7 @@ import EditImage from "./EditImage";
 import EditCloudinaryVideo from "./EditCloudinaryVideo";
 import GalleryModal, { ImageSelectionResult } from "./GalleryModal";
 import MultiImageGalleryModal from "./GalleryModal/MultiImageGalleryModal";
+import R2MultiGalleryModal from "./GalleryModal/R2MultiGalleryModal";
 import R2ImageModal, { R2ImageSelectionResult } from "./R2ImageModal";
 import axios from "axios";
 import SEOForm, { SeoResult } from "./SeoForm";
@@ -54,6 +55,7 @@ interface Props {
   btnTitle?: string;
   busy?: boolean;
   onSubmit(post: FinalPost): void;
+  defaultFolder?: string;
 }
 
 const Editor: FC<Props> = ({
@@ -61,19 +63,22 @@ const Editor: FC<Props> = ({
   btnTitle = "Đăng bài",
   busy = false,
   onSubmit,
+  defaultFolder = "thumbnail",
 }): JSX.Element => {
   const [selectionRange, setSelectionRange] = useState<Range>();
   const [showGallery, setShowGallery] = useState(false);
   const [showR2Modal, setShowR2Modal] = useState(false);
   const [showImageGallery, setShowImageGallery] = useState(false);
+  const [showR2GalleryModal, setShowR2GalleryModal] = useState(false);
   const [editingGallery, setEditingGallery] = useState<{
     images: GalleryImage[];
     getPos: () => number;
+    title?: string;
   } | null>(null);
   // Ref to avoid hoisting issue with useEditor
   const editGalleryCallbackRef = useCallback(
-    (images: GalleryImage[], getPos: () => number) => {
-      setEditingGallery({ images, getPos });
+    (images: GalleryImage[], getPos: () => number, title?: string) => {
+      setEditingGallery({ images, getPos, title });
     },
     []
   );
@@ -85,6 +90,37 @@ const Editor: FC<Props> = ({
   const [isDirectPost, setIsDirectPost] = useState(false); // Mặc định hiển thị 3 cấp
   const [showSidebar, setShowSidebar] = useState(true);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [generatingFaqs, setGeneratingFaqs] = useState(false);
+
+  const handleGenerateAiFaqs = async () => {
+    const editorContent = editor ? editor.getHTML() : "";
+    const cleanContent = editor ? editor.getText().trim() : "";
+
+    if (!post.title?.trim() && cleanContent.length < 30) {
+      toast.warning("Vui lòng nhập tiêu đề hoặc nội dung bài viết trước khi tạo FAQ bằng Gemini AI!");
+      return;
+    }
+
+    setGeneratingFaqs(true);
+    try {
+      const { data } = await axios.post("/api/ai/generate", {
+        type: "faqs",
+        title: post.title || "",
+        content: editorContent || cleanContent,
+      });
+
+      if (data?.faqs && Array.isArray(data.faqs) && data.faqs.length > 0) {
+        setFaqs(data.faqs);
+        toast.success(`Đã tạo ${data.faqs.length} câu hỏi thường gặp bằng Gemini AI thành công!`);
+      }
+    } catch (err: any) {
+      console.error("Lỗi tạo FAQ bằng AI:", err);
+      toast.error(err.response?.data?.error || "Không thể tạo FAQ bằng Gemini AI. Vui lòng thử lại!");
+    } finally {
+      setGeneratingFaqs(false);
+    }
+  };
+
   const [postAuthorId, setPostAuthorId] = useState("");
   const [images, setImages] = useState<{ src: string; altText?: string; id?: string }[]>([]);
   const [seoInitialValue, setSeoInitialValue] = useState<SeoResult>();
@@ -255,9 +291,21 @@ const Editor: FC<Props> = ({
       .run();
   };
 
+  const handleR2GallerySelection = (galleryImages: GalleryImage[], title?: string) => {
+    if (!editor || galleryImages.length === 0) return;
+    editor
+      .chain()
+      .focus()
+      .setImageGallery({
+        images: galleryImages,
+        title: title || "Thư viện hình ảnh",
+      })
+      .run();
+  };
+
   const handleEditGalleryRequest = editGalleryCallbackRef;
 
-  const handleUpdateGallery = (updatedImages: GalleryImage[]) => {
+  const handleUpdateGallery = (updatedImages: GalleryImage[], title?: string) => {
     if (!editor || !editingGallery) return;
     const pos = editingGallery.getPos();
     editor
@@ -266,7 +314,7 @@ const Editor: FC<Props> = ({
       .command(({ tr }) => {
         tr.setNodeMarkup(pos, undefined, {
           images: updatedImages,
-          title: "Thư viện hình ảnh",
+          title: title || editingGallery.title || "Thư viện hình ảnh",
         });
         return true;
       })
@@ -471,7 +519,8 @@ const Editor: FC<Props> = ({
 
   const updateSeoValue = (result: SeoResult) => setPost({ ...post, ...result });
 
-  const updateThumbnail = (file: File) => setPost({ ...post, thumbnail: file });
+  const updateThumbnail = (thumb: File | string) =>
+    setPost((prev) => ({ ...prev, thumbnail: thumb }));
 
   useEffect(() => {
     if (editor && selectionRange) {
@@ -613,6 +662,7 @@ const Editor: FC<Props> = ({
                   editor={editor}
                   onOpenImageClick={() => setShowGallery(true)}
                   onOpenR2ModalClick={() => setShowR2Modal(true)}
+                  onOpenR2GalleryClick={() => setShowR2GalleryModal(true)}
                   onOpenGalleryClick={() => setShowImageGallery(true)}
                 />
               </div>
@@ -670,15 +720,30 @@ const Editor: FC<Props> = ({
             </div>
           </div>
 
-          {/* FAQ Container - Separate Box */}
+          {/* FAQ Container - Separate Box Below Main Content */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#105d97]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Danh sách FAQ (Câu hỏi thường gặp)
-            </h3>
-            <FAQEditor value={faqs} onChange={setFaqs} />
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200 flex-wrap gap-2">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#105d97]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Danh sách FAQ (Câu hỏi thường gặp)
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  Tạo FAQ Schema cho bài viết giúp hiển thị câu hỏi trực tiếp trên Google Search (Rich Snippet) và tăng tỷ lệ click (CTR).
+                </p>
+              </div>
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-[#105d97] border border-blue-200">
+                {faqs.length} câu hỏi
+              </span>
+            </div>
+            <FAQEditor
+              value={faqs}
+              onChange={setFaqs}
+              onGenerateAi={handleGenerateAiFaqs}
+              isGenerating={generatingFaqs}
+            />
           </div>
         </div>
 
@@ -765,13 +830,10 @@ const Editor: FC<Props> = ({
                     Hình ảnh đại diện
                   </h3>
                   <ThumbnailSelector
-                    initialValue={post.thumbnail as string}
+                    initialValue={typeof post.thumbnail === "string" ? post.thumbnail : ""}
                     onChange={updateThumbnail}
-                    images={images}
-                    uploading={uploading}
-                    onFileSelect={handleImageUpload}
                     onImageFromGallery={(imageUrl) => {
-                      setPost(prev => ({ ...prev, thumbnail: imageUrl }));
+                      setPost((prev) => ({ ...prev, thumbnail: imageUrl }));
                     }}
                   />
                 </div>
@@ -846,18 +908,28 @@ const Editor: FC<Props> = ({
         visible={showR2Modal}
         onClose={() => setShowR2Modal(false)}
         onSelect={handleR2ImageSelection}
+        initialFolder={defaultFolder || "thumbnail"}
       />
       <MultiImageGalleryModal
         visible={showImageGallery}
         onClose={() => setShowImageGallery(false)}
         onSelect={handleImageGallerySelection}
       />
-      {/* Edit existing gallery */}
-      <MultiImageGalleryModal
+      <R2MultiGalleryModal
+        visible={showR2GalleryModal}
+        onClose={() => setShowR2GalleryModal(false)}
+        onSelect={handleR2GallerySelection}
+        defaultFolder={defaultFolder}
+      />
+      {/* Edit existing gallery via R2 Gallery Modal (No Flickr dependency) */}
+      <R2MultiGalleryModal
         visible={editingGallery !== null}
         onClose={() => setEditingGallery(null)}
         onSelect={handleUpdateGallery}
         initialImages={editingGallery?.images}
+        initialTitle={editingGallery?.title}
+        initialMode="editor"
+        defaultFolder={defaultFolder}
       />
       <style jsx global>{`
         .tiptap-table {

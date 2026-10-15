@@ -12,7 +12,6 @@ import {
   FiCheck,
   FiCpu,
   FiZap,
-  FiKey,
   FiClipboard,
   FiSettings,
   FiCamera,
@@ -59,7 +58,7 @@ const INITIAL_FORM = {
   customerAddress: "",
   customerFacebook: "",
   customerWebsite: "",
-  channel: "Zalo",
+  channel: "Fanpage Facebook",
   salesRep: "Lê Vân",
 
   mockupFull: "",
@@ -105,52 +104,31 @@ export default function UniformOrderFormModal({
 
   // R2 Image Modal state
   const [r2TargetField, setR2TargetField] = useState(null); // "mockupFull" | "mockupFront" | "mockupBack"
-  const [r2InitialFolder, setR2InitialFolder] = useState("");
+  const [r2InitialFolder, setR2InitialFolder] = useState("mockup");
+  const [r2InitialTab, setR2InitialTab] = useState("manage"); // "manage" | "upload"
+  const [r2InitialFile, setR2InitialFile] = useState(null);
   const [r2ModalVisible, setR2ModalVisible] = useState(false);
-  const [isDraggingMockup, setIsDraggingMockup] = useState(false);
-  const mockupFileInputRef = useRef(null);
+  const [activeDragField, setActiveDragField] = useState(null); // "mockupFull" | "mockupFront" | "mockupBack"
 
-  // AI Image Scanning state (Google Gemini)
+  // AI Image Scanning state (Google Gemini AI qua .env)
   const [aiImagePreview, setAiImagePreview] = useState("");
   const [aiScanning, setAiScanning] = useState(false);
   const [aiSuccessMessage, setAiSuccessMessage] = useState("");
   const [aiError, setAiError] = useState("");
-  const [geminiApiKey, setGeminiApiKey] = useState("");
-  const [showApiKeySetting, setShowApiKeySetting] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Tải Gemini API key từ localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("univi_gemini_api_key");
-    if (saved) setGeminiApiKey(saved);
-  }, []);
-
-  const handleSaveApiKey = (key) => {
-    const trimmed = key.trim();
-    setGeminiApiKey(trimmed);
-    localStorage.setItem("univi_gemini_api_key", trimmed);
-    setShowApiKeySetting(false);
-  };
-
-  // Xử lý nạp ảnh cho ô Mockup Tổng quan (tải từ máy / kéo thả / dán)
-  const handleMockupFile = (file) => {
-    if (!file || !file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setFormData((prev) => ({ ...prev, mockupFull: e.target.result }));
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleMockupDrop = (e) => {
+  // Kéo thả và dán ảnh cho các ô Mockup (Tổng quan, Mặt trước, Mặt sau)
+  const handleCardDrop = (e, field) => {
     e.preventDefault();
-    setIsDraggingMockup(false);
+    setActiveDragField(null);
     const file = e.dataTransfer?.files?.[0];
-    if (file) handleMockupFile(file);
+    if (file && file.type.startsWith("image/")) {
+      openR2Picker(field, "mockup", "upload", file);
+    }
   };
 
-  const handleMockupPaste = (e) => {
+  const handleCardPaste = (e, field) => {
     const items = e.clipboardData?.items;
     if (!items) return;
     for (let i = 0; i < items.length; i++) {
@@ -159,7 +137,7 @@ export default function UniformOrderFormModal({
         if (file) {
           e.preventDefault();
           e.stopPropagation();
-          handleMockupFile(file);
+          openR2Picker(field, "mockup", "upload", file);
           break;
         }
       }
@@ -175,7 +153,9 @@ export default function UniformOrderFormModal({
       const activeTag = document.activeElement?.tagName?.toLowerCase();
       if (
         document.activeElement?.dataset?.zone === "mockup-zone" ||
-        document.activeElement?.id === "mockup-full-input"
+        document.activeElement?.id === "mockup-full-input" ||
+        document.activeElement?.id === "mockup-front-input" ||
+        document.activeElement?.id === "mockup-back-input"
       ) {
         return;
       }
@@ -255,7 +235,6 @@ export default function UniformOrderFormModal({
     try {
       const res = await axios.post("/api/admin/uniform-orders/scan-ai", {
         imageBase64: aiImagePreview,
-        apiKey: geminiApiKey || undefined,
       });
 
       const extracted = res.data?.data;
@@ -319,9 +298,6 @@ export default function UniformOrderFormModal({
       );
     } catch (err) {
       console.error(err);
-      if (err.response?.data?.needsKey) {
-        setShowApiKeySetting(true);
-      }
       setAiError(
         err.response?.data?.message || err.message || "Lỗi khi quét ảnh với Gemini AI"
       );
@@ -455,9 +431,11 @@ export default function UniformOrderFormModal({
     });
   };
 
-  const openR2Picker = (field, folder = "") => {
+  const openR2Picker = (field, folder = "mockup", tab = "manage", file = null) => {
     setR2TargetField(field);
-    setR2InitialFolder(folder);
+    setR2InitialFolder(folder || "mockup");
+    setR2InitialTab(tab || "manage");
+    setR2InitialFile(file || null);
     setR2ModalVisible(true);
   };
 
@@ -469,6 +447,7 @@ export default function UniformOrderFormModal({
       }));
     }
     setR2ModalVisible(false);
+    setR2InitialFile(null);
   };
 
   const handleSubmit = async (e) => {
@@ -554,7 +533,7 @@ export default function UniformOrderFormModal({
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-                      <span>Quét ảnh biên bản bằng Google Gemini AI</span>
+                      <span>Quét ảnh biên bản bằng AI</span>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300 uppercase tracking-wide">
                         Tự động điền Form
                       </span>
@@ -564,71 +543,17 @@ export default function UniformOrderFormModal({
                     </p>
                   </div>
                 </div>
-
-                {/* API Key Setting Toggle */}
-                <button
-                  type="button"
-                  onClick={() => setShowApiKeySetting(!showApiKeySetting)}
-                  className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-indigo-600 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
-                  title="Cài đặt API Key Gemini"
-                >
-                  <FiKey className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>{geminiApiKey ? "Đã lưu Gemini Key" : "Cài đặt Gemini Key"}</span>
-                </button>
               </div>
-
-              {/* Gemini Key Input Collapsible */}
-              {showApiKeySetting && (
-                <div className="bg-white dark:bg-gray-800 p-3.5 rounded-xl border border-indigo-200 dark:border-gray-700 space-y-2 animate-in fade-in duration-150">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-                      <FiKey className="w-3.5 h-3.5 text-indigo-500" />
-                      Google Gemini API Key
-                    </span>
-                    <a
-                      href="https://aistudio.google.com/app/apikey"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-indigo-600 hover:underline font-semibold"
-                    >
-                      Lấy API Key miễn phí tại đây ↗
-                    </a>
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="password"
-                      defaultValue={geminiApiKey}
-                      placeholder="Dán mã API Key (AIzaSy...)"
-                      id="gemini-key-input"
-                      className="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-xs font-mono bg-gray-50 dark:bg-gray-900 outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const val = document.getElementById("gemini-key-input")?.value;
-                        handleSaveApiKey(val || "");
-                      }}
-                      className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-colors"
-                    >
-                      Lưu Key
-                    </button>
-                  </div>
-                  <p className="text-[11px] text-gray-400">
-                    * Key được lưu an toàn trong trình duyệt hoặc anh có thể đặt biến <code className="text-gray-700 dark:text-gray-300 font-mono">GEMINI_API_KEY</code> trong file .env
-                  </p>
-                </div>
-              )}
 
               {/* Dropzone & Preview Container */}
               <div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative rounded-xl border-2 border-dashed transition-all p-3.5 sm:p-4 text-center ${
-                  isDragging
-                    ? "border-indigo-600 bg-indigo-100/60 dark:bg-indigo-950/40"
-                    : "border-indigo-300 dark:border-indigo-800 bg-white/70 dark:bg-gray-900/60 hover:bg-white"
-                }`}
+                className={`relative rounded-xl border-2 border-dashed transition-all p-3.5 sm:p-4 text-center ${isDragging
+                  ? "border-indigo-600 bg-indigo-100/60 dark:bg-indigo-950/40"
+                  : "border-indigo-300 dark:border-indigo-800 bg-white/70 dark:bg-gray-900/60 hover:bg-white"
+                  }`}
               >
                 <input
                   ref={fileInputRef}
@@ -793,8 +718,8 @@ export default function UniformOrderFormModal({
                     onChange={(e) => setFormData({ ...formData, channel: e.target.value })}
                     className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs font-medium focus:ring-2 focus:ring-[#0e568f] outline-none"
                   >
-                    <option value="Zalo">Zalo</option>
                     <option value="Facebook">Facebook Fanpage</option>
+                    <option value="Zalo">Zalo</option>
                     <option value="Hotline">Hotline</option>
                     <option value="Showroom">Showroom / Trực tiếp</option>
                     <option value="Khách quen">Khách quen / Giới thiệu</option>
@@ -921,21 +846,9 @@ export default function UniformOrderFormModal({
                 </span>
               </div>
 
-              {/* Hidden file input for Mockup Upload */}
-              <input
-                ref={mockupFileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleMockupFile(f);
-                }}
-                className="hidden"
-              />
-
               {/* Mockup Image Inputs */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {/* 1. Ảnh thiết kế tổng thể (Có chọn từ folder Mockup, kéo thả & dán) */}
+                {/* 1. Ảnh thiết kế tổng thể (Có chọn từ R2, Tải ảnh lên R2, kéo thả & dán) */}
                 <div className="border border-indigo-200 dark:border-indigo-900/60 rounded-xl p-3 bg-white dark:bg-gray-800 shadow-sm flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -946,18 +859,18 @@ export default function UniformOrderFormModal({
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
-                          onClick={() => openR2Picker("mockupFull", "mockup")}
+                          onClick={() => openR2Picker("mockupFull", "mockup", "manage")}
                           className="text-[11px] px-2.5 py-1 bg-sky-100 hover:bg-sky-200 text-[#0e568f] dark:bg-sky-950/60 dark:text-sky-300 rounded-lg font-bold flex items-center gap-1 transition-colors"
-                          title="Mở thư mục mockup trên Cloudflare R2"
+                          title="Chọn ảnh có sẵn từ thư viện Cloudflare R2"
                         >
                           <FiImage className="w-3 h-3" />
-                          Folder Mockup
+                          Chọn từ R2
                         </button>
                         <button
                           type="button"
-                          onClick={() => mockupFileInputRef.current?.click()}
-                          className="text-[11px] px-2 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold flex items-center gap-1 transition-colors"
-                          title="Tải ảnh từ máy tính"
+                          onClick={() => openR2Picker("mockupFull", "mockup", "upload")}
+                          className="text-[11px] px-2.5 py-1 bg-[#0e568f] hover:bg-[#0c4a7c] text-white rounded-lg font-bold flex items-center gap-1 transition-colors shadow-xs"
+                          title="Chọn thư mục lưu trước rồi tải ảnh lên R2"
                         >
                           <FiUploadCloud className="w-3 h-3" />
                           Tải ảnh
@@ -971,17 +884,17 @@ export default function UniformOrderFormModal({
                       tabIndex={0}
                       onDragOver={(e) => {
                         e.preventDefault();
-                        setIsDraggingMockup(true);
+                        setActiveDragField("mockupFull");
                       }}
-                      onDragLeave={() => setIsDraggingMockup(false)}
-                      onDrop={handleMockupDrop}
-                      onPaste={handleMockupPaste}
+                      onDragLeave={() => setActiveDragField(null)}
+                      onDrop={(e) => handleCardDrop(e, "mockupFull")}
+                      onPaste={(e) => handleCardPaste(e, "mockupFull")}
                       className={`relative rounded-xl border-2 border-dashed transition-all p-2 text-center mb-2 outline-none focus:ring-2 focus:ring-[#0e568f] ${
-                        isDraggingMockup
+                        activeDragField === "mockupFull"
                           ? "border-[#0e568f] bg-sky-50 dark:bg-sky-950/50"
                           : formData.mockupFull
-                          ? "border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/40"
-                          : "border-sky-300 dark:border-sky-800 bg-sky-50/40 dark:bg-sky-950/20 hover:bg-sky-50 cursor-pointer"
+                            ? "border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/40"
+                            : "border-sky-300 dark:border-sky-800 bg-sky-50/40 dark:bg-sky-950/20 hover:bg-sky-50 cursor-pointer"
                       }`}
                     >
                       {formData.mockupFull ? (
@@ -997,18 +910,18 @@ export default function UniformOrderFormModal({
                           <div className="flex items-center justify-center gap-2 mt-2">
                             <button
                               type="button"
-                              onClick={() => openR2Picker("mockupFull", "mockup")}
+                              onClick={() => openR2Picker("mockupFull", "mockup", "manage")}
                               className="text-[11px] font-semibold text-[#0e568f] hover:underline"
                             >
-                              Đổi từ folder Mockup
+                              Chọn từ R2
                             </button>
                             <span className="text-gray-300">•</span>
                             <button
                               type="button"
-                              onClick={() => mockupFileInputRef.current?.click()}
-                              className="text-[11px] font-semibold text-gray-600 hover:underline"
+                              onClick={() => openR2Picker("mockupFull", "mockup", "upload")}
+                              className="text-[11px] font-semibold text-blue-600 hover:underline"
                             >
-                              Tải từ máy
+                              Tải ảnh khác
                             </button>
                             <span className="text-gray-300">•</span>
                             <button
@@ -1025,14 +938,14 @@ export default function UniformOrderFormModal({
                       ) : (
                         <div
                           className="py-5 px-2 flex flex-col items-center justify-center"
-                          onClick={() => mockupFileInputRef.current?.click()}
+                          onClick={() => openR2Picker("mockupFull", "mockup", "upload")}
                         >
                           <FiUploadCloud className="w-8 h-8 text-[#0e568f] mb-1.5" />
                           <p className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                            Kéo thả hoặc dán ảnh (Ctrl + V) vào đây
+                            Bấm để chọn thư mục &amp; tải ảnh lên
                           </p>
                           <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
-                            Hoặc chọn từ folder <span className="font-bold text-[#0e568f]">mockup</span> / tải từ máy
+                            Kéo thả hoặc dán ảnh (Ctrl + V) vào đây
                           </p>
                         </div>
                       )}
@@ -1051,39 +964,112 @@ export default function UniformOrderFormModal({
                   />
                 </div>
 
-                {/* 2. Ảnh Mặt Trước (Tùy chọn) */}
+                {/* 2. Ảnh Mặt Trước (Tùy chọn - Cho phép tải ảnh lên với chọn thư mục trước) */}
                 <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-3 bg-white dark:bg-gray-800 shadow-sm flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
+                      <span className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                        <FiImage className="w-3.5 h-3.5 text-[#0e568f]" />
                         Mockup Mặt trước <span className="text-gray-400 font-normal text-[11px]">(Tùy chọn)</span>
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => openR2Picker("mockupFront", "mockup")}
-                        className="text-[11px] px-2.5 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold flex items-center gap-1 transition-colors"
-                      >
-                        <FiImage className="w-3 h-3 text-[#0e568f]" />
-                        Chọn R2
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => openR2Picker("mockupFront", "mockup", "manage")}
+                          className="text-[11px] px-2 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold flex items-center gap-1 transition-colors"
+                          title="Chọn ảnh có sẵn từ R2"
+                        >
+                          <FiImage className="w-3 h-3 text-[#0e568f]" />
+                          Chọn R2
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openR2Picker("mockupFront", "mockup", "upload")}
+                          className="text-[11px] px-2.5 py-1 bg-[#0e568f] hover:bg-[#0c4a7c] text-white rounded-lg font-bold flex items-center gap-1 transition-colors shadow-xs"
+                          title="Chọn thư mục lưu trước rồi tải ảnh mặt trước lên"
+                        >
+                          <FiUploadCloud className="w-3 h-3" />
+                          Tải ảnh
+                        </button>
+                      </div>
                     </div>
-                    <div className="h-32 rounded-lg bg-gray-50 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-700 mb-2">
+
+                    {/* Dropzone & Paste container cho Mockup Mặt Trước */}
+                    <div
+                      data-zone="mockup-zone"
+                      tabIndex={0}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setActiveDragField("mockupFront");
+                      }}
+                      onDragLeave={() => setActiveDragField(null)}
+                      onDrop={(e) => handleCardDrop(e, "mockupFront")}
+                      onPaste={(e) => handleCardPaste(e, "mockupFront")}
+                      className={`relative rounded-xl border-2 border-dashed transition-all p-2 text-center mb-2 outline-none focus:ring-2 focus:ring-[#0e568f] ${
+                        activeDragField === "mockupFront"
+                          ? "border-[#0e568f] bg-sky-50 dark:bg-sky-950/50"
+                          : formData.mockupFront
+                            ? "border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/40"
+                            : "border-gray-300 dark:border-gray-700 hover:border-[#0e568f] bg-gray-50/40 dark:bg-gray-900/20 hover:bg-gray-50 cursor-pointer"
+                      }`}
+                    >
                       {formData.mockupFront ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={formData.mockupFront}
-                          alt="Mockup Front"
-                          className="max-h-full max-w-full object-contain"
-                        />
+                        <div>
+                          <div className="h-32 rounded-lg bg-white dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-700 shadow-inner">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={formData.mockupFront}
+                              alt="Mockup Front"
+                              className="max-h-full max-w-full object-contain"
+                            />
+                          </div>
+                          <div className="flex items-center justify-center gap-2 mt-2">
+                            <button
+                              type="button"
+                              onClick={() => openR2Picker("mockupFront", "mockup", "manage")}
+                              className="text-[11px] font-semibold text-[#0e568f] hover:underline"
+                            >
+                              Chọn từ R2
+                            </button>
+                            <span className="text-gray-300">•</span>
+                            <button
+                              type="button"
+                              onClick={() => openR2Picker("mockupFront", "mockup", "upload")}
+                              className="text-[11px] font-semibold text-blue-600 hover:underline"
+                            >
+                              Tải ảnh khác
+                            </button>
+                            <span className="text-gray-300">•</span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setFormData((prev) => ({ ...prev, mockupFront: "" }))
+                              }
+                              className="text-[11px] font-semibold text-red-500 hover:underline"
+                            >
+                              Xóa ảnh
+                            </button>
+                          </div>
+                        </div>
                       ) : (
-                        <div className="text-center p-2">
-                          <FiImage className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                          <span className="text-[11px] text-gray-400">Không bắt buộc</span>
+                        <div
+                          className="py-5 px-2 flex flex-col items-center justify-center"
+                          onClick={() => openR2Picker("mockupFront", "mockup", "upload")}
+                        >
+                          <FiUploadCloud className="w-8 h-8 text-gray-400 dark:text-gray-500 mb-1.5" />
+                          <p className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                            Bấm để chọn thư mục &amp; tải ảnh mặt trước
+                          </p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">
+                            Kéo thả hoặc dán ảnh (Ctrl + V) vào đây
+                          </p>
                         </div>
                       )}
                     </div>
                   </div>
+
                   <input
+                    id="mockup-front-input"
                     type="text"
                     value={formData.mockupFront}
                     onChange={(e) =>
@@ -1094,39 +1080,112 @@ export default function UniformOrderFormModal({
                   />
                 </div>
 
-                {/* 3. Ảnh Mặt Sau (Tùy chọn) */}
+                {/* 3. Ảnh Mặt Sau (Tùy chọn - Cho phép tải ảnh lên với chọn thư mục trước) */}
                 <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-3 bg-white dark:bg-gray-800 shadow-sm flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
+                      <span className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                        <FiImage className="w-3.5 h-3.5 text-[#0e568f]" />
                         Mockup Mặt sau <span className="text-gray-400 font-normal text-[11px]">(Tùy chọn)</span>
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => openR2Picker("mockupBack", "mockup")}
-                        className="text-[11px] px-2.5 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold flex items-center gap-1 transition-colors"
-                      >
-                        <FiImage className="w-3 h-3 text-[#0e568f]" />
-                        Chọn R2
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => openR2Picker("mockupBack", "mockup", "manage")}
+                          className="text-[11px] px-2 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold flex items-center gap-1 transition-colors"
+                          title="Chọn ảnh có sẵn từ R2"
+                        >
+                          <FiImage className="w-3 h-3 text-[#0e568f]" />
+                          Chọn R2
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openR2Picker("mockupBack", "mockup", "upload")}
+                          className="text-[11px] px-2.5 py-1 bg-[#0e568f] hover:bg-[#0c4a7c] text-white rounded-lg font-bold flex items-center gap-1 transition-colors shadow-xs"
+                          title="Chọn thư mục lưu trước rồi tải ảnh mặt sau lên"
+                        >
+                          <FiUploadCloud className="w-3 h-3" />
+                          Tải ảnh
+                        </button>
+                      </div>
                     </div>
-                    <div className="h-32 rounded-lg bg-gray-50 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-700 mb-2">
+
+                    {/* Dropzone & Paste container cho Mockup Mặt Sau */}
+                    <div
+                      data-zone="mockup-zone"
+                      tabIndex={0}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setActiveDragField("mockupBack");
+                      }}
+                      onDragLeave={() => setActiveDragField(null)}
+                      onDrop={(e) => handleCardDrop(e, "mockupBack")}
+                      onPaste={(e) => handleCardPaste(e, "mockupBack")}
+                      className={`relative rounded-xl border-2 border-dashed transition-all p-2 text-center mb-2 outline-none focus:ring-2 focus:ring-[#0e568f] ${
+                        activeDragField === "mockupBack"
+                          ? "border-[#0e568f] bg-sky-50 dark:bg-sky-950/50"
+                          : formData.mockupBack
+                            ? "border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/40"
+                            : "border-gray-300 dark:border-gray-700 hover:border-[#0e568f] bg-gray-50/40 dark:bg-gray-900/20 hover:bg-gray-50 cursor-pointer"
+                      }`}
+                    >
                       {formData.mockupBack ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={formData.mockupBack}
-                          alt="Mockup Back"
-                          className="max-h-full max-w-full object-contain"
-                        />
+                        <div>
+                          <div className="h-32 rounded-lg bg-white dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-700 shadow-inner">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={formData.mockupBack}
+                              alt="Mockup Back"
+                              className="max-h-full max-w-full object-contain"
+                            />
+                          </div>
+                          <div className="flex items-center justify-center gap-2 mt-2">
+                            <button
+                              type="button"
+                              onClick={() => openR2Picker("mockupBack", "mockup", "manage")}
+                              className="text-[11px] font-semibold text-[#0e568f] hover:underline"
+                            >
+                              Chọn từ R2
+                            </button>
+                            <span className="text-gray-300">•</span>
+                            <button
+                              type="button"
+                              onClick={() => openR2Picker("mockupBack", "mockup", "upload")}
+                              className="text-[11px] font-semibold text-blue-600 hover:underline"
+                            >
+                              Tải ảnh khác
+                            </button>
+                            <span className="text-gray-300">•</span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setFormData((prev) => ({ ...prev, mockupBack: "" }))
+                              }
+                              className="text-[11px] font-semibold text-red-500 hover:underline"
+                            >
+                              Xóa ảnh
+                            </button>
+                          </div>
+                        </div>
                       ) : (
-                        <div className="text-center p-2">
-                          <FiImage className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                          <span className="text-[11px] text-gray-400">Không bắt buộc</span>
+                        <div
+                          className="py-5 px-2 flex flex-col items-center justify-center"
+                          onClick={() => openR2Picker("mockupBack", "mockup", "upload")}
+                        >
+                          <FiUploadCloud className="w-8 h-8 text-gray-400 dark:text-gray-500 mb-1.5" />
+                          <p className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                            Bấm để chọn thư mục &amp; tải ảnh mặt sau
+                          </p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">
+                            Kéo thả hoặc dán ảnh (Ctrl + V) vào đây
+                          </p>
                         </div>
                       )}
                     </div>
                   </div>
+
                   <input
+                    id="mockup-back-input"
                     type="text"
                     value={formData.mockupBack}
                     onChange={(e) =>
@@ -1638,9 +1697,14 @@ export default function UniformOrderFormModal({
       {/* Cloudflare R2 Image Modal Integration */}
       <R2ImageModal
         visible={r2ModalVisible}
-        onClose={() => setR2ModalVisible(false)}
+        onClose={() => {
+          setR2ModalVisible(false);
+          setR2InitialFile(null);
+        }}
         onSelect={handleR2Select}
-        initialFolder={r2InitialFolder}
+        initialFolder={r2InitialFolder || "mockup"}
+        initialTab={r2InitialTab}
+        initialFile={r2InitialFile}
       />
     </>
   );

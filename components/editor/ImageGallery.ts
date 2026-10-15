@@ -11,7 +11,7 @@ export interface GalleryImage {
 
 export interface ImageGalleryOptions {
   HTMLAttributes: Record<string, any>;
-  onEditRequest?: (images: GalleryImage[], getPos: () => number) => void;
+  onEditRequest?: (images: GalleryImage[], getPos: () => number, title?: string) => void;
 }
 
 declare module "@tiptap/core" {
@@ -63,7 +63,7 @@ export const ImageGallery = Node.create<ImageGalleryOptions>({
       HTMLAttributes: {
         class: "article-image-gallery",
       },
-      onEditRequest: undefined as ((images: GalleryImage[], getPos: () => number) => void) | undefined,
+      onEditRequest: undefined as ((images: GalleryImage[], getPos: () => number, title?: string) => void) | undefined,
     };
   },
 
