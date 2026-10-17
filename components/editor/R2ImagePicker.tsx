@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useCallback } from "react";
+import { FC, useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import {
   FiTrash2,
@@ -9,11 +9,27 @@ import {
   FiFolder,
   FiAlertTriangle,
   FiCornerUpRight,
+  FiPlus,
+  FiUploadCloud,
+  FiCheckCircle,
+  FiAlertCircle,
 } from "react-icons/fi";
+import { AiOutlineCloudUpload } from "react-icons/ai";
 import { FcFolder } from "react-icons/fc";
 import { BsCardImage } from "react-icons/bs";
 import { toast } from "react-toastify";
 import R2FolderSelect, { getFolderName, getParentFolder } from "./R2FolderSelect";
+
+export interface UploadQueueItem {
+  id: string;
+  file: File;
+  previewUrl: string;
+  name: string;
+  size: number;
+  status: "pending" | "uploading" | "success" | "error";
+  progress: number;
+  errorMessage?: string;
+}
 
 export interface R2ImageItem {
   key: string;
@@ -86,6 +102,167 @@ const R2ImagePicker: FC<Props> = ({
   const [activeImage, setActiveImage] = useState<R2ImageItem | null>(null);
   const [altText, setAltText] = useState("");
   const [caption, setCaption] = useState("");
+
+  // Popup tải ảnh & upload nhiều ảnh cùng lúc
+  const [showUploadPopup, setShowUploadPopup] = useState(false);
+  const [popupFolder, setPopupFolder] = useState<string>(selectedFolder || "");
+  const [isCreatingPopupFolder, setIsCreatingPopupFolder] = useState(false);
+  const [newPopupFolderName, setNewPopupFolderName] = useState("");
+  const [uploadQueue, setUploadQueue] = useState<UploadQueueItem[]>([]);
+  const [isUploadingBatch, setIsUploadingBatch] = useState(false);
+  const [isDraggingPopup, setIsDraggingPopup] = useState(false);
+  const [isDraggingOverUploadCard, setIsDraggingOverUploadCard] = useState(false);
+  const popupFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Thêm file vào danh sách chờ upload
+  const addFilesToQueue = (fileList: FileList | File[]) => {
+    const newItems: UploadQueueItem[] = [];
+    Array.from(fileList).forEach((f) => {
+      if (!f.type.startsWith("image/")) {
+        toast.warning(`File "${f.name}" không phải định dạng ảnh hợp lệ.`);
+        return;
+      }
+      newItems.push({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        file: f,
+        previewUrl: URL.createObjectURL(f),
+        name: f.name,
+        size: f.size,
+        status: "pending",
+        progress: 0,
+      });
+    });
+    if (newItems.length > 0) {
+      setUploadQueue((prev) => [...prev, ...newItems]);
+    }
+  };
+
+  // Xóa 1 file khỏi hàng đợi
+  const removeQueueItem = (id: string) => {
+    setUploadQueue((prev) => {
+      const item = prev.find((it) => it.id === id);
+      if (item?.previewUrl) URL.revokeObjectURL(item.previewUrl);
+      return prev.filter((it) => it.id !== id);
+    });
+  };
+
+  // Dọn sạch hàng đợi
+  const clearUploadQueue = () => {
+    uploadQueue.forEach((item) => {
+      if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+    });
+    setUploadQueue([]);
+  };
+
+  // Tạo thư mục mới nhanh trong popup upload
+  const handleCreatePopupFolder = () => {
+    const clean = newPopupFolderName.trim().toLowerCase();
+    if (!clean) {
+      toast.error("Vui lòng nhập tên thư mục mới");
+      return;
+    }
+    onFolderCreated(clean);
+    setPopupFolder(clean);
+    setIsCreatingPopupFolder(false);
+    setNewPopupFolderName("");
+    toast.success(`Đã chọn thư mục mới "${clean}"`);
+  };
+
+  // Upload toàn bộ danh sách ảnh đã chọn
+  const handleBatchUpload = async () => {
+    const pendingItems = uploadQueue.filter((it) => it.status === "pending" || it.status === "error");
+    if (pendingItems.length === 0) {
+      toast.info("Vui lòng chọn ít nhất một file ảnh để tải lên!");
+      return;
+    }
+
+    setIsUploadingBatch(true);
+    const targetDest = popupFolder || selectedFolder || "";
+    let successCount = 0;
+
+    for (let i = 0; i < pendingItems.length; i++) {
+      const currentItem = pendingItems[i];
+
+      setUploadQueue((prev) =>
+        prev.map((it) => (it.id === currentItem.id ? { ...it, status: "uploading", progress: 15 } : it))
+      );
+
+      try {
+        // 1. Lấy presigned URL từ server
+        const { data: presignedData } = await axios.post("/api/r2/upload", {
+          filename: currentItem.file.name,
+          contentType: currentItem.file.type || "application/octet-stream",
+          folder: targetDest,
+        });
+
+        // 2. Upload trực tiếp PUT lên R2
+        let directSuccess = false;
+        try {
+          await axios.put(presignedData.uploadUrl, currentItem.file, {
+            headers: {
+              "Content-Type": currentItem.file.type || "application/octet-stream",
+            },
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.total) {
+                const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                setUploadQueue((prev) =>
+                  prev.map((it) => (it.id === currentItem.id ? { ...it, progress: percent } : it))
+                );
+              }
+            },
+          });
+          directSuccess = true;
+        } catch (directErr) {
+          console.warn("Direct upload gặp lỗi, tự động chuyển sang upload qua proxy:", directErr);
+          const formData = new FormData();
+          formData.append("file", currentItem.file);
+          formData.append("folder", targetDest);
+
+          await axios.post("/api/r2/upload-proxy", formData, {
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.total) {
+                const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                setUploadQueue((prev) =>
+                  prev.map((it) => (it.id === currentItem.id ? { ...it, progress: percent } : it))
+                );
+              }
+            },
+          });
+          directSuccess = true;
+        }
+
+        if (directSuccess) {
+          successCount++;
+          setUploadQueue((prev) =>
+            prev.map((it) => (it.id === currentItem.id ? { ...it, status: "success", progress: 100 } : it))
+          );
+        }
+      } catch (err: any) {
+        console.error(`Upload error for file ${currentItem.name}:`, err);
+        setUploadQueue((prev) =>
+          prev.map((it) =>
+            it.id === currentItem.id
+              ? { ...it, status: "error", errorMessage: err.response?.data?.error || err.message || "Lỗi tải ảnh" }
+              : it
+          )
+        );
+      }
+    }
+
+    setIsUploadingBatch(false);
+    if (successCount > 0) {
+      toast.success(`Đã tải lên thành công ${successCount}/${pendingItems.length} ảnh vào "${targetDest || "Gốc"}"!`);
+      // Làm mới danh sách ảnh thư viện
+      fetchImages();
+      // Nếu tất cả thành công, tự động đóng popup sau 1 giây
+      if (successCount === pendingItems.length) {
+        setTimeout(() => {
+          setShowUploadPopup(false);
+          clearUploadQueue();
+        }, 1000);
+      }
+    }
+  };
 
   const fetchImages = useCallback(async () => {
     setLoading(true);
@@ -323,20 +500,63 @@ const R2ImagePicker: FC<Props> = ({
             />
           ))}
         </div>
-      ) : images.length === 0 ? (
-        <div className="py-14 text-center border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
-          <div className="w-14 h-14 mx-auto mb-3 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-gray-400">
-            <BsCardImage size={28} />
-          </div>
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-            {selectedFolder ? `Thư mục "${selectedFolder}" chưa có ảnh nào` : "Chưa có ảnh nào trên Cloudflare R2"}
-          </p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-            Chuyển qua tab &ldquo;Upload ảnh mới&rdquo; để tải ảnh lên
-          </p>
-        </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 max-h-[380px] overflow-y-auto p-1 custom-scrollbar">
+          {/* VỊ TRÍ ẢNH ĐẦU TIÊN: NÚT LOAD ẢNH / TẢI ẢNH MỚI VÀ HIỆN POPUP UPLOAD */}
+          <div
+            onClick={() => {
+              setPopupFolder(selectedFolder || "");
+              setShowUploadPopup(true);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDraggingOverUploadCard(true);
+            }}
+            onDragLeave={() => setIsDraggingOverUploadCard(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDraggingOverUploadCard(false);
+              if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                addFilesToQueue(e.dataTransfer.files);
+                setPopupFolder(selectedFolder || "");
+                setShowUploadPopup(true);
+              }
+            }}
+            className={`relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-3 text-center cursor-pointer transition-all duration-200 group select-none ${
+              isDraggingOverUploadCard
+                ? "border-[#105d97] bg-blue-100/70 dark:bg-sky-950/50 scale-[1.02] shadow-md ring-2 ring-[#105d97]"
+                : "border-[#105d97]/40 dark:border-sky-500/40 bg-gradient-to-br from-blue-50/80 via-sky-50/30 to-blue-50/50 dark:from-gray-800 dark:via-gray-800 dark:to-sky-950/30 hover:border-[#105d97] hover:bg-blue-100/50 dark:hover:bg-gray-700/80 hover:shadow-md"
+            }`}
+            title="Nhấn để mở popup tải ảnh hoặc kéo thả nhiều ảnh trực tiếp vào đây"
+          >
+            <div className="w-11 h-11 rounded-full bg-blue-100 dark:bg-blue-900/50 text-[#105d97] dark:text-sky-300 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform shadow-2xs">
+              <AiOutlineCloudUpload size={24} />
+            </div>
+            <span className="text-xs font-bold text-[#105d97] dark:text-sky-300 group-hover:underline">
+              Tải ảnh lên
+            </span>
+            <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+              {selectedFolder ? `vào "${getFolderName(selectedFolder)}"` : "Chọn hoặc thả ảnh"}
+            </span>
+            <span className="mt-1 text-[9px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+              + Upload nhiều ảnh
+            </span>
+          </div>
+
+          {/* Trường hợp thư mục chưa có ảnh nào */}
+          {images.length === 0 && (
+            <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 flex flex-col items-center justify-center p-6 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50/40 dark:bg-gray-800/20 text-center">
+              <BsCardImage className="text-gray-400 dark:text-gray-500 mb-2" size={28} />
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                {selectedFolder ? `Thư mục "${selectedFolder}" chưa có ảnh nào` : "Chưa có ảnh nào trên Cloudflare R2"}
+              </p>
+              <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
+                Nhấn vào nút &ldquo;Tải ảnh lên&rdquo; bên cạnh hoặc kéo thả nhiều ảnh vào để bắt đầu
+              </p>
+            </div>
+          )}
+
+          {/* Danh sách ảnh từ vị trí thứ 2 trở đi */}
           {images.map((img) => {
             const isSelected = activeImage?.key === img.key;
 
@@ -478,6 +698,314 @@ const R2ImagePicker: FC<Props> = ({
                 title="Xóa ảnh này khỏi R2"
               >
                 <FiTrash2 size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup Modal Upload Nhiều Ảnh & Lựa Chọn Thư Mục */}
+      {showUploadPopup && (
+        <div
+          className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => !isUploadingBatch && setShowUploadPopup(false)}
+        >
+          <div
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-2xl w-full p-6 flex flex-col max-h-[90vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header Popup */}
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-[#105d97] dark:text-blue-400 flex items-center justify-center">
+                  <FiUploadCloud size={20} />
+                </div>
+                <div>
+                  <h4 className="text-base font-bold text-gray-900 dark:text-gray-100">
+                    Tải ảnh lên Cloudflare R2
+                  </h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Hỗ trợ tải lên nhiều hình ảnh cùng lúc (JPG, PNG, WEBP, GIF, SVG)
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => !isUploadingBatch && setShowUploadPopup(false)}
+                disabled={isUploadingBatch}
+                className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg cursor-pointer disabled:opacity-40"
+              >
+                <FiX size={18} />
+              </button>
+            </div>
+
+            <div className="py-4 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+              {/* Phần chọn thư mục lưu trữ ảnh tải lên */}
+              {selectedFolder === "" ? (
+                <div className="bg-sky-50 dark:bg-sky-950/40 p-3.5 rounded-xl border border-sky-200 dark:border-sky-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-sky-900 dark:text-sky-200 flex items-center gap-1.5">
+                      <FiFolder className="text-[#105d97]" size={14} />
+                      <span>Chọn thư mục lưu trữ ảnh tải lên: *</span>
+                    </label>
+                    <span className="text-[10px] text-sky-700 dark:text-sky-300 font-medium">
+                      (Đang ở xem Tất cả thư mục)
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={popupFolder}
+                      onChange={(e) => setPopupFolder(e.target.value)}
+                      disabled={isUploadingBatch}
+                      className="flex-1 text-xs font-medium px-3 py-2 bg-white dark:bg-gray-800 border border-sky-300 dark:border-sky-700 rounded-lg text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#105d97]"
+                    >
+                      <option value="">Thư mục gốc (/)</option>
+                      {folders.map((f) => (
+                        <option key={f} value={f}>
+                          📁 {f}
+                        </option>
+                      ))}
+                    </select>
+                    {!isCreatingPopupFolder && (
+                      <button
+                        type="button"
+                        onClick={() => setIsCreatingPopupFolder(true)}
+                        disabled={isUploadingBatch}
+                        className="px-3 py-2 text-xs font-semibold text-[#105d97] bg-white dark:bg-gray-800 border border-sky-300 dark:border-sky-700 rounded-lg hover:bg-sky-100 transition-colors shrink-0 cursor-pointer"
+                      >
+                        + Thư mục mới
+                      </button>
+                    )}
+                  </div>
+                  {isCreatingPopupFolder && (
+                    <div className="flex items-center gap-2 pt-1 animate-in fade-in">
+                      <input
+                        type="text"
+                        value={newPopupFolderName}
+                        onChange={(e) => setNewPopupFolderName(e.target.value)}
+                        placeholder="Tên thư mục mới (vd: ao-polo, mockup)..."
+                        className="flex-1 text-xs px-2.5 py-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#105d97]"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleCreatePopupFolder();
+                          if (e.key === "Escape") setIsCreatingPopupFolder(false);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleCreatePopupFolder}
+                        className="px-3 py-1.5 bg-[#105d97] text-white text-xs font-bold rounded-lg hover:bg-[#0c4672] cursor-pointer"
+                      >
+                        Tạo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsCreatingPopupFolder(false)}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 text-xs cursor-pointer"
+                      >
+                        Hủy
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-emerald-50 dark:bg-emerald-950/40 p-3 rounded-xl border border-emerald-200 dark:border-emerald-800 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <FiCheck className="text-emerald-600 dark:text-emerald-400" size={14} />
+                    <span className="text-gray-700 dark:text-gray-300">
+                      Lưu vào thư mục:{" "}
+                      <strong className="text-emerald-800 dark:text-emerald-200 font-mono font-bold">
+                        {popupFolder || selectedFolder}
+                      </strong>
+                    </span>
+                  </div>
+                  <select
+                    value={popupFolder}
+                    onChange={(e) => setPopupFolder(e.target.value)}
+                    disabled={isUploadingBatch}
+                    className="text-xs px-2.5 py-1 bg-white dark:bg-gray-800 border border-emerald-300 dark:border-emerald-700 rounded-lg text-gray-800 dark:text-gray-200"
+                  >
+                    <option value="">Thư mục gốc (/)</option>
+                    {folders.map((f) => (
+                      <option key={f} value={f}>
+                        📁 {f}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Input ẩn cho việc chọn nhiều ảnh */}
+              <input
+                ref={popupFileInputRef}
+                type="file"
+                multiple
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    addFilesToQueue(e.target.files);
+                    e.target.value = "";
+                  }
+                }}
+              />
+
+              {/* Vùng Dropzone chọn ảnh */}
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDraggingPopup(true);
+                }}
+                onDragLeave={() => setIsDraggingPopup(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDraggingPopup(false);
+                  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    addFilesToQueue(e.dataTransfer.files);
+                  }
+                }}
+                onClick={() => !isUploadingBatch && popupFileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all ${
+                  isDraggingPopup
+                    ? "border-[#105d97] bg-blue-50/70 dark:bg-sky-950/40 scale-[1.01]"
+                    : "border-gray-300 dark:border-gray-600 hover:border-[#105d97] bg-gray-50/50 dark:bg-gray-800/40 hover:bg-blue-50/20"
+                }`}
+              >
+                <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-blue-50 dark:bg-blue-900/40 text-[#105d97] dark:text-sky-300 flex items-center justify-center">
+                  <AiOutlineCloudUpload size={28} />
+                </div>
+                <p className="text-xs font-semibold text-gray-700 dark:text-gray-200">
+                  Kéo thả nhiều ảnh vào đây, hoặc <span className="text-[#105d97] underline">chọn từ máy tính</span>
+                </p>
+                <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
+                  Có thể chọn nhiều file ảnh cùng lúc (JPG, PNG, WEBP, GIF, SVG)
+                </p>
+              </div>
+
+              {/* Danh sách ảnh đã chọn */}
+              {uploadQueue.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                      Đã chọn {uploadQueue.length} ảnh (
+                      {formatBytes(uploadQueue.reduce((acc, it) => acc + it.size, 0))})
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => popupFileInputRef.current?.click()}
+                        disabled={isUploadingBatch}
+                        className="text-xs font-semibold text-[#105d97] dark:text-sky-400 hover:underline inline-flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+                      >
+                        <FiPlus size={13} />
+                        <span>Thêm ảnh khác</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={clearUploadQueue}
+                        disabled={isUploadingBatch}
+                        className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50 cursor-pointer"
+                      >
+                        Xóa tất cả
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="max-h-60 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                    {uploadQueue.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+                      >
+                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-100 flex-shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={item.previewUrl} alt={item.name} className="w-full h-full object-cover" />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between text-xs">
+                            <p className="font-semibold text-gray-800 dark:text-gray-200 truncate pr-2" title={item.name}>
+                              {item.name}
+                            </p>
+                            <span className="text-[10px] text-gray-400 shrink-0">
+                              {formatBytes(item.size)}
+                            </span>
+                          </div>
+
+                          {/* Trạng thái / Thanh tiến trình */}
+                          <div className="mt-1 flex items-center justify-between">
+                            {item.status === "pending" && (
+                              <span className="text-[10px] text-gray-500 font-medium">Sẵn sàng tải lên</span>
+                            )}
+                            {item.status === "uploading" && (
+                              <div className="w-full flex items-center gap-2">
+                                <div className="flex-1 bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                                  <div
+                                    className="bg-[#105d97] h-full transition-all duration-150"
+                                    style={{ width: `${item.progress}%` }}
+                                  />
+                                </div>
+                                <span className="text-[10px] font-bold text-[#105d97]">{item.progress}%</span>
+                              </div>
+                            )}
+                            {item.status === "success" && (
+                              <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 inline-flex items-center gap-1">
+                                <FiCheckCircle size={12} /> Đã tải lên
+                              </span>
+                            )}
+                            {item.status === "error" && (
+                              <span className="text-[10px] font-semibold text-red-600 dark:text-red-400 inline-flex items-center gap-1">
+                                <FiAlertCircle size={12} /> {item.errorMessage || "Lỗi tải ảnh"}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {!isUploadingBatch && item.status !== "success" && (
+                          <button
+                            type="button"
+                            onClick={() => removeQueueItem(item.id)}
+                            className="p-1 text-gray-400 hover:text-red-600 rounded-md transition-colors cursor-pointer"
+                            title="Xóa khỏi danh sách chờ"
+                          >
+                            <FiX size={15} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer popup */}
+            <div className="pt-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!isUploadingBatch) {
+                    setShowUploadPopup(false);
+                    clearUploadQueue();
+                  }
+                }}
+                disabled={isUploadingBatch}
+                className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                Đóng
+              </button>
+
+              <button
+                type="button"
+                onClick={handleBatchUpload}
+                disabled={isUploadingBatch || uploadQueue.filter(it => it.status === "pending" || it.status === "error").length === 0}
+                className="px-5 py-2 text-xs font-bold text-white bg-[#105d97] hover:bg-[#0c4672] rounded-xl transition-all shadow-md inline-flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                <AiOutlineCloudUpload size={16} />
+                <span>
+                  {isUploadingBatch
+                    ? "Đang tải ảnh lên..."
+                    : `Bắt đầu tải lên (${uploadQueue.filter(it => it.status === "pending" || it.status === "error").length} ảnh)`}
+                </span>
               </button>
             </div>
           </div>

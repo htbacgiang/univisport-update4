@@ -56,6 +56,14 @@
         },
         {
           protocol: "https",
+          hostname: "img.dongphucunivi.com",
+        },
+        {
+          protocol: "https",
+          hostname: "**.dongphucunivi.com",
+        },
+        {
+          protocol: "https",
           hostname: "example.com",
         },
         {
