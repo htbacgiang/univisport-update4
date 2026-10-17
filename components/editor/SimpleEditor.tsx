@@ -239,7 +239,7 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
         visible={showR2Modal}
         onClose={() => setShowR2Modal(false)}
         onSelect={handleR2ImageSelection}
-        initialFolder="thumbnail"
+        initialFolder=""
       />
       <R2MultiGalleryModal
         visible={showR2GalleryModal}

@@ -55,7 +55,6 @@ const Update: NextPage<Props> = ({ post }) => {
             onSubmit={handleSubmit}
             busy={updating}
             btnTitle="Cập nhật"
-            defaultFolder="thumbnail"
           />
         </div>
       </div>

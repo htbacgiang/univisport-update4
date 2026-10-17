@@ -63,7 +63,7 @@ const Editor: FC<Props> = ({
   btnTitle = "Đăng bài",
   busy = false,
   onSubmit,
-  defaultFolder = "thumbnail",
+  defaultFolder = "",
 }): JSX.Element => {
   const [selectionRange, setSelectionRange] = useState<Range>();
   const [showGallery, setShowGallery] = useState(false);
@@ -908,7 +908,7 @@ const Editor: FC<Props> = ({
         visible={showR2Modal}
         onClose={() => setShowR2Modal(false)}
         onSelect={handleR2ImageSelection}
-        initialFolder={defaultFolder || "thumbnail"}
+        initialFolder={defaultFolder || ""}
       />
       <MultiImageGalleryModal
         visible={showImageGallery}
@@ -919,7 +919,7 @@ const Editor: FC<Props> = ({
         visible={showR2GalleryModal}
         onClose={() => setShowR2GalleryModal(false)}
         onSelect={handleR2GallerySelection}
-        defaultFolder={defaultFolder}
+        defaultFolder={defaultFolder || ""}
       />
       {/* Edit existing gallery via R2 Gallery Modal (No Flickr dependency) */}
       <R2MultiGalleryModal
@@ -929,7 +929,7 @@ const Editor: FC<Props> = ({
         initialImages={editingGallery?.images}
         initialTitle={editingGallery?.title}
         initialMode="editor"
-        defaultFolder={defaultFolder}
+        defaultFolder={defaultFolder || ""}
       />
       <style jsx global>{`
         .tiptap-table {

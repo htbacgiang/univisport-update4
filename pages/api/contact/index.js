@@ -83,10 +83,11 @@ export default async function handler(req, res) {
       try {
         const newContact = new Contact({
           name,
-          phone,
+          email: email || '',
+          phone: phone || (email ? `Email: ${email}` : 'Chưa cung cấp'),
           message,
           note,
-          source: source || '',
+          source: source || 'Trang liên hệ',
         });
         await newContact.save();
 
@@ -141,8 +142,14 @@ export default async function handler(req, res) {
                     </div>
                     <div class="info-item">
                       <span class="label">📱 Số điện thoại:</span>
-                      <span class="value">${phone}</span>
+                      <span class="value">${phone || 'Chưa cung cấp'}</span>
                     </div>
+                    ${email ? `
+                    <div class="info-item">
+                      <span class="label">📧 Email:</span>
+                      <span class="value">${email}</span>
+                    </div>
+                    ` : ''}
                     <div class="info-item">
                       <span class="label">💬 Yêu cầu:</span>
                       <span class="value">${message || 'Không có yêu cầu cụ thể'}</span>

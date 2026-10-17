@@ -1,19 +1,17 @@
 import { useState } from "react";
-import Image from "next/image";
 import {
-  FaMapMarkerAlt,
-  FaPhone,
-  FaEnvelope,
-  FaClock,
-  FaFacebookF,
-  FaYoutube,
-  FaPaperPlane,
-  FaUser,
-  FaLinkedin,
-  FaCalendarAlt,
-  FaCheckCircle,
-  FaTshirt
-} from "react-icons/fa";
+  Mail,
+  Phone,
+  MapPin,
+  ArrowUpRight,
+  GraduationCap,
+  CheckCircle2,
+  ChevronDown,
+  Navigation,
+  Loader2,
+  ExternalLink,
+} from "lucide-react";
+import { FaFacebookF, FaYoutube, FaLinkedinIn } from "react-icons/fa";
 import { SiZalo } from "react-icons/si";
 import {
   trackContact,
@@ -23,154 +21,58 @@ import {
 import { COMPANY_INFO } from "../../lib/companyInfo";
 
 export default function ContactPage() {
-  const [activeTab, setActiveTab] = useState("contact");
   const [formData, setFormData] = useState({
     name: "",
-    phone: "",
     email: "",
-    uniformType: "",
-    quantity: "",
-    location: "",
+    subject: "Tư vấn chung",
     message: "",
-    consultationDate: "",
-    consultationTime: "",
-    consultationType: "office"
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
-  const [errors, setErrors] = useState({});
-
-  const contactInfo = {
-    address: COMPANY_INFO.office.address,
-    factoryAddress: `${COMPANY_INFO.factory.address}`,
-    phone: COMPANY_INFO.hotlineFormatted,
-    email: COMPANY_INFO.email,
-    workingHours: {
-      weekdays: COMPANY_INFO.workingHours.weekdays,
-      weekend: COMPANY_INFO.workingHours.weekend
-    }
-  };
-
-  const socialLinks = [
-    { name: "Facebook", icon: FaFacebookF, url: "https://facebook.com/Dongphucunivi", color: "bg-blue-600" },
-    { name: "YouTube", icon: FaYoutube, url: "https://youtube.com/@dongphucunivi", color: "bg-red-600" },
-    { name: "Zalo", icon: SiZalo, url: "https://zalo.me/0834204999", color: "bg-blue-500" },
-    { name: "Linkedin", icon: FaLinkedin, url: "https://www.linkedin.com/company/univi-uniform", color: "bg-blue-500" }
-
-  ];
-
-  const uniformTypes = [
-    "Đồng phục Gym",
-    "Đồng phục áo Polo",
-    "Đồng phục Pickleball",
-    "Đồng phục áo thun",
-    "Đồng phục Yoga - Pilates",
-    "Đồng phục công sở",
-    "Đồng phục Chạy bộ",
-    "Đồng phục Team building",
-    "Đồng phục Lễ tân",
-    "Đồng phục Sự kiện",
-    "Đồng phục MMA"
-  ];
-
-
-  const timeSlots = [
-    "09:00 - 10:00",
-    "10:00 - 11:00",
-    "14:00 - 15:00",
-    "15:00 - 16:00",
-    "16:00 - 17:00"
-  ];
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    // Validate required fields
-    if (!formData.name.trim()) {
-      newErrors.name = 'Họ và tên là bắt buộc';
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Số điện thoại là bắt buộc';
-    } else {
-      // Basic phone validation
-      const phoneRegex = /^[0-9+\-\s()]+$/;
-      if (!phoneRegex.test(formData.phone)) {
-        newErrors.phone = 'Số điện thoại không hợp lệ';
-      }
-    }
-
-    // Validate email if provided
-    if (formData.email && formData.email.trim()) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        newErrors.email = 'Email không hợp lệ';
-      }
-    }
-
-    // Validate consultation date if provided
-    if (formData.consultationDate) {
-      const selectedDate = new Date(formData.consultationDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (selectedDate < today) {
-        newErrors.consultationDate = 'Ngày tư vấn phải là ngày trong tương lai';
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
+    if (errorMessage) setErrorMessage("");
+    if (submitStatus) setSubmitStatus(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form before submitting
-    if (!validateForm()) {
+    if (!formData.name.trim()) {
+      setErrorMessage("Vui lòng nhập họ và tên của bạn.");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setErrorMessage("Vui lòng nhập email hoặc số điện thoại liên hệ.");
       return;
     }
 
     setIsSubmitting(true);
     setSubmitStatus(null);
+    setErrorMessage("");
 
     try {
-      // Create a simplified payload that matches the Contact API
+      const isEmail = formData.email.includes("@");
       const contactPayload = {
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        message: `Loại đồng phục: ${formData.uniformType || 'Chưa chọn'}
-Số lượng: ${formData.quantity || 'Chưa xác định'}
-Vị trí giao hàng: ${formData.location || 'Chưa xác định'}
-${formData.consultationDate ? `Ngày tư vấn: ${formData.consultationDate}` : ''}
-${formData.consultationTime ? `Khung giờ: ${formData.consultationTime}` : ''}
-${formData.consultationType ? `Hình thức: ${formData.consultationType === 'office' ? 'Tại văn phòng' : 'Trực tuyến'}` : ''}
-
-Yêu cầu chi tiết: ${formData.message || 'Không có yêu cầu cụ thể'}`
+        name: formData.name.trim(),
+        email: isEmail ? formData.email.trim() : "",
+        phone: !isEmail ? formData.email.trim() : "",
+        message: `[Chủ đề: ${formData.subject || "Tư vấn chung"}] ${formData.message.trim() || "Không có nội dung chi tiết"}`,
+        source: "Trang liên hệ (/lien-he)",
       };
 
-      const response = await fetch('/api/contact', {
-        method: 'POST',
+      const response = await fetch("/api/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(contactPayload),
       });
@@ -180,147 +82,220 @@ Yêu cầu chi tiết: ${formData.message || 'Không có yêu cầu cụ thể'}
       if (result.success) {
         trackContact({
           content_name: "Trang liên hệ",
-          uniform_type: formData.uniformType || "Chưa chọn",
-          quantity: formData.quantity || "Chưa xác định",
+          uniform_type: formData.subject || "Tư vấn chung",
         });
         setSubmitStatus("success");
-        setErrors({});
-        // Reset form
         setFormData({
           name: "",
-          phone: "",
           email: "",
-          uniformType: "",
-          quantity: "",
-          location: "",
+          subject: "Tư vấn chung",
           message: "",
-          consultationDate: "",
-          consultationTime: "",
-          consultationType: "office"
         });
       } else {
         setSubmitStatus("error");
-        console.error('API Error:', result.message);
+        setErrorMessage(result.message || "Có lỗi xảy ra khi gửi yêu cầu.");
       }
     } catch (error) {
       setSubmitStatus("error");
-      console.error('Network Error:', error);
+      setErrorMessage("Lỗi kết nối máy chủ. Vui lòng thử lại sau.");
+      console.error("Contact Form Error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const mapDirectionUrl =
+    "https://www.google.com/maps/dir/?api=1&destination=20.9832437,105.7788691";
+  const mapOpenUrl =
+    "https://www.google.com/maps/search/?api=1&query=Đồng+Phục+Univi";
+
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="h-[80px]"></div>
-      {/* Contact Information */}
-      <section className="md:py-20 py-6">
-        <div className="container mx-auto md:px-4 px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact Info */}
+    <div className="min-h-screen bg-[#fafbfe] text-gray-800 relative overflow-hidden">
+      {/* Soft background ambient brand glows */}
+      <div className="absolute top-20 left-1/4 w-96 h-96 bg-[#105d97]/10 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-80 right-10 w-96 h-96 bg-[#5e9bd1]/15 rounded-full blur-3xl pointer-events-none -z-10" />
+
+      {/* Sticky header spacer */}
+      <div className="h-[80px]" />
+
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-16">
+        {/* Responsive layout:
+            Mobile: 1. LIÊN HỆ VỚI CHÚNG TÔI -> 2. Maps -> 3. Điền Form
+            Desktop: Row 1: Điền Form (Left) & LIÊN HỆ (Right) -> Row 2: Maps */}
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          {/* 1. LIÊN HỆ VỚI CHÚNG TÔI (Mobile: 1st, Desktop: Row 1 Right) */}
+          <div className="order-1 lg:order-2 lg:col-span-5 flex flex-col space-y-6 w-full">
+            {/* Header info */}
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
-                Thông tin liên hệ
-              </h2>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#e6f0f8] text-[#105d97] text-xs font-bold uppercase tracking-wider mb-3">
+                <GraduationCap className="w-4 h-4" />
+                <span>LIÊN HỆ VỚI CHÚNG TÔI</span>
+              </div>
 
-              <div className="space-y-6 mb-8">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FaMapMarkerAlt className="text-blue-600 text-xl" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">Văn phòng giao dịch</h3>
-                    <p className="text-gray-700 leading-6">{contactInfo.address}</p>
-                  </div>
+              <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
+                Lựa chọn kênh liên lạc thuận tiện nhất cho bạn — Đội ngũ tư vấn Univi luôn sẵn sàng hỗ trợ & phản hồi nhanh chóng 24/7.
+              </p>
+            </div>
+
+            {/* 3 Contact Cards */}
+            <div className="space-y-4 pt-2">
+              {/* Card 1: EMAIL US */}
+              <div className="bg-white rounded-2xl sm:rounded-[22px] p-5 sm:p-6 border border-gray-100 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-md transition-all duration-300 flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#105d97] text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-[#105d97]/20">
+                  <Mail className="w-5 h-5 stroke-[2]" />
                 </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FaMapMarkerAlt className="text-blue-600 text-xl" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">Xưởng sản xuất</h3>
-                    <p className="text-gray-700 leading-6">{contactInfo.factoryAddress}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FaPhone className="text-blue-600 text-xl" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Hotline</h3>
-                    <a
-                      href={`tel:${contactInfo.phone}`}
-                      data-meta-tracked="true"
-                      onClick={() => trackPhoneClick(contactInfo.phone, { source: "contact_page" })}
-                      className="text-blue-600 hover:text-blue-700 font-medium text-lg transition-colors"
-                    >
-                      {contactInfo.phone}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FaEnvelope className="text-blue-600 text-xl" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Email</h3>
-                    <a
-                      href={`mailto:${contactInfo.email}`}
-                      className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                    >
-                      {contactInfo.email}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FaClock className="text-blue-600 text-xl" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Giờ làm việc</h3>
-                    <p className="text-gray-700">{contactInfo.workingHours.weekdays}</p>
-                    <p className="text-gray-700">{contactInfo.workingHours.weekend}</p>
-                  </div>
+                <div className="flex-1 min-w-0">
+                  <span className="block text-[11px] font-bold text-gray-700 tracking-wider uppercase">
+                    GỬI EMAIL
+                  </span>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Hỗ trợ giải đáp thông tin 24/7
+                  </p>
+                  <a
+                    href={`mailto:${COMPANY_INFO.email}`}
+                    className="text-sm font-semibold text-[#105d97] hover:underline mt-1 block truncate"
+                  >
+                    {COMPANY_INFO.email}
+                  </a>
                 </div>
               </div>
 
-              {/* Social Media */}
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Kết nối với chúng tôi</h3>
-                <div className="flex space-x-4">
-                  {socialLinks.map((social, index) => {
-                    const Icon = social.icon;
-                    return (
-                      <a
-                        key={index}
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-meta-tracked={social.name === "Zalo" ? "true" : undefined}
-                        onClick={() => {
-                          if (social.name === "Zalo") trackZaloClick({ source: "contact_page" });
-                        }}
-                        aria-label={`${social.name} Đồng Phục Univi`}
-                        title={`${social.name} Đồng Phục Univi`}
-                        className={`w-12 h-12 ${social.color} rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform duration-300`}
-                      >
-                        <Icon className="text-xl" aria-hidden="true" />
-                      </a>
-                    );
-                  })}
+              {/* Card 2: CALL US */}
+              <div className="bg-white rounded-2xl sm:rounded-[22px] p-5 sm:p-6 border border-gray-100 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-md transition-all duration-300 flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#105d97] text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-[#105d97]/20">
+                  <Phone className="w-5 h-5 stroke-[2]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="block text-[11px] font-bold text-gray-700 tracking-wider uppercase">
+                    GỌI HOTLINE
+                  </span>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Thứ 2 - Chủ Nhật: 08:00 - 18:00
+                  </p>
+                  <a
+                    href={COMPANY_INFO.hotlineTel}
+                    data-meta-tracked="true"
+                    onClick={() =>
+                      trackPhoneClick(COMPANY_INFO.hotline, {
+                        source: "contact_page",
+                      })
+                    }
+                    className="text-sm sm:text-base font-bold text-[#105d97] hover:underline mt-1 block"
+                  >
+                    {COMPANY_INFO.hotlineFormatted}
+                  </a>
+                </div>
+              </div>
+
+              {/* Card 3: VISIT US */}
+              <div className="bg-white rounded-2xl sm:rounded-[22px] p-5 sm:p-6 border border-gray-100 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-md transition-all duration-300 flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#105d97] text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-[#105d97]/20">
+                  <MapPin className="w-5 h-5 stroke-[2]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="block text-[11px] font-bold text-gray-700 tracking-wider uppercase">
+                    VĂN PHÒNG GIAO DỊCH
+                  </span>
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1 leading-snug">
+                    {COMPANY_INFO.office.address}
+                  </p>
+                  <a
+                    href={mapDirectionUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#105d97] hover:underline mt-2"
+                  >
+                    <span>Xem chỉ đường</span>
+                    <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+                  </a>
                 </div>
               </div>
             </div>
 
-            {/* Map */}
-            <div>
-              <div className="bg-white rounded-3xl overflow-hidden shadow-lg h-96">
+            {/* Quick social links */}
+            <div className="pt-2 flex items-center gap-3.5 flex-wrap">
+              <span className="text-sm font-semibold text-gray-700">
+                Kết nối nhanh:
+              </span>
+              <a
+                href={COMPANY_INFO.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook Univi"
+                className="w-11 h-11 rounded-full bg-[#e6f0f8] text-[#105d97] hover:bg-[#105d97] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center transition-all shadow-sm"
+              >
+                <FaFacebookF className="text-lg" />
+              </a>
+              <a
+                href={COMPANY_INFO.social.zalo}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-meta-tracked="true"
+                onClick={() => trackZaloClick({ source: "contact_page" })}
+                aria-label="Zalo Univi"
+                className="w-11 h-11 rounded-full bg-[#e6f0f8] text-[#105d97] hover:bg-[#105d97] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center transition-all shadow-sm"
+              >
+                <SiZalo className="text-xl" />
+              </a>
+              <a
+                href={COMPANY_INFO.social.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube Univi"
+                className="w-11 h-11 rounded-full bg-[#e6f0f8] text-[#105d97] hover:bg-[#105d97] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center transition-all shadow-sm"
+              >
+                <FaYoutube className="text-lg" />
+              </a>
+              <a
+                href={COMPANY_INFO.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn Univi"
+                className="w-11 h-11 rounded-full bg-[#e6f0f8] text-[#105d97] hover:bg-[#105d97] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center transition-all shadow-sm"
+              >
+                <FaLinkedinIn className="text-lg" />
+              </a>
+            </div>
+          </div>
+
+          {/* 2. MAPS (Mobile: 2nd, Desktop: Row 2 Full width) */}
+          <div className="order-2 lg:order-3 lg:col-span-12 w-full lg:mt-6">
+            <div className="bg-white rounded-[32px] p-3 sm:p-5 border border-gray-100 shadow-[0_15px_45px_-12px_rgba(0,0,0,0.06)] relative overflow-hidden">
+              {/* Map wrapper */}
+              <div className="relative w-full h-[400px] sm:h-[500px] md:h-[540px] rounded-2xl sm:rounded-[24px] overflow-hidden bg-gray-100">
+                {/* Floating Map Info Card */}
+                <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-xl border border-gray-100 max-w-[320px] hidden sm:block">
+                  <h3 className="font-bold text-gray-900 text-sm sm:text-base">
+                    {COMPANY_INFO.name}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                    {COMPANY_INFO.office.shortAddress}
+                  </p>
+                  <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-2">
+                    <a
+                      href={mapOpenUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Mở trong Maps</span>
+                    </a>
+                    <a
+                      href={mapDirectionUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#105d97] hover:bg-[#0c4d7d] text-white text-xs font-semibold shadow-sm transition-colors"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      <span>Chỉ đường</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Google Maps Iframe */}
                 <iframe
+                  title="Bản đồ vị trí Đồng Phục Univi"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.2342853220844!2d105.77886910000001!3d20.983243699999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345390f181a5bd%3A0xcdf3833aed740992!2zxJBvzILMgG5nIFBodcyjYyBVbml2aQ!5e0!3m2!1svi!2s!4v1758983479311!5m2!1svi!2s"
                   width="100%"
                   height="100%"
@@ -328,13 +303,161 @@ Yêu cầu chi tiết: ${formData.message || 'Không có yêu cầu cụ thể'}
                   allowFullScreen=""
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="w-full h-full"
+                  className="w-full h-full filter saturate-[1.05]"
                 />
               </div>
             </div>
           </div>
+
+          {/* 3. ĐIỀN FORM (Mobile: 3rd, Desktop: Row 1 Left) */}
+          <div className="order-3 lg:order-1 lg:col-span-7 bg-white rounded-[32px] border border-gray-100/90 shadow-[0_12px_45px_-12px_rgba(0,0,0,0.06)] p-7 sm:p-10 md:p-12 relative transition-all w-full">
+            <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-gray-900 tracking-tight leading-tight">
+              Gửi tin nhắn cho chúng tôi
+            </h2>
+            <p className="text-gray-500 text-sm sm:text-base mt-2 mb-8">
+              Tư vấn & thiết kế mẫu miễn phí — Phản hồi nhanh chóng trong 15 phút.
+            </p>
+
+            {submitStatus === "success" && (
+              <div className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 animate-fade-up">
+                <CheckCircle2 className="w-6 h-6 text-emerald-600 flex-shrink-0" />
+                <div className="text-sm">
+                  <p className="font-semibold">Gửi tin nhắn thành công!</p>
+                  <p className="text-emerald-700">
+                    Cảm ơn bạn đã liên hệ. Đội ngũ tư vấn Univi sẽ phản hồi lại bạn trong thời gian sớm nhất.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
+                {errorMessage}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Row 1: Full name & Email / Phone */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                <div>
+                  <label
+                    htmlFor="fullName"
+                    className="block text-sm font-semibold text-gray-700 mb-2"
+                  >
+                    Họ và tên
+                  </label>
+                  <input
+                    id="fullName"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Nhập họ và tên của bạn"
+                    required
+                    className="w-full rounded-2xl bg-[#F8F9FD] border border-gray-200/90 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#105d97]/25 focus:border-[#105d97] focus:bg-white transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="emailAddress"
+                    className="block text-sm font-semibold text-gray-700 mb-2"
+                  >
+                    Email hoặc Số điện thoại
+                  </label>
+                  <input
+                    id="emailAddress"
+                    type="text"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Nhập email hoặc số điện thoại"
+                    required
+                    className="w-full rounded-2xl bg-[#F8F9FD] border border-gray-200/90 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#105d97]/25 focus:border-[#105d97] focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Subject */}
+              <div>
+                <label
+                  htmlFor="subjectSelect"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Chủ đề cần tư vấn
+                </label>
+                <div className="relative">
+                  <select
+                    id="subjectSelect"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    className="w-full appearance-none rounded-2xl bg-[#F8F9FD] border border-gray-200/90 px-4 py-3.5 pr-10 text-gray-900 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#105d97]/25 focus:border-[#105d97] focus:bg-white transition-all cursor-pointer"
+                  >
+                    <option value="Tư vấn chung">Tư vấn chung</option>
+                    <option value="Tư vấn may đồng phục Doanh nghiệp / Công sở">
+                      Tư vấn may đồng phục Doanh nghiệp / Công sở
+                    </option>
+                    <option value="Đồng phục Thể thao / Gym / Pickleball / Yoga">
+                      Đồng phục Thể thao / Gym / Pickleball / Yoga
+                    </option>
+                    <option value="Đồng phục Áo thun / Polo sự kiện">
+                      Đồng phục Áo thun / Polo sự kiện
+                    </option>
+                    <option value="Báo giá đơn hàng & May mẫu thử">
+                      Báo giá đơn hàng & May mẫu thử
+                    </option>
+                    <option value="Hợp tác đại lý / Phân phối">
+                      Hợp tác đại lý / Phân phối
+                    </option>
+                  </select>
+                  <ChevronDown className="w-5 h-5 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Row 3: Message */}
+              <div>
+                <label
+                  htmlFor="messageArea"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Nội dung tin nhắn
+                </label>
+                <textarea
+                  id="messageArea"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  rows={4}
+                  placeholder="Chia sẻ chi tiết yêu cầu của bạn (loại đồng phục, số lượng dự kiến, ý tưởng thiết kế...)..."
+                  className="w-full rounded-2xl bg-[#F8F9FD] border border-gray-200/90 p-4 text-gray-900 placeholder:text-gray-400 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#105d97]/25 focus:border-[#105d97] focus:bg-white transition-all resize-none"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center gap-2 bg-[#105d97] hover:bg-[#0c4d7d] active:scale-95 text-white font-medium text-sm sm:text-base px-7 py-3.5 rounded-full shadow-lg shadow-[#105d97]/25 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Đang gửi tin nhắn...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Gửi tin nhắn</span>
+                      <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </section>
+      </main>
     </div>
   );
 }

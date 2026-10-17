@@ -34,7 +34,7 @@ const Create: NextPage<Props> = () => {
 
         {/* Editor */}
         <div className="w-full">
-          <Editor onSubmit={handleSubmit} busy={creating} defaultFolder="thumbnail" />
+          <Editor onSubmit={handleSubmit} busy={creating} />
         </div>
       </div>
     </AdminLayout>

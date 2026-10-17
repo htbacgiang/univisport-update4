@@ -73,7 +73,7 @@ const R2MultiGalleryModal: FC<Props> = ({
   visible,
   onClose,
   onSelect,
-  defaultFolder = "thumbnail",
+  defaultFolder = "",
   initialImages,
   initialTitle,
   initialMode = "albums",
@@ -274,7 +274,7 @@ const R2MultiGalleryModal: FC<Props> = ({
   // Mở R2 Picker để chọn thêm ảnh
   const handleOpenR2Picker = () => {
     setSelectedR2Urls([]);
-    setCurrentR2Folder(defaultFolder || "thumbnail");
+    setCurrentR2Folder(defaultFolder || "");
     setShowR2Picker(true);
   };
 
